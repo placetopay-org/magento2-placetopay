@@ -90,7 +90,7 @@ class PlaceToPay extends AbstractMethod
             return false;
         }
 
-        if (!$this->_helperData->getTrankey() ||
+        if (!$this->_helperData->getTranKey() ||
             !$this->_helperData->getLogin() ||
             !$this->_helperData->getUrlEndPoint()){
             return false;
@@ -119,7 +119,7 @@ class PlaceToPay extends AbstractMethod
         try{
             $placeToPay = new PlacetoPayRedirect([
                 'login' => $this->_helperData->getLogin(),
-                'tranKey' => $this->_helperData->getTrankey(),
+                'tranKey' => $this->_helperData->getTranKey(),
                 'url' => $this->_helperData->getUrlEndPoint()
             ]);
             return $placeToPay;

@@ -4,12 +4,15 @@
 namespace PlacetoPay\Payments\Helper;
 
 use Magento\Framework\View\LayoutFactory;
+use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 
 class Data extends \Magento\Payment\Helper\Data
 {
     protected $_placeToPayLogger;
 
     protected $_enviroment;
+
+    protected $logger;
 
     public function __construct(
         \PlacetoPay\Payments\Logger\Logger $placeToPayLogger,
@@ -18,7 +21,8 @@ class Data extends \Magento\Payment\Helper\Data
         \Magento\Payment\Model\Method\Factory $paymentMethodFactory,
         \Magento\Store\Model\App\Emulation $appEmulation,
         \Magento\Payment\Model\Config $paymentConfig,
-        \Magento\Framework\App\Config\Initial $initialConfig
+        \Magento\Framework\App\Config\Initial $initialConfig,
+        \Psr\Log\LoggerInterface $logger
     )
     {
         parent::__construct(
@@ -31,8 +35,9 @@ class Data extends \Magento\Payment\Helper\Data
         );
 
         $this->_placeToPayLogger = $placeToPayLogger;
-        $this->_enviroment = (bool)(int)$this->scopeConfig->getValue('payment/placetopay/environment',
+        $this->_enviroment = $this->scopeConfig->getValue('payment/placetopay/placetopay_mode',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $this->logger = $logger;
     }
 
     public function log($message, $array = null)
@@ -53,29 +58,57 @@ class Data extends \Magento\Payment\Helper\Data
         return $this->_enviroment;
     }
 
-    public function getTrankey()
+    /**
+     * @return string|null
+     */
+    public function getTranKey()
     {
-        if ($this->_enviroment){
-            return $this->scopeConfig->getValue('payment/placetopay/enviroment_g/development/trankey', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        }else{
-            return $this->scopeConfig->getValue('payment/placetopay/enviroment_g/production/trankey', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $tranKey = null;
+
+        switch ($this->_enviroment) {
+            case Mode::DEVELOPMENT:
+                $tranKey = $this->scopeConfig->getValue('payment/placetopay/placetopay_development_tk', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                break;
+            case Mode::TEST:
+                $tranKey = $this->scopeConfig->getValue('payment/placetopay/placetopay_test_tk', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                break;
+            default:
+                $tranKey = $this->scopeConfig->getValue('payment/placetopay/placetopay_production_tk', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                break;
         }
+
+        return $tranKey;
     }
 
+    /**
+     * @return string|null
+     */
     public function getLogin()
     {
-        if ($this->_enviroment){
-            return $this->scopeConfig->getValue('payment/placetopay/enviroment_g/development/login', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        }else{
-            return $this->scopeConfig->getValue('payment/placetopay/enviroment_g/production/login', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $login = null;
+
+        switch ($this->_enviroment) {
+            case Mode::DEVELOPMENT:
+                $login = $this->scopeConfig->getValue('payment/placetopay/placetopay_development_lg', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                break;
+            case Mode::TEST:
+                $login = $this->scopeConfig->getValue('payment/placetopay/placetopay_test_lg', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                break;
+            default:
+                $login = $this->scopeConfig->getValue('payment/placetopay/placetopay_production_lg', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                break;
         }
+
+        $this->logger->debug($login);
+
+        return $login;
     }
 
     public function getUrlEndPoint()
     {
-        if ($this->_enviroment){
+        if ($this->_enviroment) {
             return $this->scopeConfig->getValue('payment/placetopay/enviroment_g/development/url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        }else{
+        } else {
             return $this->scopeConfig->getValue('payment/placetopay/enviroment_g/production/url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         }
     }
