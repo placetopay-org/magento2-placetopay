@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="settings" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1"
+           showInStore="1">
+        <label>Configuration Settings</label>
+        <field id="expiration" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1"
+               showInStore="1">
+            <label>Expiration Time To Pay</label>
+            <source_model>PlacetoPay\Payments\Model\Adminhtml\Source\Expiration</source_model>
+            <config_path>payment/placetopay/expiration</config_path>
+        </field>
+        <field id="final_page" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1"
+               showInStore="1">
+            <label>Show On Payment Return</label>
+            <comment><![CDATA[If you has PSE method payment in your commerce, set it in: Payment list.]]></comment>
+            <source_model>PlacetoPay\Payments\Model\Adminhtml\Source\FinalPage</source_model>
+            <config_path>payment/placetopay/final_page</config_path>
+        </field>
+        <field id="allow_pending_payment" translate="label" type="select" sortOrder="30" showInDefault="1"
+               showInWebsite="1" showInStore="1">
+            <label>Allow Buy With Pending Payments?</label>
+            <comment>
+                <![CDATA[If it is disabled, it displays a message when paying if the user has a pending order.]]></comment>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/placetopay/allow_pending_payment</config_path>
+        </field>
+        <field id="allow_partial_payment" translate="label" type="select" sortOrder="40" showInDefault="1"
+               showInWebsite="1" showInStore="1">
+            <label>Allow Buy With Partial Payments?</label>
+            <comment><![CDATA[If it is selected, allows the user to pay their orders in partial payments.]]></comment>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/placetopay/allow_partial_payment</config_path>
+        </field>
+        <field id="has_cifin" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1"
+               showInStore="1">
+            <label>Enable TransUnion Message?</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/placetopay/has_cifin</config_path>
+        </field>
+        <field id="payment_methods" translate="label" type="multiselect" sortOrder="60" showInDefault="1"
+               showInWebsite="1" showInStore="1">
+            <label>Payment Methods Enabled</label>
+            <comment><![CDATA[Payment methods available, empty means all of them.]]></comment>
+            <source_model>PlacetoPay\Payments\Model\Adminhtml\Source\Franchises</source_model>
+            <config_path>payment/placetopay/payment_methods</config_path>
+        </field>
+        <field id="minimum_amount" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1"
+               showInStore="1">
+            <label>Minimum Amount</label>
+            <comment><![CDATA[Select a minimum amount per transaction.]]></comment>
+            <frontend_class>validate-number</frontend_class>
+            <config_path>payment/placetopay/minimum_amount</config_path>
+        </field>
+        <field id="maximum_amount" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1"
+               showInStore="1">
+            <label>Maximum Amount</label>
+            <comment><![CDATA[Select a maximum amount per transaction.]]></comment>
+            <frontend_class>validate-number</frontend_class>
+            <config_path>payment/placetopay/maximum_amount</config_path>
+        </field>
+    </group>
+</include>
