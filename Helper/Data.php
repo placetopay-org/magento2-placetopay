@@ -1,28 +1,61 @@
 <?php
 
-
 namespace PlacetoPay\Payments\Helper;
 
+use Psr\Log\LoggerInterface;
+use Magento\Payment\Model\Config;
+use PlacetoPay\Payments\Logger\Logger;
+use Magento\Store\Model\App\Emulation;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\View\LayoutFactory;
+use Magento\Framework\App\Helper\Context;
+use Magento\Payment\Model\Method\Factory;
+use Magento\Framework\App\Config\Initial;
+use Magento\Payment\Helper\Data as BaseData;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
+use PlacetoPay\Payments\Model\Adminhtml\Source\Country;
 
-class Data extends \Magento\Payment\Helper\Data
+/**
+ * Class Data.
+ */
+class Data extends BaseData
 {
+    /**
+     * @var Logger
+     */
     protected $_placeToPayLogger;
 
-    protected $_enviroment;
+    /**
+     * @var string
+     */
+    protected $_mode;
 
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
 
+    /**
+     * Data constructor.
+     *
+     * @param Logger $placeToPayLogger
+     * @param Context $context
+     * @param LayoutFactory $layoutFactory
+     * @param Factory $paymentMethodFactory
+     * @param Emulation $appEmulation
+     * @param Config $paymentConfig
+     * @param Initial $initialConfig
+     * @param LoggerInterface $logger
+     */
     public function __construct(
-        \PlacetoPay\Payments\Logger\Logger $placeToPayLogger,
-        \Magento\Framework\App\Helper\Context $context,
+        Logger $placeToPayLogger,
+        Context $context,
         LayoutFactory $layoutFactory,
-        \Magento\Payment\Model\Method\Factory $paymentMethodFactory,
-        \Magento\Store\Model\App\Emulation $appEmulation,
-        \Magento\Payment\Model\Config $paymentConfig,
-        \Magento\Framework\App\Config\Initial $initialConfig,
-        \Psr\Log\LoggerInterface $logger
+        Factory $paymentMethodFactory,
+        Emulation $appEmulation,
+        Config $paymentConfig,
+        Initial $initialConfig,
+        LoggerInterface $logger
     )
     {
         parent::__construct(
@@ -35,27 +68,200 @@ class Data extends \Magento\Payment\Helper\Data
         );
 
         $this->_placeToPayLogger = $placeToPayLogger;
-        $this->_enviroment = $this->scopeConfig->getValue('payment/placetopay/placetopay_mode',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+
+        $this->_mode = $this->scopeConfig->getValue(
+            'payment/placetopay/placetopay_mode',
+            ScopeInterface::SCOPE_STORE
+        );
+
         $this->logger = $logger;
+
     }
 
+    /**
+     * @param string $message
+     * @param array $array
+     */
     public function log($message, $array = null)
     {
-        if (!is_null($array))
+        if (!is_null($array)) {
             $message .= " - " . json_encode($array);
+        }
 
         $this->_placeToPayLogger->debug($message);
     }
 
-    public function getActive()
+    /**
+     * @return mixed
+     */
+    public function getMerchantId()
     {
-        return (bool)(int)$this->scopeConfig->getValue('payment/placetopay/active', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/merchant_id',
+            ScopeInterface::SCOPE_STORE
+        );
     }
 
-    public function getEnviroment()
+    /**
+     * @return mixed
+     */
+    public function getLegalName()
     {
-        return $this->_enviroment;
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/legal_name',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmail()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/email',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPhone()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/phone',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExpirationTime()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/expiration',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFinalPage()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/final_page',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAllowPendingPayment()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/allow_pending_payment',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAllowPartialPayment()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/allow_partial_payment',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function getHasCifin()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/has_cifin',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentMethods()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/payment_methods',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getMinimumAmount()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/minimum_amount',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getMaximumAmount()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/maximum_amount',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function getActive()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/active',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTile()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/title',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDescription()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/description',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getMode()
+    {
+        return $this->_mode;
     }
 
     /**
@@ -65,15 +271,24 @@ class Data extends \Magento\Payment\Helper\Data
     {
         $tranKey = null;
 
-        switch ($this->_enviroment) {
+        switch ($this->_mode) {
             case Mode::DEVELOPMENT:
-                $tranKey = $this->scopeConfig->getValue('payment/placetopay/placetopay_development_tk', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $tranKey = $this->scopeConfig->getValue(
+                    'payment/placetopay/placetopay_development_tk',
+                    ScopeInterface::SCOPE_STORE
+                );
                 break;
             case Mode::TEST:
-                $tranKey = $this->scopeConfig->getValue('payment/placetopay/placetopay_test_tk', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $tranKey = $this->scopeConfig->getValue(
+                    'payment/placetopay/placetopay_test_tk',
+                    ScopeInterface::SCOPE_STORE
+                );
                 break;
             default:
-                $tranKey = $this->scopeConfig->getValue('payment/placetopay/placetopay_production_tk', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $tranKey = $this->scopeConfig->getValue(
+                    'payment/placetopay/placetopay_production_tk',
+                    ScopeInterface::SCOPE_STORE
+                );
                 break;
         }
 
@@ -87,48 +302,97 @@ class Data extends \Magento\Payment\Helper\Data
     {
         $login = null;
 
-        switch ($this->_enviroment) {
+        switch ($this->_mode) {
             case Mode::DEVELOPMENT:
-                $login = $this->scopeConfig->getValue('payment/placetopay/placetopay_development_lg', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $login = $this->scopeConfig->getValue(
+                    'payment/placetopay/placetopay_development_lg',
+                    ScopeInterface::SCOPE_STORE
+                );
                 break;
             case Mode::TEST:
-                $login = $this->scopeConfig->getValue('payment/placetopay/placetopay_test_lg', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $login = $this->scopeConfig->getValue(
+                    'payment/placetopay/placetopay_test_lg',
+                    ScopeInterface::SCOPE_STORE
+                );
                 break;
             default:
-                $login = $this->scopeConfig->getValue('payment/placetopay/placetopay_production_lg', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+                $login = $this->scopeConfig->getValue(
+                    'payment/placetopay/placetopay_production_lg',
+                    ScopeInterface::SCOPE_STORE
+                );
                 break;
         }
-
-        $this->logger->debug($login);
 
         return $login;
     }
 
-    public function getUrlEndPoint()
+    /**
+     * @return mixed
+     */
+    public function getCountryCode()
     {
-        if ($this->_enviroment) {
-            return $this->scopeConfig->getValue('payment/placetopay/enviroment_g/development/url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        } else {
-            return $this->scopeConfig->getValue('payment/placetopay/enviroment_g/production/url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $country = $this->scopeConfig->getValue(
+            'payment/placetopay/country',
+            ScopeInterface::SCOPE_STORE
+        );
+
+        return $country;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getDefaultEndpoints()
+    {
+        return [
+            Mode::DEVELOPMENT => 'https://dev.placetopay.com/redirection',
+            Mode::TEST => 'https://test.placetopay.com/redirection',
+            Mode::PRODUCTION => 'https://secure.placetopay.com/redirection',
+        ];
+    }
+
+    /**
+     * @param $countryCode
+     *
+     * @return array
+     */
+    public function getEndpointsTo($countryCode)
+    {
+        switch ($countryCode) {
+            case Country::ECUADOR:
+                $endpoints = [
+                    Mode::DEVELOPMENT => 'https://dev.placetopay.ec/redirection',
+                    Mode::TEST => 'https://test.placetopay.ec/redirection',
+                    Mode::PRODUCTION => 'https://secure.placetopay.ec/redirection',
+                ];
+                break;
+            case Country::COLOMBIA:
+            default:
+                $endpoints = self::getDefaultEndpoints();
+                break;
         }
+
+        return $endpoints;
     }
 
-    public function getMinOrderTotal()
-    {
-        return $this->scopeConfig->getValue('payment/placetopay/min_order_total', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-    }
-
-    public function getMaxOrderTotal()
-    {
-        return $this->scopeConfig->getValue('payment/placetopay/max_order_total', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-    }
-
+    /**
+     * @return array
+     */
     public function getOrderStates()
     {
         return [
-            'pending' => $this->scopeConfig->getValue('payment/placetopay/states/pending', \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
-            'approved' => $this->scopeConfig->getValue('payment/placetopay/states/approved', \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
-            'rejected' => $this->scopeConfig->getValue('payment/placetopay/states/rejected', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
+            'pending' => $this->scopeConfig->getValue(
+                'payment/placetopay/states/pending',
+                ScopeInterface::SCOPE_STORE
+            ),
+            'approved' => $this->scopeConfig->getValue(
+                'payment/placetopay/states/approved',
+                ScopeInterface::SCOPE_STORE
+            ),
+            'rejected' => $this->scopeConfig->getValue(
+                'payment/placetopay/states/rejected',
+                ScopeInterface::SCOPE_STORE
+            ),
         ];
     }
 }

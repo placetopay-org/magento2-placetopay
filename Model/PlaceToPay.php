@@ -33,7 +33,7 @@ class PlaceToPay extends AbstractMethod
 
     protected $_canReviewPayment = true;
 
-    protected $_supportedCurrencyCodes = ['COP','USD'];
+    protected $_supportedCurrencyCodes = ['COP', 'USD'];
 
     protected $_helperData;
 
@@ -73,8 +73,11 @@ class PlaceToPay extends AbstractMethod
      */
     public function isActive($storeId = null)
     {
-        if ($this->_helperData->getActive()) return true;
-        return false;
+        if ($this->_helperData->getActive()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -83,20 +86,13 @@ class PlaceToPay extends AbstractMethod
      */
     public function isAvailable(\Magento\Quote\Api\Data\CartInterface $quote = null)
     {
-        if ($quote && (
-                $quote->getBaseGrandTotal() < $this->_helperData->getMinOrderTotal()
-                || ($this->_helperData->getMaxOrderTotal() && $quote->getBaseGrandTotal() > $this->_helperData->getMaxOrderTotal()))
-        ) {
-            return false;
-        }
-
         if (!$this->_helperData->getTranKey() ||
             !$this->_helperData->getLogin() ||
-            !$this->_helperData->getUrlEndPoint()){
+            !$this->_helperData->getEndpointsTo($this->_helperData->getCountryCode())) {
             return false;
+        } else {
+            return true;
         }
-
-        return true;
     }
 
     /**
@@ -116,14 +112,14 @@ class PlaceToPay extends AbstractMethod
      */
     public function placeToPay()
     {
-        try{
+        try {
             $placeToPay = new PlacetoPayRedirect([
                 'login' => $this->_helperData->getLogin(),
                 'tranKey' => $this->_helperData->getTranKey(),
-                'url' => $this->_helperData->getUrlEndPoint()
+                'url' => $this->_helperData->getEndpointsTo()
             ]);
             return $placeToPay;
-        }catch (Exception $exception){
+        } catch (Exception $exception) {
             throw new Exception($exception->getMessage());
         }
     }

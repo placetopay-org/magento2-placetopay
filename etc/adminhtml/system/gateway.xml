@@ -25,26 +25,20 @@
             <comment><![CDATA[This is the payment method description used at the checkout page.]]></comment>
             <config_path>payment/placetopay/description</config_path>
         </field>
-        <field id="allowspecific" translate="label" type="allowspecific" sortOrder="40" showInDefault="1"
-               showInWebsite="1" showInStore="1">
-            <label>Payment From Applicable Countries</label>
-            <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
-            <config_path>payment/placetopay/allowspecific</config_path>
+        <field id="country" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1"
+               showInStore="1">
+            <label>Country</label>
+            <source_model>PlacetoPay\Payments\Model\Adminhtml\Source\Country</source_model>
+            <config_path>payment/placetopay/country</config_path>
         </field>
-        <field id="specificcountry" translate="label" type="multiselect" sortOrder="50" showInDefault="1"
-               showInWebsite="1" showInStore="1">
-            <label>Payment From Specific Countries</label>
-            <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
-            <config_path>payment/placetopay/specificcountry</config_path>
-        </field>
-        <field id="placetopay_mode" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1"
+        <field id="placetopay_mode" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>Mode</label>
             <comment><![CDATA[Set this to production when you are ready to accept payments.]]></comment>
             <source_model>PlacetoPay\Payments\Model\Adminhtml\Source\Mode</source_model>
             <config_path>payment/placetopay/placetopay_mode</config_path>
         </field>
-        <field id="placetopay_development_lg" translate="label" type="text" sortOrder="70" showInDefault="1"
+        <field id="placetopay_development_lg" translate="label" type="text" sortOrder="60" showInDefault="1"
                showInWebsite="1" showInStore="1">
             <label>Development Login</label>
             <comment>
@@ -54,7 +48,7 @@
             </depends>
             <config_path>payment/placetopay/placetopay_development_lg</config_path>
         </field>
-        <field id="placetopay_development_tk" translate="label" type="obscure" sortOrder="80" showInDefault="1"
+        <field id="placetopay_development_tk" translate="label" type="obscure" sortOrder="70" showInDefault="1"
                showInWebsite="1" showInStore="1">
             <label>Development TranKey</label>
             <comment>
@@ -65,7 +59,7 @@
             </depends>
             <config_path>payment/placetopay/placetopay_development_tk</config_path>
         </field>
-        <field id="placetopay_test_lg" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1"
+        <field id="placetopay_test_lg" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>Test Login</label>
             <comment>
@@ -75,7 +69,7 @@
             </depends>
             <config_path>payment/placetopay/placetopay_test_lg</config_path>
         </field>
-        <field id="placetopay_test_tk" translate="label" type="obscure" sortOrder="100" showInDefault="1"
+        <field id="placetopay_test_tk" translate="label" type="obscure" sortOrder="90" showInDefault="1"
                showInWebsite="1" showInStore="1">
             <label>Test TranKey</label>
             <comment>
@@ -86,7 +80,7 @@
             </depends>
             <config_path>payment/placetopay/placetopay_test_tk</config_path>
         </field>
-        <field id="placetopay_production_lg" translate="label" type="text" sortOrder="110" showInDefault="1"
+        <field id="placetopay_production_lg" translate="label" type="text" sortOrder="100" showInDefault="1"
                showInWebsite="1" showInStore="1">
             <label>Production Login</label>
             <comment>
@@ -96,7 +90,7 @@
             </depends>
             <config_path>payment/placetopay/placetopay_production_lg</config_path>
         </field>
-        <field id="placetopay_production_tk" translate="label" type="obscure" sortOrder="120" showInDefault="1"
+        <field id="placetopay_production_tk" translate="label" type="obscure" sortOrder="110" showInDefault="1"
                showInWebsite="1" showInStore="1">
             <label>Production TranKey</label>
             <comment>
@@ -107,7 +101,7 @@
             </depends>
             <config_path>payment/placetopay/placetopay_production_tk</config_path>
         </field>
-        <field id="sort_order" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1"
+        <field id="sort_order" translate="label" type="text" sortOrder="120" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>Sort Order</label>
             <comment><![CDATA[Adjust this to move the payment method above or below other payment methods.]]></comment>
