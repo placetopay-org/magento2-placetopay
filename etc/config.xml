@@ -19,6 +19,9 @@
                 <allow_pending_payment>0</allow_pending_payment>
                 <allow_partial_payment>0</allow_partial_payment>
                 <has_cifin>0</has_cifin>
+                <fill_tax_information>0</fill_tax_information>
+                <fill_buyer_information>0</fill_buyer_information>
+                <skip_result>0</skip_result>
             </placetopay>
         </payment>
     </default>

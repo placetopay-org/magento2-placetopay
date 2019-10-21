@@ -2,18 +2,18 @@
 
 namespace PlacetoPay\Payments\Helper;
 
-use Psr\Log\LoggerInterface;
+use Magento\Framework\App\Config\Initial;
+use Magento\Framework\App\Helper\Context;
+use Magento\Framework\View\LayoutFactory;
+use Magento\Payment\Helper\Data as BaseData;
 use Magento\Payment\Model\Config;
-use PlacetoPay\Payments\Logger\Logger;
+use Magento\Payment\Model\Method\Factory;
 use Magento\Store\Model\App\Emulation;
 use Magento\Store\Model\ScopeInterface;
-use Magento\Framework\View\LayoutFactory;
-use Magento\Framework\App\Helper\Context;
-use Magento\Payment\Model\Method\Factory;
-use Magento\Framework\App\Config\Initial;
-use Magento\Payment\Helper\Data as BaseData;
-use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
+use PlacetoPay\Payments\Logger\Logger;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Country;
+use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class Data.
@@ -56,8 +56,7 @@ class Data extends BaseData
         Config $paymentConfig,
         Initial $initialConfig,
         LoggerInterface $logger
-    )
-    {
+    ) {
         parent::__construct(
             $context,
             $layoutFactory,
@@ -75,12 +74,11 @@ class Data extends BaseData
         );
 
         $this->logger = $logger;
-
     }
 
     /**
      * @param string $message
-     * @param array $array
+     * @param array  $array
      */
     public function log($message, $array = null)
     {
@@ -186,6 +184,39 @@ class Data extends BaseData
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/has_cifin',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function getFillTaxInformation()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/fill_tax_information',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function getFillBuyerInformation()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/fill_buyer_information',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function getSkipResult()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/skip_result',
             ScopeInterface::SCOPE_STORE
         );
     }

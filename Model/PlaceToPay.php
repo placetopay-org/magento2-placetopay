@@ -1,12 +1,14 @@
 <?php
 
-
 namespace PlacetoPay\Payments\Model;
 
 use Dnetix\Redirection\PlacetoPay as PlacetoPayRedirect;
-use Magento\Payment\Model\Method\AbstractMethod;
 use Exception;
+use Magento\Payment\Model\Method\AbstractMethod;
 
+/**
+ * Class PlaceToPay.
+ */
 class PlaceToPay extends AbstractMethod
 {
     const CODE = 'placetopay';
@@ -37,6 +39,20 @@ class PlaceToPay extends AbstractMethod
 
     protected $_helperData;
 
+    /**
+     * PlaceToPay constructor.
+     * @param \PlacetoPay\Payments\Helper\Data $helperData
+     * @param \Magento\Framework\Model\Context $context
+     * @param \Magento\Framework\Registry $registry
+     * @param \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory
+     * @param \Magento\Framework\Api\AttributeValueFactory $customAttributeFactory
+     * @param \Magento\Payment\Helper\Data $paymentData
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param \Magento\Payment\Model\Method\Logger $logger
+     * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
+     * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
+     * @param array $data
+     */
     public function __construct(
         \PlacetoPay\Payments\Helper\Data $helperData,
         \Magento\Framework\Model\Context $context,
@@ -49,8 +65,7 @@ class PlaceToPay extends AbstractMethod
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
-    )
-    {
+    ) {
         parent::__construct(
             $context,
             $registry,
@@ -101,8 +116,10 @@ class PlaceToPay extends AbstractMethod
      */
     public function canUseForCurrency($currencyCode)
     {
-        if (!in_array($currencyCode, $this->_supportedCurrencyCodes))
+        if (!in_array($currencyCode, $this->_supportedCurrencyCodes)) {
             return false;
+        }
+
         return true;
     }
 
@@ -112,11 +129,14 @@ class PlaceToPay extends AbstractMethod
      */
     public function placeToPay()
     {
+        $env = $this->_helperData->getMode();
+        $url = $this->_helperData->getEndpointsTo($this->_helperData->getCountryCode());
+
         try {
             $placeToPay = new PlacetoPayRedirect([
                 'login' => $this->_helperData->getLogin(),
                 'tranKey' => $this->_helperData->getTranKey(),
-                'url' => $this->_helperData->getEndpointsTo()
+                'url' => $url[$env]
             ]);
             return $placeToPay;
         } catch (Exception $exception) {
@@ -126,7 +146,6 @@ class PlaceToPay extends AbstractMethod
 
     public function getAmount($order)
     {
-
         $amount = $order->getGrandTotal();
         return $amount;
     }
@@ -139,5 +158,4 @@ class PlaceToPay extends AbstractMethod
             'rejected' => $this->_scopeConfig->getValue('payment/placetopay/states/rejected', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
         ];
     }
-
 }

@@ -1,9 +1,10 @@
 <?php
 
-
 namespace PlacetoPay\Payments\Model;
 
-
+/**
+ * Class CustomConfigProvider.
+ */
 class CustomConfigProvider implements \Magento\Checkout\Model\ConfigProviderInterface
 {
     /**
@@ -18,8 +19,7 @@ class CustomConfigProvider implements \Magento\Checkout\Model\ConfigProviderInte
 
     public function __construct(
         \Magento\Framework\View\Asset\Repository $assetRepo
-    )
-    {
+    ) {
         $this->_assetRepo = $assetRepo;
     }
 

@@ -1,15 +1,23 @@
 <?php
 
-
 namespace PlacetoPay\Payments\Controller\Payment;
 
-
 use Exception;
-use Magento\Framework\Exception\CouldNotSaveException;
-use Magento\Sales\Model\Order\Payment\Transaction;
+use Magento\Checkout\Model\Session;
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
 use Magento\Payment\Helper\Data as PaymentHelper;
+use Magento\Sales\Model\Order\Payment\Transaction;
+use Magento\Sales\Model\OrderFactory;
+use PlacetoPay\Payments\Helper\Data as HelperData;
+use PlacetoPay\Payments\Logger\Logger;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface;
 
-class Data extends \Magento\Framework\App\Action\Action
+/**
+ * Class Data.
+ */
+class Data extends Action
 {
     protected $_helperData;
 
@@ -27,17 +35,28 @@ class Data extends \Magento\Framework\App\Action\Action
 
     protected $_paymentHelper;
 
+    /**
+     * Data constructor.
+     *
+     * @param Context          $context
+     * @param Session          $checkoutSession
+     * @param OrderFactory     $orderFactory
+     * @param HelperData       $helperData
+     * @param Logger           $placeToPayLogger
+     * @param JsonFactory      $resultJsonFactory
+     * @param BuilderInterface $transactionBuilder
+     * @param PaymentHelper    $paymentHelper
+     */
     public function __construct(
-        \Magento\Framework\App\Action\Context $context,
-        \Magento\Checkout\Model\Session $checkoutSession,
-        \Magento\Sales\Model\OrderFactory $orderFactory,
-        \PlacetoPay\Payments\Helper\Data $helperData,
-        \PlacetoPay\Payments\Logger\Logger $placeToPayLogger,
-        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
-        \Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface $transactionBuilder,
+        Context $context,
+        Session $checkoutSession,
+        OrderFactory $orderFactory,
+        HelperData $helperData,
+        Logger $placeToPayLogger,
+        JsonFactory $resultJsonFactory,
+        BuilderInterface $transactionBuilder,
         PaymentHelper $paymentHelper
-    )
-    {
+    ) {
         parent::__construct($context);
 
         $this->_checkoutSession = $checkoutSession;
@@ -61,7 +80,7 @@ class Data extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        try{
+        try {
             $order = $this->_getCheckoutSession()->getLastRealOrder();
             $method = $order->getPayment()->getMethod();
             $methodInstance = $this->_paymentHelper->getMethodInstance($method);
@@ -75,7 +94,6 @@ class Data extends \Magento\Framework\App\Action\Action
 
             $response = $placetopay->request($request);
             if ($response->isSuccessful()) {
-
                 $payment = $order->getPayment();
                 $payment->setTransactionId($response->requestId)
                     ->setIsTransactionClosed(0);
@@ -101,12 +119,10 @@ class Data extends \Magento\Framework\App\Action\Action
                 return $result->setData([
                     'url' => $response->processUrl()
                 ]);
-
             } else {
                 throw new Exception($response->status()->message());
             }
-
-        }catch (Exception $exception){
+        } catch (Exception $exception) {
             $this->_helperData->log($exception->getMessage());
             throw new Exception($exception->getMessage());
         }
@@ -115,8 +131,18 @@ class Data extends \Magento\Framework\App\Action\Action
     public function getIP()
     {
         return ($_SERVER['REMOTE_ADDR'] == '::1' || $_SERVER['REMOTE_ADDR'] == '::' ||
-            !preg_match('/^((?:25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9]).){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])$/m',
-                $_SERVER['REMOTE_ADDR'])) ? '127.0.0.1' : $_SERVER['REMOTE_ADDR'];
+            !preg_match(
+                '/^((?:25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9]).){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])$/m',
+                $_SERVER['REMOTE_ADDR']
+            )) ? '127.0.0.1' : $_SERVER['REMOTE_ADDR'];
+    }
+
+    public function getRemoteAddress()
+    {
+        $om = \Magento\Framework\App\ObjectManager::getInstance();
+        $a = $om->get('Magento\Framework\HTTP\PhpEnvironment\RemoteAddress');
+
+        return $a->getRemoteAddress();
     }
 
     public function getDataParamsPayment($order, $reference)
@@ -162,11 +188,11 @@ class Data extends \Magento\Framework\App\Action\Action
         $billingAddress = $order->getBillingAddress();
         $shippingAddress = $order->getShippingAddress();
 
-        if ($billingAddress)
+        if ($billingAddress) {
             return $billingAddress;
+        }
 
         return $shippingAddress;
-
     }
 
     public function getDays()
@@ -175,12 +201,15 @@ class Data extends \Magento\Framework\App\Action\Action
         $weekDay = date('w', strtotime($today));
 
         $days = 0;
-        if ($weekDay == 0)
+        if ($weekDay == 0) {
             $days += 1;
-        if ($weekDay == 5)
+        }
+        if ($weekDay == 5) {
             $days += 3;
-        if ($weekDay == 6)
+        }
+        if ($weekDay == 6) {
             $days += 2;
+        }
 
         return "+$days days";
     }
