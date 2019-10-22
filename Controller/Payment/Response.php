@@ -110,7 +110,7 @@ class Response extends \Magento\Framework\App\Action\Action
         );
 
         try{
-            $placeToPay = $methodInstance->placeToPay();
+            $placeToPay = $methodInstance->gateway();
             $response = $placeToPay->query($requestId);
 
             if ($response->isSuccessful()) {
