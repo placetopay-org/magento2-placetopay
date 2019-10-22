@@ -158,7 +158,7 @@ class Data extends BaseData
     /**
      * @return bool
      */
-    public function getAllowPendingPayment()
+    public function getAllowPendingPayment(): bool
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/allow_pending_payment',
@@ -169,7 +169,7 @@ class Data extends BaseData
     /**
      * @return bool
      */
-    public function getAllowPartialPayment()
+    public function getAllowPartialPayment(): bool
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/allow_partial_payment',
@@ -180,7 +180,7 @@ class Data extends BaseData
     /**
      * @return bool
      */
-    public function getHasCifin()
+    public function getHasCifin(): bool
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/has_cifin',
@@ -191,7 +191,7 @@ class Data extends BaseData
     /**
      * @return bool
      */
-    public function getFillTaxInformation()
+    public function getFillTaxInformation(): bool
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/fill_tax_information',
@@ -202,9 +202,9 @@ class Data extends BaseData
     /**
      * @return bool
      */
-    public function getFillBuyerInformation()
+    public function getFillBuyerInformation(): bool
     {
-        return $this->scopeConfig->getValue(
+        return ! $this->scopeConfig->getValue(
             'payment/placetopay/fill_buyer_information',
             ScopeInterface::SCOPE_STORE
         );
@@ -213,7 +213,7 @@ class Data extends BaseData
     /**
      * @return bool
      */
-    public function getSkipResult()
+    public function getSkipResult(): bool
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/skip_result',
@@ -257,7 +257,7 @@ class Data extends BaseData
     /**
      * @return bool
      */
-    public function getActive()
+    public function getActive(): bool
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/active',

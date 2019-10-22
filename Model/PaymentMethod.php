@@ -2,6 +2,8 @@
 
 namespace PlacetoPay\Payments\Model;
 
+use Dnetix\Redirection\Exceptions\PlacetoPayException;
+use Dnetix\Redirection\Message\RedirectResponse;
 use Dnetix\Redirection\PlacetoPay;
 use Dnetix\Redirection\Validators\Currency;
 use Exception;
@@ -9,6 +11,7 @@ use Magento\Framework\Api\AttributeValueFactory;
 use Magento\Framework\Api\ExtensionAttributesFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Data\Collection\AbstractDb;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\Header;
 use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
 use Magento\Framework\Locale\Resolver;
@@ -24,7 +27,9 @@ use Magento\Sales\Api\Data\OrderAddressInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
 use Magento\Store\Model\ScopeInterface;
-use PlacetoPay\Payments\Helper\Data as HelperData;
+use PlacetoPay\Payments\Helper\Data as Config;
+use PlacetoPay\Payments\Model\Info;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class PlaceToPay.
@@ -35,6 +40,7 @@ class PaymentMethod extends AbstractMethod
     const EXPIRATION_TIME_MINUTES_DEFAULT = 120;
     const EXPIRATION_TIME_MINUTES_MIN = 10;
 
+    protected $gateway;
     protected $_code = self::CODE;
     protected $_isGateway = true;
     protected $_canOrder = true;
@@ -46,18 +52,22 @@ class PaymentMethod extends AbstractMethod
     protected $_canVoid = true;
     protected $_canFetchTransactionInfo = true;
     protected $_canReviewPayment = true;
-    protected $_helperData;
+    protected $_config;
     protected $_order;
     protected $_store;
     protected $_url;
     protected $remoteAddress;
     protected $httpHeader;
     protected $taxItem;
+    protected $logger;
+    protected $infoFactory;
 
     /**
      * PaymentMethod constructor.
      *
-     * @param HelperData $helperData
+     * @param LoggerInterface $_logger
+     * @param \PlacetoPay\Payments\Model\Info $infoFactory
+     * @param Config $config
      * @param Context $context
      * @param Registry $registry
      * @param ExtensionAttributesFactory $extensionFactory
@@ -75,7 +85,9 @@ class PaymentMethod extends AbstractMethod
      * @param array $data
      */
     public function __construct(
-        HelperData $helperData,
+        LoggerInterface $_logger,
+        Info $infoFactory,
+        Config $config,
         Context $context,
         Registry $registry,
         ExtensionAttributesFactory $extensionFactory,
@@ -105,12 +117,14 @@ class PaymentMethod extends AbstractMethod
             $data
         );
 
-        $this->_helperData = $helperData;
+        $this->_config = $config;
         $this->_store = $store;
         $this->_url = $urlInterface;
         $this->remoteAddress = $remoteAddress;
         $this->httpHeader = $httpHeader;
         $this->taxItem = $taxItem;
+        $this->logger = $_logger;
+        $this->infoFactory = $infoFactory;
     }
 
     /**
@@ -139,12 +153,20 @@ class PaymentMethod extends AbstractMethod
     }
 
     /**
+     * @return Info
+     */
+    public function getInfoModel()
+    {
+        return $this->infoFactory->create();
+    }
+
+    /**
      * @param null $storeId
      * @return bool
      */
     public function isActive($storeId = null)
     {
-        if ($this->_helperData->getActive()) {
+        if ($this->_config->getActive()) {
             return true;
         } else {
             return false;
@@ -158,9 +180,9 @@ class PaymentMethod extends AbstractMethod
      */
     public function isAvailable(CartInterface $quote = null)
     {
-        if (!$this->_helperData->getTranKey() ||
-            !$this->_helperData->getLogin() ||
-            !$this->_helperData->getEndpointsTo($this->_helperData->getCountryCode())) {
+        if (!$this->_config->getTranKey() ||
+            !$this->_config->getLogin() ||
+            !$this->_config->getEndpointsTo($this->_config->getCountryCode())) {
             return false;
         } else {
             return true;
@@ -169,22 +191,81 @@ class PaymentMethod extends AbstractMethod
 
     /**
      * @return PlacetoPay
-     * @throws Exception
+     * @throws PlacetoPayException
      */
-    public function placeToPay()
+    public function gateway()
     {
-        $env = $this->_helperData->getMode();
-        $url = $this->_helperData->getEndpointsTo($this->_helperData->getCountryCode());
+        if (! $this->gateway) {
+            $env = $this->_config->getMode();
+            $url = $this->_config->getEndpointsTo($this->_config->getCountryCode());
 
-        try {
-            $placeToPay = new PlacetoPay([
-                'login' => $this->_helperData->getLogin(),
-                'tranKey' => $this->_helperData->getTranKey(),
+            $this->gateway = new PlacetoPay([
+                'login' => $this->_config->getLogin(),
+                'tranKey' => $this->_config->getTranKey(),
                 'url' => $url[$env]
             ]);
-            return $placeToPay;
-        } catch (Exception $exception) {
-            throw new Exception($exception->getMessage());
+        }
+
+        return $this->gateway;
+    }
+
+    /**
+     * @param Order $order
+     *
+     * @return RedirectResponse
+     * @throws PlacetoPayException
+     */
+    public function getPaymentRedirect($order)
+    {
+        $data = $this->getRedirectRequestDataFromOrder($order);
+
+        $this->_logger->debug(
+            'P2P_LOG: CheckoutRedirect/Failure [' .
+            $order->getRealOrderId() . '] ' . $this->serialize($data)
+        );
+
+        return $this->gateway()->request($data);
+    }
+
+    /**
+     * @param Order $order
+     *
+     * @return string|null
+     * @throws Exception
+     */
+    public function getCheckoutRedirect($order)
+    {
+        $this->_order = $order;
+
+        try {
+            $response = $this->getPaymentRedirect($order);
+
+            if ($response->isSuccessful()) {
+                $payment = $order->getPayment();
+                $info = $this->getInfoModel();
+
+                $info->loadInformationFromRedirectResponse($payment, $response);
+            } else {
+                $this->_logger->debug(
+                    'P2P_LOG: CheckoutRedirect/Failure [' .
+                    $order->getRealOrderId() . '] ' .
+                    $response->status()->message() . ' - ' .
+                    $response->status()->reason() . ' ' .
+                    $response->status()->status()
+                );
+
+                throw new LocalizedException(__($response->status()->message()));
+            }
+            return $response->processUrl();
+        } catch (Exception $ex) {
+            $this->_logger->debug(
+                'P2P_LOG: CheckoutRedirect/Exception [' .
+                $order->getRealOrderId() . '] ' .
+                $ex->getMessage() . ' ON ' . $ex->getFile() . ' LINE ' .
+                $ex->getLine() . ' -- ' . get_class($ex)
+            );
+
+            throw new Exception($ex->getMessage());
         }
     }
 
@@ -242,18 +323,18 @@ class PaymentMethod extends AbstractMethod
                 ],
                 'items' => $items,
                 'shipping' => $this->parseAddressPerson($order->getShippingAddress()),
-                'allowPartial' => $this->_helperData->getAllowPartialPayment(),
+                'allowPartial' => $this->_config->getAllowPartialPayment(),
             ],
             'returnUrl' => $this->_url->getUrl('placetopay/processing/response') . '?reference=' . $reference,
             'cancelUrl' => $this->_url->getUrl('placetopay/payment/cancel'),
             'expiration' => $expiration,
             'ipAddress' => $this->remoteAddress->getRemoteAddress(),
             'userAgent' => $this->httpHeader->getHttpUserAgent(),
-            'skipResult' => $this->_helperData->getSkipResult(),
-            'noBuyerFill' => $this->_helperData->getFillBuyerInformation(),
+            'skipResult' => $this->_config->getSkipResult(),
+            'noBuyerFill' => $this->_config->getFillBuyerInformation(),
         ];
 
-        if ($this->_helperData->getFillTaxInformation()) {
+        if ($this->_config->getFillTaxInformation()) {
             try {
                 $map = [];
                 $taxInformation = $this->taxItem->getTaxItemsByOrderId($order->getId());
@@ -275,7 +356,7 @@ class PaymentMethod extends AbstractMethod
                     $data['payment']['amount']['taxes'] = $taxes;
                 }
             } catch (Exception $ex) {
-                $this->_helperData->log(
+                $this->_logger->debug(
                     'P2P_LOG: Error calculating taxes: [' .
                     $order->getRealOrderId() .
                     '] ' . serialize($this->taxItem->getTaxItemsByOrderId($order->getId()))
@@ -283,7 +364,7 @@ class PaymentMethod extends AbstractMethod
             }
         }
 
-        if ($pm = $this->_helperData->getPaymentMethods()) {
+        if ($pm = $this->_config->getPaymentMethods()) {
             $parsingsCountry = [
                 'CO' => [],
                 'EC' => [
@@ -300,8 +381,8 @@ class PaymentMethod extends AbstractMethod
             $paymentMethods = [];
 
             foreach (explode(',', $pm) as $paymentMethod) {
-                if (isset($parsingsCountry[$this->_helperData->getCountryCode()][$paymentMethod])) {
-                    $paymentMethods[] = $parsingsCountry[$this->_helperData->getCountryCode()][$paymentMethod];
+                if (isset($parsingsCountry[$this->_config->getCountryCode()][$paymentMethod])) {
+                    $paymentMethods[] = $parsingsCountry[$this->_config->getCountryCode()][$paymentMethod];
                 } else {
                     $paymentMethods[] = $paymentMethod;
                 }
@@ -347,7 +428,7 @@ class PaymentMethod extends AbstractMethod
      */
     public function getExpirationTimeMinutes()
     {
-        $minutes = $this->_helperData->getExpirationTime();
+        $minutes = $this->_config->getExpirationTime();
 
         return !is_numeric($minutes) || $minutes < self::EXPIRATION_TIME_MINUTES_MIN
             ? self::EXPIRATION_TIME_MINUTES_DEFAULT

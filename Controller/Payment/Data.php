@@ -85,13 +85,8 @@ class Data extends Action
             $method = $order->getPayment()->getMethod();
             $methodInstance = $this->_paymentHelper->getMethodInstance($method);
 
-            $placetopay =  $methodInstance->placeToPay();
-
-            $orderId = $order->getId();
-            $reference = $orderId . "_" . time();
-
+            $placetopay =  $methodInstance->gateway();
             $request = $methodInstance->getRedirectRequestDataFromOrder($order);
-            //$request = $this->getDataParamsPayment($order, $reference);
 
             $response = $placetopay->request($request);
             if ($response->isSuccessful()) {
