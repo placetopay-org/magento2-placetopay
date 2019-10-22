@@ -28,7 +28,7 @@ use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
 use Magento\Store\Model\ScopeInterface;
 use PlacetoPay\Payments\Helper\Data as Config;
-use PlacetoPay\Payments\Model\Info;
+use PlacetoPay\Payments\Model\Info as InfoFactory;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -66,7 +66,7 @@ class PaymentMethod extends AbstractMethod
      * PaymentMethod constructor.
      *
      * @param LoggerInterface $_logger
-     * @param \PlacetoPay\Payments\Model\Info $infoFactory
+     * @param InfoFactory $infoFactory
      * @param Config $config
      * @param Context $context
      * @param Registry $registry
@@ -86,7 +86,7 @@ class PaymentMethod extends AbstractMethod
      */
     public function __construct(
         LoggerInterface $_logger,
-        Info $infoFactory,
+        InfoFactory $infoFactory,
         Config $config,
         Context $context,
         Registry $registry,
@@ -153,7 +153,7 @@ class PaymentMethod extends AbstractMethod
     }
 
     /**
-     * @return Info
+     * @return InfoFactory
      */
     public function getInfoModel()
     {
@@ -244,7 +244,7 @@ class PaymentMethod extends AbstractMethod
                 $payment = $order->getPayment();
                 $info = $this->getInfoModel();
 
-                $info->loadInformationFromRedirectResponse($payment, $response);
+                $info->loadInformationFromRedirectResponse($payment, $response, $this->_config->getMode());
             } else {
                 $this->_logger->debug(
                     'P2P_LOG: CheckoutRedirect/Failure [' .
@@ -325,7 +325,7 @@ class PaymentMethod extends AbstractMethod
                 'shipping' => $this->parseAddressPerson($order->getShippingAddress()),
                 'allowPartial' => $this->_config->getAllowPartialPayment(),
             ],
-            'returnUrl' => $this->_url->getUrl('placetopay/processing/response') . '?reference=' . $reference,
+            'returnUrl' => $this->_url->getUrl('placetopay/payment/response', ['reference' => $reference]),
             'cancelUrl' => $this->_url->getUrl('placetopay/payment/cancel'),
             'expiration' => $expiration,
             'ipAddress' => $this->remoteAddress->getRemoteAddress(),
