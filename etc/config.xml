@@ -5,7 +5,7 @@
         <payment>
             <placetopay>
                 <active>1</active>
-                <model>PlacetoPay\Payments\Model\PlaceToPay</model>
+                <model>PlacetoPay\Payments\Model\PaymentMethod</model>
                 <!--<model>PlacetoPayPaymentsFacade</model>-->
                 <placetopay_development_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
                 <placetopay_test_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>

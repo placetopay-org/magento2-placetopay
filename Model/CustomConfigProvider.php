@@ -2,27 +2,38 @@
 
 namespace PlacetoPay\Payments\Model;
 
+use PlacetoPay\Payments\Model\PaymentMethod;
+use Magento\Checkout\Model\ConfigProviderInterface;
+use Magento\Framework\View\Asset\Repository;
+
 /**
  * Class CustomConfigProvider.
  */
-class CustomConfigProvider implements \Magento\Checkout\Model\ConfigProviderInterface
+class CustomConfigProvider implements ConfigProviderInterface
 {
     /**
-     * @var \Magento\Framework\View\Asset\Repository
+     * @var Repository $_assetRepo
      */
     protected $_assetRepo;
 
     /**
-     * @var string
+     * @var string $methodCode
      */
-    protected $methodCode = \PlacetoPay\Payments\Model\PlaceToPay::CODE;
+    protected $methodCode = PaymentMethod::CODE;
 
-    public function __construct(
-        \Magento\Framework\View\Asset\Repository $assetRepo
-    ) {
+    /**
+     * CustomConfigProvider constructor.
+     *
+     * @param Repository $assetRepo
+     */
+    public function __construct(Repository $assetRepo)
+    {
         $this->_assetRepo = $assetRepo;
     }
 
+    /**
+     * @return array
+     */
     public function getConfig()
     {
         return [

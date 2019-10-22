@@ -405,25 +405,4 @@ class Data extends BaseData
 
         return $endpoints;
     }
-
-    /**
-     * @return array
-     */
-    public function getOrderStates()
-    {
-        return [
-            'pending' => $this->scopeConfig->getValue(
-                'payment/placetopay/states/pending',
-                ScopeInterface::SCOPE_STORE
-            ),
-            'approved' => $this->scopeConfig->getValue(
-                'payment/placetopay/states/approved',
-                ScopeInterface::SCOPE_STORE
-            ),
-            'rejected' => $this->scopeConfig->getValue(
-                'payment/placetopay/states/rejected',
-                ScopeInterface::SCOPE_STORE
-            ),
-        ];
-    }
 }
