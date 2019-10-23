@@ -2,7 +2,9 @@
 
 namespace PlacetoPay\Payments\Model;
 
+use Dnetix\Redirection\Entities\Status;
 use Dnetix\Redirection\Exceptions\PlacetoPayException;
+use Dnetix\Redirection\Message\RedirectInformation;
 use Dnetix\Redirection\Message\RedirectResponse;
 use Dnetix\Redirection\PlacetoPay;
 use Dnetix\Redirection\Validators\Currency;
@@ -17,6 +19,7 @@ use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
 use Magento\Framework\Locale\Resolver;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
+use Magento\Framework\Phrase;
 use Magento\Framework\Registry;
 use Magento\Framework\UrlInterface;
 use Magento\Payment\Helper\Data;
@@ -180,13 +183,51 @@ class PaymentMethod extends AbstractMethod
      */
     public function isAvailable(CartInterface $quote = null)
     {
-        if (!$this->_config->getTranKey() ||
-            !$this->_config->getLogin() ||
-            !$this->_config->getEndpointsTo($this->_config->getCountryCode())) {
+        if (! $this->_config->getTranKey() ||
+            ! $this->_config->getLogin() ||
+            ! $this->_config->getEndpointsTo($this->_config->getCountryCode())) {
             return false;
         } else {
             return true;
         }
+    }
+
+    /**
+     * @param $value
+     *
+     * @return Phrase
+     */
+    public static function trans($value)
+    {
+        return __($value);
+    }
+
+    /**
+     * @param Order $order
+     *
+     * @return Status
+     */
+    public function parseOrderState($order)
+    {
+        $status = null;
+
+        switch ($order->getStatus()) {
+            case Order::STATE_PROCESSING:
+                $status = Status::ST_APPROVED;
+                break;
+            case Order::STATE_CANCELED:
+                $status = Status::ST_REJECTED;
+                break;
+            case Order::STATE_NEW:
+                $status = Status::ST_PENDING;
+                break;
+            default:
+                $status = Status::ST_PENDING;
+        }
+
+        return new Status([
+            'status' => $status,
+        ]);
     }
 
     /**
@@ -435,6 +476,146 @@ class PaymentMethod extends AbstractMethod
             : $minutes;
     }
 
+    /**
+     * @param Order $order
+     *
+     * @return bool
+     */
+    public function isPendingOrder($order)
+    {
+        return $order->getStatus() == 'pending' || $order->getStatus() == 'pending_payment';
+    }
+
+    /**
+     * @param Order $order
+     *
+     * @throws LocalizedException
+     */
+    public function _createInvoice($order)
+    {
+        if (! $order->canInvoice()) {
+            return;
+        }
+
+        $invoice = $order->prepareInvoice();
+        $invoice->register()->capture();
+        $order->addRelatedObject($invoice);
+    }
+
+    /**
+     * @param Order $order
+     * @param Order\Payment $payment
+     *
+     * @return RedirectInformation
+     * @throws LocalizedException
+     * @throws PlacetoPayException
+     */
+    public function resolve($order, $payment = null)
+    {
+        if (! $payment) {
+            $payment = $order->getPayment();
+        }
+
+        $info = $payment->getAdditionalInformation();
+
+        if (! $info || ! isset($info['request_id'])) {
+            $this->_logger->debug(
+                'P2P_LOG: Abstract/Resolve No additional information for order: ' .
+                $order->getRealOrderId()
+            );
+
+            throw new LocalizedException(__('No additional information for order: %1', $order->getRealOrderId()));
+        }
+
+        $response = $this->gateway()->query($info['request_id']);
+
+        if ($response->isSuccessful()) {
+            $this->settleOrderStatus($response, $order, $payment);
+        } else {
+            $this->_logger->debug(
+                'P2P_LOG: Abstract/Resolve Non successful: ' .
+                $response->status()->message() . ' ' .
+                $response->status()->reason()
+            );
+        }
+
+        return $response;
+    }
+
+    /**
+     * @param Order $order
+     * @param Order\Payment $payment
+     *
+     * @return RedirectInformation
+     * @throws LocalizedException
+     * @throws PlacetoPayException
+     */
+    public function query($order, $payment = null)
+    {
+        if (! $payment) {
+            $payment = $order->getPayment();
+        }
+
+        $info = $payment->getAdditionalInformation();
+
+        if (! $info || ! isset($info['request_id'])) {
+            $this->_logger->debug('P2P_LOG: Abstract/Resolve No additional information for order: ' . $order->getRealOrderId());
+
+            throw new LocalizedException(__('No additional information for order: ' . $order->getRealOrderId()));
+        }
+        return $this->gateway()->query($info['request_id']);
+    }
+
+    /**
+     * @param RedirectInformation $information
+     * @param Order               $order
+     * @param Order\Payment       $payment
+     *
+     * @throws LocalizedException
+     * @throws Exception
+     */
+    public function settleOrderStatus(RedirectInformation $information, &$order, $payment = null)
+    {
+        $status = $information->status();
+
+        switch ($status->status()) {
+            case Status::ST_APPROVED:
+                $state = Order::STATE_PROCESSING;
+                $orderStatus = Order::STATE_PROCESSING;
+                break;
+            case Status::ST_REJECTED:
+                $state = Order::STATE_CANCELED;
+                $orderStatus = Order::STATE_CANCELED;
+                break;
+            case Status::ST_PENDING:
+                $state = Order::STATE_NEW;
+                $orderStatus = Order::STATE_PENDING_PAYMENT;
+                break;
+            default:
+                $state = $orderStatus = $comment = null;
+        }
+
+        if ($state !== null) {
+            if (! $payment) {
+                $payment = $order->getPayment();
+            }
+
+            $info = $this->getInfoModel();
+            $transactions = $information->payment();
+            $info->updateStatus($payment, $status, $transactions);
+
+            if ($status->isApproved()) {
+                $this->_createInvoice($order);
+                $order->setEmailSent(true);
+                $order->setState($state)->setStatus($orderStatus)->save();
+            } elseif ($status->isRejected()) {
+                $order->cancel()->save();
+            } else {
+                $order->setState($state)->setStatus($orderStatus)->save();
+            }
+        }
+    }
+
     public function getAmount($order)
     {
         $amount = $order->getGrandTotal();
@@ -444,9 +625,18 @@ class PaymentMethod extends AbstractMethod
     public function getOrderStates()
     {
         return [
-            'pending' => $this->_scopeConfig->getValue('payment/placetopay/states/pending', ScopeInterface::SCOPE_STORE),
-            'approved' => $this->_scopeConfig->getValue('payment/placetopay/states/approved', ScopeInterface::SCOPE_STORE),
-            'rejected' => $this->_scopeConfig->getValue('payment/placetopay/states/rejected', ScopeInterface::SCOPE_STORE)
+            'pending' => $this->_scopeConfig->getValue(
+                'payment/placetopay/states/pending',
+                ScopeInterface::SCOPE_STORE
+            ),
+            'approved' => $this->_scopeConfig->getValue(
+                'payment/placetopay/states/approved',
+                ScopeInterface::SCOPE_STORE
+            ),
+            'rejected' => $this->_scopeConfig->getValue(
+                'payment/placetopay/states/rejected',
+                ScopeInterface::SCOPE_STORE
+            )
         ];
     }
 
