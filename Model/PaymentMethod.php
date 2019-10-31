@@ -68,24 +68,24 @@ class PaymentMethod extends AbstractMethod
     /**
      * PaymentMethod constructor.
      *
-     * @param LoggerInterface $_logger
-     * @param InfoFactory $infoFactory
-     * @param Config $config
-     * @param Context $context
-     * @param Registry $registry
+     * @param LoggerInterface            $_logger
+     * @param InfoFactory                $infoFactory
+     * @param Config                     $config
+     * @param Context                    $context
+     * @param Registry                   $registry
      * @param ExtensionAttributesFactory $extensionFactory
-     * @param AttributeValueFactory $customAttributeFactory
-     * @param Data $paymentData
-     * @param ScopeConfigInterface $scopeConfig
-     * @param Logger $logger
-     * @param Resolver $store
-     * @param UrlInterface $urlInterface
-     * @param Item $taxItem
-     * @param Header $httpHeader
-     * @param RemoteAddress $remoteAddress
-     * @param AbstractResource $resource
-     * @param AbstractDb $resourceCollection
-     * @param array $data
+     * @param AttributeValueFactory      $customAttributeFactory
+     * @param Data                       $paymentData
+     * @param ScopeConfigInterface       $scopeConfig
+     * @param Logger                     $logger
+     * @param Resolver                   $store
+     * @param UrlInterface               $urlInterface
+     * @param Item                       $taxItem
+     * @param Header                     $httpHeader
+     * @param RemoteAddress              $remoteAddress
+     * @param AbstractResource           $resource
+     * @param AbstractDb                 $resourceCollection
+     * @param array                      $data
      */
     public function __construct(
         LoggerInterface $_logger,
@@ -160,7 +160,7 @@ class PaymentMethod extends AbstractMethod
      */
     public function getInfoModel()
     {
-        return $this->infoFactory->create();
+        return $this->infoFactory;
     }
 
     /**

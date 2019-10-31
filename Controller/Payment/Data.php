@@ -6,121 +6,150 @@ use Exception;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
-use Magento\Payment\Helper\Data as PaymentHelper;
-use Magento\Sales\Model\Order\Payment\Transaction;
-use Magento\Sales\Model\OrderFactory;
-use PlacetoPay\Payments\Helper\Data as HelperData;
-use PlacetoPay\Payments\Logger\Logger;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface;
+use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\OrderFactory;
+use PlacetoPay\Payments\Model\PaymentMethod;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class Data.
  */
 class Data extends Action
 {
-    protected $_helperData;
+    /**
+     * @var Session $checkoutSession
+     */
+    protected $checkoutSession;
 
-    protected $_placeToPayLogger;
+    /**
+     * @var OrderFactory $orderFactory
+     */
+    protected $orderFactory;
 
-    protected $_checkoutSession;
+    /**
+     * @var LoggerInterface $logger
+     */
+    protected $logger;
 
-    protected $_orderFactory;
+    /**
+     * @var ManagerInterface $messageManager
+     */
+    protected $messageManager;
 
-    protected $_resultJsonFactory;
+    /**
+     * @var JsonFactory $jsonFactory
+     */
+    protected $jsonFactory;
 
-    protected $_url;
-
-    protected $_transactionBuilder;
-
-    protected $_paymentHelper;
+    /**
+     * @var ResultFactory $resultRedirect
+     */
+    protected $resultRedirect;
 
     /**
      * Data constructor.
      *
-     * @param Context          $context
-     * @param Session          $checkoutSession
-     * @param OrderFactory     $orderFactory
-     * @param HelperData       $helperData
-     * @param Logger           $placeToPayLogger
-     * @param JsonFactory      $resultJsonFactory
-     * @param BuilderInterface $transactionBuilder
-     * @param PaymentHelper    $paymentHelper
+     * @param Context $context
+     * @param Session $checkoutSession
+     * @param OrderFactory $orderFactory
+     * @param LoggerInterface $logger
+     * @param ManagerInterface $messageManager
+     * @param JsonFactory $jsonFactory
+     * @param ResultFactory $result
      */
     public function __construct(
         Context $context,
         Session $checkoutSession,
         OrderFactory $orderFactory,
-        HelperData $helperData,
-        Logger $placeToPayLogger,
-        JsonFactory $resultJsonFactory,
-        BuilderInterface $transactionBuilder,
-        PaymentHelper $paymentHelper
+        LoggerInterface $logger,
+        ManagerInterface $messageManager,
+        JsonFactory $jsonFactory,
+        ResultFactory $result
     ) {
         parent::__construct($context);
 
-        $this->_checkoutSession = $checkoutSession;
-        $this->_orderFactory = $orderFactory;
-        $this->_helperData = $helperData;
-        $this->_placeToPayLogger = $placeToPayLogger;
-        $this->_resultJsonFactory = $resultJsonFactory;
-        $this->_url = $context->getUrl();
-        $this->_transactionBuilder = $transactionBuilder;
-        $this->_paymentHelper = $paymentHelper;
-    }
-
-    protected function _getCheckoutSession()
-    {
-        return $this->_checkoutSession;
+        $this->checkoutSession = $checkoutSession;
+        $this->orderFactory = $orderFactory;
+        $this->logger = $logger;
+        $this->messageManager = $messageManager;
+        $this->jsonFactory = $jsonFactory;
+        $this->resultRedirect = $result;
     }
 
     /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Json|\Magento\Framework\Controller\ResultInterface
+     * Get singleton of Checkout Session Model
+     *
+     * @return Session
+     */
+    protected function _getCheckout()
+    {
+        return $this->checkoutSession;
+    }
+
+    /**
+     * When the user clicks on the proceed to payment button
+     *
+     * @return ResponseInterface|Json|ResultInterface
      * @throws Exception
      */
     public function execute()
     {
+        $session = $this->_getCheckout();
+
         try {
-            $order = $this->_getCheckoutSession()->getLastRealOrder();
-            $method = $order->getPayment()->getMethod();
-            $methodInstance = $this->_paymentHelper->getMethodInstance($method);
+            /**
+             * @var Order $order
+             */
+            $order = $this->orderFactory->create();
 
-            $placetopay =  $methodInstance->gateway();
-            $request = $methodInstance->getRedirectRequestDataFromOrder($order);
+            $order->loadByIncrementId($session->getLastRealOrderId());
 
-            $response = $placetopay->request($request);
-            if ($response->isSuccessful()) {
-                $payment = $order->getPayment();
-                $payment->setTransactionId($response->requestId)
-                    ->setIsTransactionClosed(0);
-
-                $payment->setParentTransactionId($order->getId());
-                $payment->setIsTransactionPending(true);
-                $transaction = $this->_transactionBuilder->setPayment($payment)
-                    ->setOrder($order)
-                    ->setTransactionId($payment->getTransactionId())
-                    ->build(Transaction::TYPE_ORDER);
-
-                $payment->addTransactionCommentsToOrder($transaction, __('pending'));
-
-                $statuses = $methodInstance->getOrderStates();
-                $status = $statuses["pending"];
-                $this->_helperData->log($status);
-                $state = \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT;
-                $order->setState($state)->setStatus($status);
-                $payment->setSkipOrderProcessing(true);
-                $order->save();
-
-                $result = $this->_resultJsonFactory->create();
-                return $result->setData([
-                    'url' => $response->processUrl()
-                ]);
-            } else {
-                throw new Exception($response->status()->message());
+            if (! $order->getId()) {
+                throw new LocalizedException(__('No order for processing was found.'));
             }
+
+            /**
+             * @var PaymentMethod $placetopay
+             */
+            $placetopay = $order->getPayment()->getMethodInstance();
+            $url = $placetopay->getCheckoutRedirect($order);
+
+            $session->setPlacetoPayQuoteId($session->getQuoteId());
+            $session->setPlacetoPayRealOrderId($session->getLastRealOrderId());
+            $session->getQuote()->setIsActive(false)->save();
+            $session->clearQuote();
+            $session->clearHelperData();
+            $session->clearStorage();
+            $order->setStatus('pending');
+            $order->save();
+
+            $result = $this->jsonFactory->create();
+
+            return $result->setData([
+                'url' => $url,
+            ]);
         } catch (Exception $exception) {
-            $this->_helperData->log($exception->getMessage());
-            throw new Exception($exception->getMessage());
+            $this->logger->debug(
+                'P2P_LOG: RedirectAction ' .
+                $exception->getMessage() . ' ON ' .
+                $exception->getFile() . ' LINE ' .
+                $exception->getLine()
+            );
+
+            $this->messageManager->addErrorMessage($exception->getMessage());
+
+            $resultRedirect = $this->resultRedirect->create(ResultFactory::TYPE_REDIRECT);
+
+            $resultRedirect->setUrl($this->_redirect->getRefererUrl());
+
+            return $resultRedirect;
         }
     }
 }

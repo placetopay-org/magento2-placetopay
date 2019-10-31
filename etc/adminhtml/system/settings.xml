@@ -13,7 +13,7 @@
         <field id="final_page" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>Show On Payment Return</label>
-            <comment><![CDATA[If you has PSE method payment in your commerce, set it in: Payment list.]]></comment>
+            <comment><![CDATA[If you has PSE method payment in your commerce, set it in: Default.]]></comment>
             <source_model>PlacetoPay\Payments\Model\Adminhtml\Source\FinalPage</source_model>
             <config_path>payment/placetopay/final_page</config_path>
         </field>
