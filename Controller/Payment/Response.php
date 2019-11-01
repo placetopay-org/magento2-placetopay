@@ -1,14 +1,15 @@
 <?php
 
-
 namespace PlacetoPay\Payments\Controller\Payment;
-
 
 use Exception;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Payment\Helper\Data as PaymentHelper;
 use Magento\Sales\Model\Order\Payment\Transaction;
 
+/**
+ * Class Response.
+ */
 class Response extends \Magento\Framework\App\Action\Action
 {
     /**

@@ -285,7 +285,7 @@ class PaymentMethod extends AbstractMethod
                 $payment = $order->getPayment();
                 $info = $this->getInfoModel();
 
-                $info->loadInformationFromRedirectResponse($payment, $response, $this->_config->getMode());
+                $info->loadInformationFromRedirectResponse($payment, $response, $this->_config->getMode(), $order);
             } else {
                 $this->_logger->debug(
                     'P2P_LOG: CheckoutRedirect/Failure [' .
@@ -503,7 +503,7 @@ class PaymentMethod extends AbstractMethod
     }
 
     /**
-     * @param Order $order
+     * @param Order         $order
      * @param Order\Payment $payment
      *
      * @return RedirectInformation
@@ -543,7 +543,7 @@ class PaymentMethod extends AbstractMethod
     }
 
     /**
-     * @param Order $order
+     * @param Order         $order
      * @param Order\Payment $payment
      *
      * @return RedirectInformation

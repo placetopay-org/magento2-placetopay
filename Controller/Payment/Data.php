@@ -13,6 +13,7 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\OrderFactory;
 use PlacetoPay\Payments\Model\PaymentMethod;
@@ -54,6 +55,11 @@ class Data extends Action
     protected $resultRedirect;
 
     /**
+     * @var OrderRepositoryInterface $orderRepository
+     */
+    protected $orderRepository;
+
+    /**
      * Data constructor.
      *
      * @param Context $context
@@ -63,6 +69,7 @@ class Data extends Action
      * @param ManagerInterface $messageManager
      * @param JsonFactory $jsonFactory
      * @param ResultFactory $result
+     * @param OrderRepositoryInterface $orderRepository
      */
     public function __construct(
         Context $context,
@@ -71,7 +78,8 @@ class Data extends Action
         LoggerInterface $logger,
         ManagerInterface $messageManager,
         JsonFactory $jsonFactory,
-        ResultFactory $result
+        ResultFactory $result,
+        OrderRepositoryInterface $orderRepository
     ) {
         parent::__construct($context);
 
@@ -81,6 +89,7 @@ class Data extends Action
         $this->messageManager = $messageManager;
         $this->jsonFactory = $jsonFactory;
         $this->resultRedirect = $result;
+        $this->orderRepository = $orderRepository;
     }
 
     /**
@@ -94,10 +103,9 @@ class Data extends Action
     }
 
     /**
-     * When the user clicks on the proceed to payment button
+     * When the user clicks on the proceed to payment button.
      *
      * @return ResponseInterface|Json|ResultInterface
-     * @throws Exception
      */
     public function execute()
     {
@@ -128,7 +136,9 @@ class Data extends Action
             $session->clearHelperData();
             $session->clearStorage();
             $order->setStatus('pending');
-            $order->save();
+            $order->setState(Order::STATE_PENDING_PAYMENT);
+            //$order->save();
+            $this->orderRepository->save($order);
 
             $result = $this->jsonFactory->create();
 
@@ -136,6 +146,8 @@ class Data extends Action
                 'url' => $url,
             ]);
         } catch (Exception $exception) {
+            $session->restoreQuote();
+
             $this->logger->debug(
                 'P2P_LOG: RedirectAction ' .
                 $exception->getMessage() . ' ON ' .

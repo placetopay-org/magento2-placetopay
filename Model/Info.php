@@ -7,7 +7,10 @@ use Dnetix\Redirection\Entities\Transaction;
 use Dnetix\Redirection\Message\RedirectResponse;
 use Exception;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
+use Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface;
+use Magento\Sales\Model\Order\Payment\Transaction as TransactionModel;
 
 /**
  * Class Info.
@@ -15,16 +18,44 @@ use Magento\Sales\Model\Order\Payment;
 class Info
 {
     /**
+     * @var BuilderInterface $transactionBuilder
+     */
+    protected $transactionBuilder;
+
+    /**
+     * Info constructor.
+     *
+     * @param BuilderInterface $transactionBuilder
+     */
+    public function __construct(BuilderInterface $transactionBuilder)
+    {
+        $this->transactionBuilder = $transactionBuilder;
+    }
+
+    /**
      * @param Payment          $payment
      * @param RedirectResponse $response
      * @param string           $env
+     * @param Order            $order
      *
      * @throws LocalizedException
      * @throws Exception
      */
-    public function loadInformationFromRedirectResponse(&$payment, $response, $env)
+    public function loadInformationFromRedirectResponse(&$payment, $response, $env, $order)
     {
         $payment->setLastTransId($response->requestId());
+        $payment->setTransactionId($response->requestId);
+        $payment->setIsTransactionClosed(0);
+        $payment->setParentTransactionId($order->getId());
+        $payment->setIsTransactionPending(true);
+
+        /** @var TransactionModel $transaction */
+        $transaction = $this->transactionBuilder->setPayment($payment)
+            ->setOrder($order)
+            ->setTransactionId($payment->getTransactionId())
+            ->build(TransactionModel::TYPE_ORDER);
+
+        $payment->addTransactionCommentsToOrder($transaction, __('pending'));
 
         $payment->setAdditionalInformation([
             'request_id' => $response->requestId(),
