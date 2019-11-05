@@ -15,7 +15,6 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
-use Magento\Sales\Model\OrderFactory;
 use PlacetoPay\Payments\Model\PaymentMethod;
 use Psr\Log\LoggerInterface;
 
@@ -28,11 +27,6 @@ class Data extends Action
      * @var Session $checkoutSession
      */
     protected $checkoutSession;
-
-    /**
-     * @var OrderFactory $orderFactory
-     */
-    protected $orderFactory;
 
     /**
      * @var LoggerInterface $logger
@@ -62,19 +56,17 @@ class Data extends Action
     /**
      * Data constructor.
      *
-     * @param Context $context
-     * @param Session $checkoutSession
-     * @param OrderFactory $orderFactory
-     * @param LoggerInterface $logger
-     * @param ManagerInterface $messageManager
-     * @param JsonFactory $jsonFactory
-     * @param ResultFactory $result
+     * @param Context                  $context
+     * @param Session                  $checkoutSession
+     * @param LoggerInterface          $logger
+     * @param ManagerInterface         $messageManager
+     * @param JsonFactory              $jsonFactory
+     * @param ResultFactory            $result
      * @param OrderRepositoryInterface $orderRepository
      */
     public function __construct(
         Context $context,
         Session $checkoutSession,
-        OrderFactory $orderFactory,
         LoggerInterface $logger,
         ManagerInterface $messageManager,
         JsonFactory $jsonFactory,
@@ -84,7 +76,6 @@ class Data extends Action
         parent::__construct($context);
 
         $this->checkoutSession = $checkoutSession;
-        $this->orderFactory = $orderFactory;
         $this->logger = $logger;
         $this->messageManager = $messageManager;
         $this->jsonFactory = $jsonFactory;
@@ -115,9 +106,7 @@ class Data extends Action
             /**
              * @var Order $order
              */
-            $order = $this->orderFactory->create();
-
-            $order->loadByIncrementId($session->getLastRealOrderId());
+            $order = $session->getLastRealOrder();
 
             if (! $order->getId()) {
                 throw new LocalizedException(__('No order for processing was found.'));
@@ -129,15 +118,8 @@ class Data extends Action
             $placetopay = $order->getPayment()->getMethodInstance();
             $url = $placetopay->getCheckoutRedirect($order);
 
-            $session->setPlacetoPayQuoteId($session->getQuoteId());
-            $session->setPlacetoPayRealOrderId($session->getLastRealOrderId());
-            $session->getQuote()->setIsActive(false)->save();
-            $session->clearQuote();
-            $session->clearHelperData();
-            $session->clearStorage();
             $order->setStatus('pending');
             $order->setState(Order::STATE_PENDING_PAYMENT);
-            //$order->save();
             $this->orderRepository->save($order);
 
             $result = $this->jsonFactory->create();

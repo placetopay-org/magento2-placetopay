@@ -29,7 +29,6 @@ use Magento\Quote\Api\Data\CartInterface;
 use Magento\Sales\Api\Data\OrderAddressInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
-use Magento\Store\Model\ScopeInterface;
 use PlacetoPay\Payments\Helper\Data as Config;
 use PlacetoPay\Payments\Model\Info as InfoFactory;
 use Psr\Log\LoggerInterface;
@@ -614,30 +613,6 @@ class PaymentMethod extends AbstractMethod
                 $order->setState($state)->setStatus($orderStatus)->save();
             }
         }
-    }
-
-    public function getAmount($order)
-    {
-        $amount = $order->getGrandTotal();
-        return $amount;
-    }
-
-    public function getOrderStates()
-    {
-        return [
-            'pending' => $this->_scopeConfig->getValue(
-                'payment/placetopay/states/pending',
-                ScopeInterface::SCOPE_STORE
-            ),
-            'approved' => $this->_scopeConfig->getValue(
-                'payment/placetopay/states/approved',
-                ScopeInterface::SCOPE_STORE
-            ),
-            'rejected' => $this->_scopeConfig->getValue(
-                'payment/placetopay/states/rejected',
-                ScopeInterface::SCOPE_STORE
-            )
-        ];
     }
 
     /**
