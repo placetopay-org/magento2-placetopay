@@ -366,7 +366,6 @@ class PaymentMethod extends AbstractMethod
                 'allowPartial' => $this->_config->getAllowPartialPayment(),
             ],
             'returnUrl' => $this->_url->getUrl('placetopay/payment/response', ['reference' => $reference]),
-            'cancelUrl' => $this->_url->getUrl('placetopay/payment/cancel'),
             'expiration' => $expiration,
             'ipAddress' => $this->remoteAddress->getRemoteAddress(),
             'userAgent' => $this->httpHeader->getHttpUserAgent(),

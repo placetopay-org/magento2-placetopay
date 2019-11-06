@@ -18,4 +18,6 @@
 "State of the Order","State of the Order",
 "Initial state of the order","Initial state of the order",
 "Order status when the payment is approved","Order status when the payment is approved",
-"Order status when the payment is rejected","Order status when the payment is rejected"
+"Order status when the payment is rejected","Order status when the payment is rejected",
+"transaction_declined_message", "We regret that you have decided to cancel the payment.",
+"transaction_pending_message","Transaction pending, please wait a moment while it automatically resolves."

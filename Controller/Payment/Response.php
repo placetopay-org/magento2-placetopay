@@ -5,6 +5,7 @@ namespace PlacetoPay\Payments\Controller\Payment;
 use Exception;
 use Magento\Checkout\Model\Session;
 use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Controller\ResultFactory;
@@ -22,7 +23,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Class Response.
  */
-class Response extends \Magento\Framework\App\Action\Action
+class Response extends Action
 {
     /**
      * @var Session $checkoutSession
@@ -169,6 +170,7 @@ class Response extends \Magento\Framework\App\Action\Action
                     $status = $placetopay->parseOrderState($order);
                 }
 
+                /** @var Transaction $transaction */
                 $transaction = $this->_transactionRepository->getByTransactionType(
                     Transaction::TYPE_ORDER,
                     $payment->getId()
@@ -176,10 +178,22 @@ class Response extends \Magento\Framework\App\Action\Action
 
                 if ($this->scopeConfig->getValue('payment/' . $placetopay->getCode() . '/final_page') == 'magento_default') {
                     if ($status->isApproved()) {
+                        $payment->setIsTransactionPending(false);
+                        $payment->setIsTransactionApproved(true);
+                        $payment->setSkipOrderProcessing(true);
+
+                        $message = __('Payment approved');
+
+                        $payment->addTransactionCommentsToOrder($transaction, $message);
+
+                        $transaction->save();
+
                         $this->_getCheckout()->setLastSuccessQuoteId($order->getQuoteId());
                         $this->_getCheckout()->setLastQuoteId($order->getQuoteId());
                         $this->_getCheckout()->setLastOrderId($order->getEntityId());
                     } elseif ($status->isRejected()) {
+                        $payment->setIsTransactionDenied(true);
+
                         $quote = $this->quoteQuoteFactory->create()->load($order->getQuoteId());
 
                         if ($quote->getId()) {
@@ -187,14 +201,24 @@ class Response extends \Magento\Framework\App\Action\Action
                             $session->setQuoteId($order->getQuoteId());
                         }
 
+                        $payment->setSkipOrderProcessing(true);
+
+                        $message = __('Payment declined');
+
+                        $payment->addTransactionCommentsToOrder($transaction, $message);
+
+                        $transaction->save();
+
+                        $this->messageManager->addErrorMessage(__('transaction_declined_message'));
+
                         $pathRedirect = 'checkout/onepage/failure';
                     } else {
-                        $this->messageManager->addSuccessMessage(_('transaction_pending_message'));
+                        $this->messageManager->addSuccessMessage(__('transaction_pending_message'));
 
-                        $pathRedirect = 'placetopay/payment/pending';
+                        $pathRedirect = 'checkout/cart';
                     }
                 } else {
-                    $this->messageManager->addSuccessMessage(_('transaction_pending_message'));
+                    $this->messageManager->addSuccessMessage(__('transaction_pending_message'));
 
                     if ($this->customerSession->isLoggedIn()) {
                         $this->eventManager->dispatch(
