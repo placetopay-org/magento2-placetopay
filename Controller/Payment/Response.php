@@ -6,18 +6,24 @@ use Exception;
 use Magento\Checkout\Model\Session;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Request\Http;
+use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\View\Result\Page;
 use Magento\Payment\Helper\Data as PaymentHelper;
 use Magento\Quote\Model\QuoteFactory;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Sales\Model\OrderFactory;
+use Magento\Framework\View\Result\PageFactory;
 use PlacetoPay\Payments\Model\PaymentMethod;
+use Magento\Sales\Api\TransactionRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -71,14 +77,9 @@ class Response extends Action
     protected $eventManager;
 
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var Session
      */
     protected $_checkoutSession;
-
-    /**
-     * @var \Saulmoralespa\PlaceToPay\Logger\Logger
-     */
-    protected $_placeToPayLogger;
 
     /**
      * @var PaymentHelper
@@ -86,24 +87,33 @@ class Response extends Action
     protected $_paymentHelper;
 
     /**
-     * @var \Magento\Sales\Api\TransactionRepositoryInterface
+     * @var TransactionRepositoryInterface
      */
     protected $_transactionRepository;
 
     /**
-     * @var \Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface
+     * @var PageFactory $_pageFactory
      */
-    protected $_transactionBuilder;
-
-    /**
-     * @var \Saulmoralespa\PlaceToPay\Helper\Data
-     */
-    protected $_helperData;
-
     protected $_pageFactory;
 
+    /**
+     * Response constructor.
+     *
+     * @param Context                        $context
+     * @param Session                        $checkoutSession
+     * @param OrderFactory                   $salesOrderFactory
+     * @param ManagerInterface               $messageManager
+     * @param LoggerInterface                $logger
+     * @param Http                           $request
+     * @param ScopeConfigInterface           $scopeConfig
+     * @param QuoteFactory                   $quoteQuoteFactory
+     * @param CustomerSession                $customerSession
+     * @param EventManager                   $eventManager
+     * @param TransactionRepositoryInterface $transactionRepository
+     * @param PageFactory                    $pageFactory
+     */
     public function __construct(
-        \Magento\Framework\App\Action\Context $context,
+        Context $context,
         Session $checkoutSession,
         OrderFactory $salesOrderFactory,
         ManagerInterface $messageManager,
@@ -113,12 +123,8 @@ class Response extends Action
         QuoteFactory $quoteQuoteFactory,
         CustomerSession $customerSession,
         EventManager $eventManager,
-        \PlacetoPay\Payments\Helper\Data $helperData,
-        \PlacetoPay\Payments\Logger\Logger $placeToPayLogger,
-        PaymentHelper $paymentHelper,
-        \Magento\Sales\Api\TransactionRepositoryInterface $transactionRepository,
-        \Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface $transactionBuilder,
-        \Magento\Framework\View\Result\PageFactory $pageFactory
+        TransactionRepositoryInterface $transactionRepository,
+        PageFactory $pageFactory
     ) {
         parent::__construct($context);
 
@@ -131,19 +137,21 @@ class Response extends Action
         $this->quoteQuoteFactory = $quoteQuoteFactory;
         $this->customerSession = $customerSession;
         $this->eventManager = $eventManager;
-        $this->_paymentHelper = $paymentHelper;
         $this->_transactionRepository = $transactionRepository;
-        $this->_transactionBuilder = $transactionBuilder;
-        $this->_placeToPayLogger = $placeToPayLogger;
-        $this->_helperData = $helperData;
         $this->_pageFactory = $pageFactory;
     }
 
+    /**
+     * @return Session
+     */
     protected function _getCheckout()
     {
         return $this->checkoutSession;
     }
 
+    /**
+     * @return ResponseInterface|ResultInterface|Page
+     */
     public function execute()
     {
         $session = $this->_getCheckout();
