@@ -178,21 +178,12 @@ class Response extends Action
 
                 if ($this->scopeConfig->getValue('payment/' . $placetopay->getCode() . '/final_page') == 'magento_default') {
                     if ($status->isApproved()) {
-                        $payment->setIsTransactionPending(false);
-                        $payment->setIsTransactionApproved(true);
-                        $payment->setSkipOrderProcessing(true);
-
-                        $message = __('Payment approved');
-
-                        $payment->addTransactionCommentsToOrder($transaction, $message);
-
-                        $transaction->save();
-
+                        $this->setPaymentApproved($payment, $transaction);
                         $this->_getCheckout()->setLastSuccessQuoteId($order->getQuoteId());
                         $this->_getCheckout()->setLastQuoteId($order->getQuoteId());
                         $this->_getCheckout()->setLastOrderId($order->getEntityId());
                     } elseif ($status->isRejected()) {
-                        $payment->setIsTransactionDenied(true);
+                        $this->setPaymentDenied($payment, $transaction);
 
                         $quote = $this->quoteQuoteFactory->create()->load($order->getQuoteId());
 
@@ -200,14 +191,6 @@ class Response extends Action
                             $quote->setIsActive(true)->save();
                             $session->setQuoteId($order->getQuoteId());
                         }
-
-                        $payment->setSkipOrderProcessing(true);
-
-                        $message = __('Payment declined');
-
-                        $payment->addTransactionCommentsToOrder($transaction, $message);
-
-                        $transaction->save();
 
                         $this->messageManager->addErrorMessage(__('transaction_declined_message'));
 
@@ -218,7 +201,15 @@ class Response extends Action
                         $pathRedirect = 'checkout/cart';
                     }
                 } else {
-                    $this->messageManager->addSuccessMessage(__('transaction_pending_message'));
+                    if ($status->isApproved()) {
+                        $this->messageManager->addSuccessMessage(__('transaction_approved_message'));
+                        $this->setPaymentApproved($payment, $transaction);
+                    } elseif ($status->isRejected()) {
+                        $this->messageManager->addErrorMessage(__('transaction_declined_message'));
+                        $this->setPaymentDenied($payment, $transaction);
+                    } else {
+                        $this->messageManager->addSuccessMessage(__('transaction_pending_message'));
+                    }
 
                     if ($this->customerSession->isLoggedIn()) {
                         $this->eventManager->dispatch(
@@ -293,5 +284,42 @@ class Response extends Action
 
             return $this->_pageFactory->create();
         }
+    }
+
+    /**
+     * @param Order\Payment $payment
+     * @param Transaction   $transaction
+     *
+     * @throws Exception
+     */
+    public function setPaymentApproved($payment, $transaction)
+    {
+        $payment->setIsTransactionPending(false);
+        $payment->setIsTransactionApproved(true);
+        $payment->setSkipOrderProcessing(true);
+
+        $message = __('Payment approved');
+
+        $payment->addTransactionCommentsToOrder($transaction, $message);
+
+        $transaction->save();
+    }
+
+    /**
+     * @param Order\Payment $payment
+     * @param Transaction   $transaction
+     *
+     * @throws Exception
+     */
+    public function setPaymentDenied($payment, $transaction)
+    {
+        $payment->setIsTransactionDenied(true);
+        $payment->setSkipOrderProcessing(true);
+
+        $message = __('Payment declined');
+
+        $payment->addTransactionCommentsToOrder($transaction, $message);
+
+        $transaction->save();
     }
 }

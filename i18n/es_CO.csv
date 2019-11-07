@@ -19,5 +19,6 @@
 "Initial state of the order","Estado inicial del pedido",
 "Order status when the payment is approved","Estado del pedido cuando el pago es aprobado",
 "Order status when the payment is rejected","Estado del pedido cuando el pago es rechazado",
+"transaction_approved_message", "Gracias, transacción aprobada por placetopay.",
 "transaction_declined_message", "Lamentamos que haya decidido cancelar el pago.",
 "transaction_pending_message","La transacción se encuentra pendiente, por favor espere un momento mientras se resuelve automáticamente."
