@@ -1,17 +1,12 @@
 <?php
 
-
 namespace PlacetoPay\Payments\Logger;
 
+use Monolog\Logger as CustomLogger;
 
-class Logger extends \Monolog\Logger
+/**
+ * Class Logger.
+ */
+class Logger extends CustomLogger
 {
-    /**
-     * Set logger name
-     * @param $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
 }

@@ -9,7 +9,7 @@ use Magento\Sales\Model\Order;
 use Magento\Sales\Model\OrderFactory;
 use PlacetoPay\Payments\Api\ServiceInterface as ApiInterface;
 use PlacetoPay\Payments\Model\PaymentMethod;
-use Psr\Log\LoggerInterface;
+use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
 
 /**
  * Class Service.
@@ -35,8 +35,8 @@ class Service implements ApiInterface
      * Service constructor.
      *
      * @param RequestInterface $request
-     * @param OrderFactory $orderFactory
-     * @param LoggerInterface $logger
+     * @param OrderFactory     $orderFactory
+     * @param LoggerInterface  $logger
      */
     public function __construct(
         RequestInterface $request,
@@ -66,7 +66,7 @@ class Service implements ApiInterface
             $order = $this->orderFactory->create()->loadByIncrementId($data['reference']);
 
             if (! $order->getId()) {
-                $this->logger->error('non existent order: ' . serialize($data));
+                $this->logger->error('non existent order for reference #' . $data['reference']);
 
                 throw new LocalizedException(__('api.order.not_found'));
             }
@@ -81,12 +81,12 @@ class Service implements ApiInterface
 
                 return ['success' => true];
             } else {
-                $this->logger->error('invalid notification: ' . serialize($data));
+                $this->logger->error('invalid notification for order #' . $order->getId());
 
                 return $notification->makeSignature();
             }
         } else {
-            $this->logger->error('wrong or empty notification data: ' . serialize($data));
+            $this->logger->error('wrong or empty notification data for reference #' . $data['reference']);
 
             throw new LocalizedException(__('api.order.empty'));
         }
