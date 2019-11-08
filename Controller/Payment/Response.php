@@ -302,10 +302,6 @@ class Response extends Action
      */
     public function setPaymentApproved($payment, $transaction)
     {
-        $payment->setIsTransactionPending(false);
-        $payment->setIsTransactionApproved(true);
-        $payment->setSkipOrderProcessing(true);
-
         $message = __('Payment approved');
 
         $payment->addTransactionCommentsToOrder($transaction, $message);
@@ -321,9 +317,6 @@ class Response extends Action
      */
     public function setPaymentDenied($payment, $transaction)
     {
-        $payment->setIsTransactionDenied(true);
-        $payment->setSkipOrderProcessing(true);
-
         $message = __('Payment declined');
 
         $payment->addTransactionCommentsToOrder($transaction, $message);

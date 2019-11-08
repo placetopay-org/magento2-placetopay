@@ -1,22 +1,33 @@
 <?php
 
-
 namespace PlacetoPay\Payments\Controller\Payment;
 
-
 use Exception;
+use Magento\Checkout\Model\Session;
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\ObjectManager;
 use Magento\Payment\Helper\Data as PaymentHelper;
+use Magento\Sales\Api\TransactionRepositoryInterface;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Invoice;
 use Magento\Sales\Model\Order\Payment\Transaction;
+use Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface;
+use PlacetoPay\Payments\Logger\Logger;
 
-class Notify extends \Magento\Framework\App\Action\Action
+/**
+ * Class Notify.
+ */
+class Notify extends Action
 {
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var ScopeConfigInterface
      */
     protected $_scopeConfig;
 
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var Session
      */
     protected $_checkoutSession;
 
@@ -31,12 +42,12 @@ class Notify extends \Magento\Framework\App\Action\Action
     protected $_paymentHelper;
 
     /**
-     * @var \Magento\Sales\Api\TransactionRepositoryInterface
+     * @var TransactionRepositoryInterface
      */
     protected $_transactionRepository;
 
     /**
-     * @var \Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface
+     * @var BuilderInterface
      */
     protected $_transactionBuilder;
 
@@ -46,16 +57,15 @@ class Notify extends \Magento\Framework\App\Action\Action
     protected $_helperData;
 
     public function __construct(
-        \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Checkout\Model\Session $checkoutSession,
+        Context $context,
+        ScopeConfigInterface $scopeConfig,
+        Session $checkoutSession,
         \PlacetoPay\Payments\Helper\Data $helperData,
-        \PlacetoPay\Payments\Logger\Logger $placeToPayLogger,
+        Logger $placeToPayLogger,
         PaymentHelper $paymentHelper,
-        \Magento\Sales\Api\TransactionRepositoryInterface $transactionRepository,
-        \Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface $transactionBuilder
-    )
-    {
+        TransactionRepositoryInterface $transactionRepository,
+        BuilderInterface $transactionBuilder
+    ) {
         parent::__construct($context);
 
         $this->_scopeConfig = $scopeConfig;
@@ -69,22 +79,32 @@ class Notify extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-        $request = $this->getRequest();
+        $data = json_decode(file_get_contents('php://input'), true);
+        $request = $this->getRequest()->getContent();
+        //$params = $request->getParams();
+
+        if (empty($params)) {
+            exit;
+        }
+
+        /*$request = $this->getRequest();
         $params = $request->getParams();
 
-        if (empty($params))
+        if (empty($params)) {
             exit;
+        }
 
         if (!$request->getParam('reference') ||
             !$request->getParam('requestId') ||
-            !$request->getParam('signature'))
+            !$request->getParam('signature')) {
             exit;
+        }
 
         $reference = $request->getParam('reference');
         $reference = explode('_', $reference);
         $order_id = $reference[0];
 
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $objectManager = ObjectManager::getInstance();
         $order_model = $objectManager->get('Magento\Sales\Model\Order');
         $order = $order_model->load($order_id);
         $method = $order->getPayment()->getMethod();
@@ -96,11 +116,10 @@ class Notify extends \Magento\Framework\App\Action\Action
 
         $transaction = $this->_transactionRepository->getByTransactionType(
             Transaction::TYPE_ORDER,
-            $payment->getId(),
-            $payment->getOrder()->getId()
+            $payment->getId()
         );
 
-        try{
+        try {
             $placeToPay = $methodInstance->placeToPay();
             $notification = $placeToPay->readNotification();
 
@@ -111,13 +130,13 @@ class Notify extends \Magento\Framework\App\Action\Action
                     $payment->setIsTransactionApproved(true);
                     $status = $statuses["approved"];
 
-                    $order->setState(\Magento\Sales\Model\Order::STATE_PROCESSING)->setStatus($status);
+                    $order->setState(Order::STATE_PROCESSING)->setStatus($status);
                     $payment->setSkipOrderProcessing(true);
 
                     $invoice = $objectManager->create('Magento\Sales\Model\Service\InvoiceService')->prepareInvoice($order);
                     $invoice = $invoice->setTransactionId($payment->getTransactionId())
                         ->addComment("Invoice created.")
-                        ->setRequestedCaptureCase(\Magento\Sales\Model\Order\Invoice::CAPTURE_ONLINE);
+                        ->setRequestedCaptureCase(Invoice::CAPTURE_ONLINE);
                     $invoice->register()
                         ->pay();
                     $invoice->save();
@@ -141,7 +160,6 @@ class Notify extends \Magento\Framework\App\Action\Action
                     $transaction->save();
 
                     $order->save();
-
                 } else {
                     $payment->setIsTransactionDenied(true);
                     $status = $statuses["rejected"];
@@ -150,7 +168,7 @@ class Notify extends \Magento\Framework\App\Action\Action
 
                     $message = __('Payment declined');
                 }
-                $order->setState(\Magento\Sales\Model\Order::STATE_CANCELED)->setStatus($status);
+                $order->setState(Order::STATE_CANCELED)->setStatus($status);
                 $payment->setSkipOrderProcessing(true);
 
                 $transaction = $this->_transactionBuilder->setPayment($payment)
@@ -166,9 +184,8 @@ class Notify extends \Magento\Framework\App\Action\Action
             } else {
                 $this->_helperData->log(__('invalid notification'));
             }
-
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             $this->_helperData->log($e->getMessage());
-        }
+        }*/
     }
 }

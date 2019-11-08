@@ -603,10 +603,15 @@ class PaymentMethod extends AbstractMethod
             $info->updateStatus($payment, $status, $transactions);
 
             if ($status->isApproved()) {
+                $payment->setIsTransactionPending(false);
+                $payment->setIsTransactionApproved(true);
+                $payment->setSkipOrderProcessing(true);
                 $this->_createInvoice($order);
                 $order->setEmailSent(true);
                 $order->setState($state)->setStatus($orderStatus)->save();
             } elseif ($status->isRejected()) {
+                $payment->setIsTransactionDenied(true);
+                $payment->setSkipOrderProcessing(true);
                 $order->cancel()->save();
             } else {
                 $order->setState($state)->setStatus($orderStatus)->save();

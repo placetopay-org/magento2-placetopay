@@ -18,4 +18,5 @@
             </argument>
         </arguments>
     </type>
+    <preference for="PlacetoPay\Payments\Api\ServiceInterface" type="PlacetoPay\Payments\Api\Service" />
 </config>
