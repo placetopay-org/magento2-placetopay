@@ -49,13 +49,15 @@ class Service implements ApiInterface
     }
 
     /**
-     * @return mixed|void
+     * Endpoint for the notification of PlacetoPay.
+     *
+     * @return array|mixed|string
      * @throws LocalizedException
      * @throws PlacetoPayException
      */
     public function notify()
     {
-        $this->logger->info(__('Starting request api.'));
+        $this->logger->info('starting request api');
 
         $data = json_decode($this->request->getContent(), true);
 
@@ -64,9 +66,9 @@ class Service implements ApiInterface
             $order = $this->orderFactory->create()->loadByIncrementId($data['reference']);
 
             if (! $order->getId()) {
-                $this->logger->debug('P2P_LOG: Non existent order: ' . serialize($data));
+                $this->logger->error('non existent order: ' . serialize($data));
 
-                throw new LocalizedException(__('Order not found.'));
+                throw new LocalizedException(__('api.order.not_found'));
             }
 
             /** @var PaymentMethod $placetopay */
@@ -76,13 +78,17 @@ class Service implements ApiInterface
             if ($notification->isValidNotification()) {
                 $information = $placetopay->gateway()->query($notification->requestId());
                 $placetopay->settleOrderStatus($information, $order);
+
+                return ['success' => true];
             } else {
-                $this->logger->debug('P2P_LOG: Invalid notification: ' . serialize($data));
+                $this->logger->error('invalid notification: ' . serialize($data));
 
                 return $notification->makeSignature();
             }
         } else {
-            $this->logger->debug('P2P_LOG: Wrong or empty notification data: ' . serialize($data));
+            $this->logger->error('wrong or empty notification data: ' . serialize($data));
+
+            throw new LocalizedException(__('api.order.empty'));
         }
     }
 }

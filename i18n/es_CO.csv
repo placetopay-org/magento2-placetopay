@@ -21,4 +21,6 @@
 "Order status when the payment is rejected","Estado del pedido cuando el pago es rechazado",
 "transaction_approved_message", "Gracias, transacción aprobada por placetopay.",
 "transaction_declined_message", "Lamentamos que haya decidido cancelar el pago.",
-"transaction_pending_message","La transacción se encuentra pendiente, por favor espere un momento mientras se resuelve automáticamente."
+"transaction_pending_message","La transacción se encuentra pendiente, por favor espere un momento mientras se resuelve automáticamente.",
+"api.order.not_found","Orden no encontrada.",
+"api.order.empty","Datos de notificación incorrectos o vacíos.",

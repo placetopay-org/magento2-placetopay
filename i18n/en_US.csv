@@ -21,4 +21,6 @@
 "Order status when the payment is rejected","Order status when the payment is rejected",
 "transaction_approved_message", "Thanks, transaction approved by placetopay.",
 "transaction_declined_message", "We regret that you have decided to cancel the payment.",
-"transaction_pending_message","Transaction pending, please wait a moment while it automatically resolves."
+"transaction_pending_message","Transaction pending, please wait a moment while it automatically resolves.",
+"api.order.not_found","Order not found.",
+"api.order.empty","Wrong or empty notification data."
