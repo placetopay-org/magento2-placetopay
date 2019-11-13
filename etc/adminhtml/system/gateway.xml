@@ -1,12 +1,10 @@
 <?xml version="1.0"?>
 <include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
-    <group id="gateway" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+    <group id="gateway" translate="label comment" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
         <label>Connection Settings</label>
-        <comment>You will need to set your API keys before you can accept payments. If you do not yet have a PlacetoPay
-            account, please &lt;a href="https://www.placetopay.com/web/contactanos" target="_blank"&gt;click here&lt;/a&gt;
-            to contact and register.
-        </comment>
+        <comment>
+            <![CDATA[You will need to set your API keys before you can accept payments. If you do not yet have a PlacetoPay account, please <a href="https://www.placetopay.com/web/contactanos" target="_blank">click here</a> to contact and register.]]></comment>
         <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>Enabled</label>
@@ -38,63 +36,64 @@
             <source_model>PlacetoPay\Payments\Model\Adminhtml\Source\Mode</source_model>
             <config_path>payment/placetopay/placetopay_mode</config_path>
         </field>
-        <field id="placetopay_development_lg" translate="label" type="text" sortOrder="60" showInDefault="1"
+        <field id="placetopay_development_lg" translate="label comment" type="text" sortOrder="60" showInDefault="1"
                showInWebsite="1" showInStore="1">
             <label>Development Login</label>
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> &gt; Sites &gt; Development Login]]></comment>
+                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> > Sites > Development Login]]></comment>
             <depends>
                 <field id="placetopay_mode">development</field>
             </depends>
             <config_path>payment/placetopay/placetopay_development_lg</config_path>
         </field>
-        <field id="placetopay_development_tk" translate="label" type="obscure" sortOrder="70" showInDefault="1"
+        <field id="placetopay_development_tk" translate="label comment" type="obscure" sortOrder="70" showInDefault="1"
                showInWebsite="1" showInStore="1">
             <label>Development TranKey</label>
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> &gt; Sites &gt; Development TranKey]]></comment>
+                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> > Sites > Development TranKey]]></comment>
             <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
             <depends>
                 <field id="placetopay_mode">development</field>
             </depends>
             <config_path>payment/placetopay/placetopay_development_tk</config_path>
         </field>
-        <field id="placetopay_test_lg" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1"
+        <field id="placetopay_test_lg" translate="label comment" type="text" sortOrder="80" showInDefault="1"
+               showInWebsite="1"
                showInStore="1">
             <label>Test Login</label>
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> &gt; Sites &gt; Test Login]]></comment>
+                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> > Sites > Test Login]]></comment>
             <depends>
                 <field id="placetopay_mode">test</field>
             </depends>
             <config_path>payment/placetopay/placetopay_test_lg</config_path>
         </field>
-        <field id="placetopay_test_tk" translate="label" type="obscure" sortOrder="90" showInDefault="1"
+        <field id="placetopay_test_tk" translate="label comment" type="obscure" sortOrder="90" showInDefault="1"
                showInWebsite="1" showInStore="1">
             <label>Test TranKey</label>
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> &gt; Sites &gt; Test TranKey]]></comment>
+                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> > Sites > Test TranKey]]></comment>
             <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
             <depends>
                 <field id="placetopay_mode">test</field>
             </depends>
             <config_path>payment/placetopay/placetopay_test_tk</config_path>
         </field>
-        <field id="placetopay_production_lg" translate="label" type="text" sortOrder="100" showInDefault="1"
+        <field id="placetopay_production_lg" translate="label comment" type="text" sortOrder="100" showInDefault="1"
                showInWebsite="1" showInStore="1">
             <label>Production Login</label>
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> &gt; Sites &gt; Production Login]]></comment>
+                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> > Sites > Production Login]]></comment>
             <depends>
                 <field id="placetopay_mode">production</field>
             </depends>
             <config_path>payment/placetopay/placetopay_production_lg</config_path>
         </field>
-        <field id="placetopay_production_tk" translate="label" type="obscure" sortOrder="110" showInDefault="1"
+        <field id="placetopay_production_tk" translate="label comment" type="obscure" sortOrder="110" showInDefault="1"
                showInWebsite="1" showInStore="1">
             <label>Production TranKey</label>
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> &gt; Sites &gt; Production TranKey]]></comment>
+                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> > Sites > Production TranKey]]></comment>
             <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
             <depends>
                 <field id="placetopay_mode">production</field>

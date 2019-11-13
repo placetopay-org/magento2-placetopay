@@ -57,8 +57,6 @@ class Service implements ApiInterface
      */
     public function notify()
     {
-        $this->logger->info('starting request api');
-
         $data = json_decode($this->request->getContent(), true);
 
         if ($data && ! empty($data['reference']) && ! empty($data['signature']) && ! empty($data['requestId'])) {
@@ -66,9 +64,9 @@ class Service implements ApiInterface
             $order = $this->orderFactory->create()->loadByIncrementId($data['reference']);
 
             if (! $order->getId()) {
-                $this->logger->error('non existent order for reference #' . $data['reference']);
+                $this->logger->error('Non existent order for reference #' . $data['reference']);
 
-                throw new LocalizedException(__('api.order.not_found'));
+                throw new LocalizedException(__('Order not found.'));
             }
 
             /** @var PaymentMethod $placetopay */
@@ -81,14 +79,14 @@ class Service implements ApiInterface
 
                 return ['success' => true];
             } else {
-                $this->logger->error('invalid notification for order #' . $order->getId());
+                $this->logger->error('Invalid notification for order #' . $order->getId());
 
                 return $notification->makeSignature();
             }
         } else {
-            $this->logger->error('wrong or empty notification data for reference #' . $data['reference']);
+            $this->logger->error('Wrong or empty notification data for reference #' . $data['reference']);
 
-            throw new LocalizedException(__('api.order.empty'));
+            throw new LocalizedException(__('Wrong or empty notification data.'));
         }
     }
 }

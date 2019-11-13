@@ -26,7 +26,7 @@ class NotifyUrl extends BaseField
             $baseUrl = $store->getBaseUrl(UrlInterface::URL_TYPE_WEB, true);
 
             if ($baseUrl) {
-                $value      = $baseUrl . 'rest/V1/placetopay/payment/notify';
+                $value = $baseUrl . 'rest/V1/placetopay/payment/notify';
                 $urlArray[] = "<div>" . $this->escapeHtml($value) . "</div>";
             }
         }

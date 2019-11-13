@@ -16,13 +16,13 @@
         </field>
         <field id="email" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1"
                showInStore="1">
-            <label>Email contact</label>
+            <label>Email Contact</label>
             <frontend_class>validate-email</frontend_class>
             <config_path>payment/placetopay/email</config_path>
         </field>
         <field id="phone" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1"
                showInStore="1">
-            <label>Telephone contact</label>
+            <label>Telephone Contact</label>
             <frontend_class>validate-phoneStrict</frontend_class>
             <config_path>payment/placetopay/phone</config_path>
         </field>

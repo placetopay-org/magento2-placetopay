@@ -2,11 +2,12 @@
 
 namespace PlacetoPay\Payments\Block\Adminhtml\System\Config;
 
-use Magento\Config\Model\Config;
 use Magento\Backend\Block\Context;
-use Magento\Framework\View\Helper\Js;
 use Magento\Backend\Model\Auth\Session;
 use Magento\Config\Block\System\Config\Form\Fieldset as BaseField;
+use Magento\Config\Model\Config;
+use Magento\Framework\Data\Form\Element\AbstractElement;
+use Magento\Framework\View\Helper\Js;
 
 /**
  * Class Fieldset.
@@ -27,8 +28,13 @@ class Fieldset extends BaseField
      * @param Config  $backendConfig
      * @param array   $data
      */
-    public function __construct(Context $context, Session $authSession, Js $jsHelper, Config $backendConfig, array $data = [])
-    {
+    public function __construct(
+        Context $context,
+        Session $authSession,
+        Js $jsHelper,
+        Config $backendConfig,
+        array $data = []
+    ) {
         $this->_backendConfig = $backendConfig;
 
         parent::__construct($context, $authSession, $jsHelper, $data);
@@ -37,7 +43,7 @@ class Fieldset extends BaseField
     /**
      * Add custom css class
      *
-     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @param AbstractElement $element
      *
      * @return string
      */
@@ -51,7 +57,7 @@ class Fieldset extends BaseField
     /**
      * Check whether current payment method is enabled
      *
-     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @param AbstractElement $element
      *
      * @return bool
      */
@@ -77,7 +83,7 @@ class Fieldset extends BaseField
     /**
      * Return header title part of html for payment solution
      *
-     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @param AbstractElement $element
      *
      * @return string
      * @SuppressWarnings(PHPMD.NPathComplexity)
@@ -110,13 +116,13 @@ class Fieldset extends BaseField
 
         if (!empty($groupConfig['more_url'])) {
             $html .= '<a class="link-more" href="' . $groupConfig['more_url'] . '" target="_blank">' . __(
-                    'Learn More'
-                ) . '</a>';
+                'Learn More'
+            ) . '</a>';
         }
         if (!empty($groupConfig['demo_url'])) {
             $html .= '<a class="link-demo" href="' . $groupConfig['demo_url'] . '" target="_blank">' . __(
-                    'View Demo'
-                ) . '</a>';
+                'View Demo'
+            ) . '</a>';
         }
 
         $html .= '</div>';
@@ -134,7 +140,7 @@ class Fieldset extends BaseField
     /**
      * Return header comment part of html for payment solution
      *
-     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @param AbstractElement $element
      *
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
@@ -147,7 +153,7 @@ class Fieldset extends BaseField
     /**
      * Get collapsed state on-load
      *
-     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @param AbstractElement $element
      *
      * @return false
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
@@ -158,7 +164,7 @@ class Fieldset extends BaseField
     }
 
     /**
-     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @param AbstractElement $element
      *
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
