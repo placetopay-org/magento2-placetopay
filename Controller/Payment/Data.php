@@ -15,8 +15,8 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
+use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
 use PlacetoPay\Payments\Model\PaymentMethod;
-use Psr\Log\LoggerInterface;
 
 /**
  * Class Data.
@@ -109,6 +109,8 @@ class Data extends Action
             $order = $session->getLastRealOrder();
 
             if (! $order->getId()) {
+                $this->logger->error('Non existent order for reference #' . $order->getId());
+
                 throw new LocalizedException(__('No order for processing was found.'));
             }
 
@@ -131,9 +133,9 @@ class Data extends Action
             $session->restoreQuote();
 
             $this->logger->debug(
-                'P2P_LOG: RedirectAction ' .
-                $exception->getMessage() . ' ON ' .
-                $exception->getFile() . ' LINE ' .
+                'RedirectAction ' .
+                $exception->getMessage() . ' on ' .
+                $exception->getFile() . ' line ' .
                 $exception->getLine()
             );
 

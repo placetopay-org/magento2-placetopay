@@ -25,19 +25,15 @@ class Expiration
             if ($minutes < 60) {
                 $options[$minutes] = sprintf($format, $minutes, __('Minutes'));
                 $minutes += 10;
-
             } elseif ($minutes >= 60 && $minutes < 1440) {
                 $options[$minutes] = sprintf($format, $minutes / 60, __('Hour(s)'));
                 $minutes += 60;
-
             } elseif ($minutes >= 1440 && $minutes < 10080) {
                 $options[$minutes] = sprintf($format, $minutes / 1440, __('Day(s)'));
                 $minutes += 1440;
-
             } elseif ($minutes >= 10080 && $minutes < 40320) {
                 $options[$minutes] = sprintf($format, $minutes / 10080, __('Week(s)'));
                 $minutes += 10080;
-
             } else {
                 $options[$minutes] = sprintf($format, $minutes / 40320, __('Month(s)'));
                 $minutes += 40320;

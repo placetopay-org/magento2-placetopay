@@ -2,7 +2,6 @@
 
 namespace PlacetoPay\Payments\Model;
 
-use PlacetoPay\Payments\Model\PaymentMethod;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Framework\View\Asset\Repository;
 
