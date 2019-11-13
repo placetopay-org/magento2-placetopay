@@ -64,7 +64,7 @@ class Service implements ApiInterface
             $order = $this->orderFactory->create()->loadByIncrementId($data['reference']);
 
             if (! $order->getId()) {
-                $this->logger->error('Non existent order for reference #' . $data['reference']);
+                $this->logger->debug('Non existent order for reference #' . $data['reference']);
 
                 throw new LocalizedException(__('Order not found.'));
             }
@@ -79,12 +79,12 @@ class Service implements ApiInterface
 
                 return ['success' => true];
             } else {
-                $this->logger->error('Invalid notification for order #' . $order->getId());
+                $this->logger->debug('Invalid notification for order #' . $order->getId());
 
                 return $notification->makeSignature();
             }
         } else {
-            $this->logger->error('Wrong or empty notification data for reference #' . $data['reference']);
+            $this->logger->debug('Wrong or empty notification data for reference #' . $data['reference']);
 
             throw new LocalizedException(__('Wrong or empty notification data.'));
         }

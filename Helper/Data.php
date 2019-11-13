@@ -13,7 +13,6 @@ use Magento\Store\Model\ScopeInterface;
 use PlacetoPay\Payments\Logger\Logger;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Country;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
-use Psr\Log\LoggerInterface;
 
 /**
  * Class Data.
@@ -31,11 +30,6 @@ class Data extends BaseData
     protected $_mode;
 
     /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
      * Data constructor.
      *
      * @param Logger $placeToPayLogger
@@ -45,7 +39,6 @@ class Data extends BaseData
      * @param Emulation $appEmulation
      * @param Config $paymentConfig
      * @param Initial $initialConfig
-     * @param LoggerInterface $logger
      */
     public function __construct(
         Logger $placeToPayLogger,
@@ -54,8 +47,7 @@ class Data extends BaseData
         Factory $paymentMethodFactory,
         Emulation $appEmulation,
         Config $paymentConfig,
-        Initial $initialConfig,
-        LoggerInterface $logger
+        Initial $initialConfig
     ) {
         parent::__construct(
             $context,
@@ -72,21 +64,6 @@ class Data extends BaseData
             'payment/placetopay/placetopay_mode',
             ScopeInterface::SCOPE_STORE
         );
-
-        $this->logger = $logger;
-    }
-
-    /**
-     * @param string $message
-     * @param array  $array
-     */
-    public function log($message, $array = null)
-    {
-        if (!is_null($array)) {
-            $message .= " - " . json_encode($array);
-        }
-
-        $this->_placeToPayLogger->debug($message);
     }
 
     /**

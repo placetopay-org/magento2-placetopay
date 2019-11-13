@@ -50,6 +50,8 @@
 "Information","Information"
 "Notification URL","Notification URL"
 "URL where PlacetoPay will send payment status to Magento.","URL where PlacetoPay will send payment status to Magento."
+"Order not found.","Order not found."
+"Wrong or empty notification data.","Wrong or empty notification data."
 
 "Transactional key","Transactional key",
 "Site Identifier","Site Identifier",
@@ -76,5 +78,4 @@
 "transaction_declined_message", "We regret that you have decided to cancel the payment.",
 "transaction_pending_message","Transaction pending, please wait a moment while it automatically resolves.",
 
-"Order not found.","Order not found."
-"Wrong or empty notification data.","Wrong or empty notification data."
+

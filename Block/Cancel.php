@@ -1,10 +1,10 @@
 <?php
 
-
 namespace PlacetoPay\Payments\Block;
 
+use Magento\Framework\View\Element\Template;
 
-class Cancel extends \Magento\Framework\View\Element\Template
+class Cancel extends Template
 {
     public function getMessage()
     {

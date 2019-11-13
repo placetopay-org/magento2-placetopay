@@ -109,7 +109,7 @@ class Data extends Action
             $order = $session->getLastRealOrder();
 
             if (! $order->getId()) {
-                $this->logger->error('Non existent order for reference #' . $order->getId());
+                $this->logger->debug('Non existent order for reference #' . $order->getId());
 
                 throw new LocalizedException(__('No order for processing was found.'));
             }

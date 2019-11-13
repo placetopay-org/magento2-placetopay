@@ -31,7 +31,7 @@ use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
 use PlacetoPay\Payments\Helper\Data as Config;
 use PlacetoPay\Payments\Model\Info as InfoFactory;
-use Psr\Log\LoggerInterface;
+use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
 
 /**
  * Class PlaceToPay.
