@@ -13,15 +13,24 @@
         <!-- ko foreach: getRegion('messages') -->
         <!-- ko template: getTemplate() --><!-- /ko -->
         <!--/ko-->
-        <div class="payment-method-pending-message" data-bind="if: hasPendingPayment()">
-            <p class="placetopay-pending-warning">
+        <div class="placetopay-method-logo" data-bind="html: getLogo()"></div>
+        <div class="placetopay-method-description">
+            <!-- ko i18n: 'You will be redirected to the PlacetoPay secure payment page when you place an order.'--><!-- /ko -->
+        </div>
+        <div class="placetopay-method-payments" data-bind="html: getPaymentIcons()"></div>
+        <div class="placetopay-method-message" data-bind="if: hasPendingPayment()">
+            <p class="placetopay-method-message-warning">
                 <!-- ko i18n: 'Warning!'--><!-- /ko -->
             </p>
-            <p class="placetopay-pending-warning-text" data-bind="html: pendingMessage()"></p>
+            <p class="placetopay-method-message-text" data-bind="html: pendingMessage()"></p>
 
-            <p class="placetopay-pending-recommendation">
+            <p class="placetopay-method-message-recommendation">
                 <!-- ko i18n: 'Meanwhile you have pending transactions is not advised to proceed.'--><!-- /ko -->
             </p>
+        </div>
+
+        <div class="payment-method-message" data-bind="if: hasCifin()">
+            <p class="placetopay-method-message-text" data-bind="html: securityMessage()"></p>
         </div>
 
         <div class="payment-method-billing-address">

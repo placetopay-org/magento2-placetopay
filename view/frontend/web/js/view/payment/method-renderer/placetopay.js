@@ -74,12 +74,16 @@ define(
                 });
             },
 
-            getLogoUrl: function() {
-                return window.checkoutConfig.payment.placetopay.logoUrl;
+            getLogo: function() {
+                return '<img src="https://static.placetopay.com/redirect/images/providers/placetopay.svg" height="48" border="0" alt="PlacetoPay"/>';
             },
 
             hasPendingPayment: function () {
                 return window.checkoutConfig.payment.placetopay.order.hasPendingOrder;
+            },
+
+            hasCifin: function() {
+                return window.checkoutConfig.payment.placetopay.hasCifinMessage;
             },
 
             pendingMessage: function () {
@@ -91,10 +95,32 @@ define(
                     window.checkoutConfig.payment.placetopay.order.email + '</a>';
 
                 let authorization = window.checkoutConfig.payment.placetopay.order.authorization;
-                let values = [orderId, phone, email, authorization];
+                let data = [orderId, phone, email, authorization];
 
                 return $.mage.__("At this time your order #%1 display a checkout transaction which is pending receipt of confirmation from your financial institution, please wait a few minutes and check back later to see if your payment was successfully confirmed. For more information about the current state of your operation you may contact our customer service line at %2 or send your concerns to the email %3 and ask for the status of the transaction: '%4'.")
-                    .replace(/%(\d+)/g, (_, n) => values[+n-1]);
+                    .replace(/%(\d+)/g, (_, n) => data[+n-1]);
+            },
+
+            securityMessage: function () {
+                let url = window.checkoutConfig.payment.placetopay.url;
+                let name = window.checkoutConfig.payment.placetopay.leganName;
+                let merchant = '<b>EGM Ingeniería Sin Fronteras S.A.S</b>';
+                let brand = '<b>PlacetoPay</b>';
+                let data = [url, name, merchant, brand];
+
+                return $.mage.__("Any person who realizes a purchase in the site %1, acting freely and voluntarily, authorizes to %2, through the service provider %3 y/o %4 to consult and request information from credit, financial, commercial performance and services to third parties, even in countries of the same nature in the central risk, generating a footprint consultation.")
+                    .replace(/%(\d+)/g, (_, n) => data[+n-1]);
+            },
+
+            getPaymentIcons: function () {
+                let paymentMethods = window.checkoutConfig.payment.placetopay.paymentMethods;
+                let icons = [];
+
+                paymentMethods.forEach(function (icon) {
+                    icons.push('<img src="https://www.placetopay.com/images/providers/' + icon + '.png" alt="" class="acceptance_logo" style="max-width: 80px; max-height: 50px; display: inline-block; padding: 0 5px;" />');
+                });
+
+                return icons.join(' ');
             }
         });
     }
