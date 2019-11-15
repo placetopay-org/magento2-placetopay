@@ -1,0 +1,13 @@
+.payment-method-pending-message {
+    margin-bottom: 10px;
+}
+.placetopay-pending-warning {
+    color: #ff0000 !important;
+    font-weight: bold;
+}
+.placetopay-pending-warning-text {
+    text-align: justify;
+}
+.placetopay-pending-recommendation {
+    color: #ff0000 !important;
+}

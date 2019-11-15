@@ -52,6 +52,9 @@
 "URL where PlacetoPay will send payment status to Magento.","URL where PlacetoPay will send payment status to Magento."
 "Order not found.","Order not found."
 "Wrong or empty notification data.","Wrong or empty notification data."
+"Warning!","Warning!"
+"At this time your order #%1 display a checkout transaction which is pending receipt of confirmation from your financial institution, please wait a few minutes and check back later to see if your payment was successfully confirmed. For more information about the current state of your operation you may contact our customer service line at %2 or send your concerns to the email %3 and ask for the status of the transaction: '%4'.","At this time your order #%1 display a checkout transaction which is pending receipt of confirmation from your financial institution, please wait a few minutes and check back later to see if your payment was successfully confirmed. For more information about the current state of your operation you may contact our customer service line at %2 or send your concerns to the email %3 and ask for the status of the transaction: '%4'."
+"Meanwhile you have pending transactions is not advised to proceed.","Meanwhile you have pending transactions is not advised to proceed."
 
 "Transactional key","Transactional key",
 "Site Identifier","Site Identifier",

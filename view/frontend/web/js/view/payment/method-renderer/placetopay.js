@@ -9,6 +9,7 @@ define(
         'Magento_Checkout/js/model/payment/additional-validators',
         'Magento_Checkout/js/model/error-processor',
         'Magento_Checkout/js/model/full-screen-loader',
+        'mage/translate',
         'mage/url'
     ],
     function (
@@ -21,6 +22,7 @@ define(
         additionalValidators,
         errorProcessor,
         fullScreenLoader,
+        $t,
         url
     ) {
         'use strict';
@@ -74,8 +76,26 @@ define(
 
             getLogoUrl: function() {
                 return window.checkoutConfig.payment.placetopay.logoUrl;
-            }
+            },
 
+            hasPendingPayment: function () {
+                return window.checkoutConfig.payment.placetopay.order.hasPendingOrder;
+            },
+
+            pendingMessage: function () {
+                let orderId = window.checkoutConfig.payment.placetopay.order.id;
+                let phone = window.checkoutConfig.payment.placetopay.order.phone;
+
+                let email = '<a href="mailto:' +
+                    window.checkoutConfig.payment.placetopay.order.email + '">' +
+                    window.checkoutConfig.payment.placetopay.order.email + '</a>';
+
+                let authorization = window.checkoutConfig.payment.placetopay.order.authorization;
+                let values = [orderId, phone, email, authorization];
+
+                return $.mage.__("At this time your order #%1 display a checkout transaction which is pending receipt of confirmation from your financial institution, please wait a few minutes and check back later to see if your payment was successfully confirmed. For more information about the current state of your operation you may contact our customer service line at %2 or send your concerns to the email %3 and ask for the status of the transaction: '%4'.")
+                    .replace(/%(\d+)/g, (_, n) => values[+n-1]);
+            }
         });
     }
 );

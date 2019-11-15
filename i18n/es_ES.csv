@@ -52,6 +52,9 @@
 "URL where PlacetoPay will send payment status to Magento.","URL donde PlacetoPay enviará el estado de pago a Magento."
 "Order not found."
 "Wrong or empty notification data.","Datos de notificación incorrectos o vacíos."
+"Warning!","¡Atención!"
+"At this time your order #%1 display a checkout transaction which is pending receipt of confirmation from your financial institution, please wait a few minutes and check back later to see if your payment was successfully confirmed. For more information about the current state of your operation you may contact our customer service line at %2 or send your concerns to the email %3 and ask for the status of the transaction: '%4'.","En este momento su pedido #%1 presenta un proceso de pago cuya transacción se encuentra pendiente de recibir confirmación por parte de su entidad financiera, por favor espere unos minutos y vuelva a consultar mas tarde para verificar si su pago fue confirmado de forma exitosa. Si desea mayor información sobre el estado actual de su operación puede comunicarse a nuestras líneas de atención al cliente %2 o enviar un correo electronico a %3 y preguntar por el estado de la transacción: '%4'."
+"Meanwhile you have pending transactions is not advised to proceed.","Mientras tenga órdenes en proceso se recomienda que no proceda."
 
 "Transactional key","Llave transaccional",
 "Site Identifier","Identificador del sitio",
