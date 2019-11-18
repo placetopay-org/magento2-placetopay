@@ -103,7 +103,7 @@ define(
 
             securityMessage: function () {
                 let url = window.checkoutConfig.payment.placetopay.url;
-                let name = window.checkoutConfig.payment.placetopay.leganName;
+                let name = window.checkoutConfig.payment.placetopay.legalName;
                 let merchant = '<b>EGM Ingeniería Sin Fronteras S.A.S</b>';
                 let brand = '<b>PlacetoPay</b>';
                 let data = [url, name, merchant, brand];

@@ -48,11 +48,11 @@ class CustomConfigProvider implements ConfigProviderInterface
     /**
      * CustomConfigProvider constructor.
      *
-     * @param Data $scopeConfig
-     * @param Repository $assetRepo
+     * @param Data                  $scopeConfig
+     * @param Repository            $assetRepo
      * @param StoreManagerInterface $storeManager
-     * @param CustomerSession $customerSession
-     * @param CollectionFactory $collectionFactory
+     * @param CustomerSession       $customerSession
+     * @param CollectionFactory     $collectionFactory
      */
     public function __construct(
         Data $scopeConfig,
