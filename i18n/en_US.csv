@@ -57,6 +57,9 @@
 "Meanwhile you have pending transactions is not advised to proceed.","Meanwhile you have pending transactions is not advised to proceed."
 "Any person who realizes a purchase in the site %1, acting freely and voluntarily, authorizes to %2, through the service provider %3 y/o %4 to consult and request information from credit, financial, commercial performance and services to third parties, even in countries of the same nature in the central risk, generating a footprint consultation.","Any person who realizes a purchase in the site %1, acting freely and voluntarily, authorizes to %2, through the service provider %3 y/o %4 to consult and request information from credit, financial, commercial performance and services to third parties, even in countries of the same nature in the central risk, generating a footprint consultation."
 "You will be redirected to the PlacetoPay secure payment page when you place an order.","You will be redirected to the PlacetoPay secure payment page when you place an order."
+"Does not meet the minimum amount to process the order, the minimum amount must be greater or equal to value to use this payment gateway.","Does not meet the minimum amount to process the order, the minimum amount must be greater or equal to value to use this payment gateway."
+"Exceeds the maximum amount allowed to process the order, it must be less or equal to value to use this payment gateway.","Exceeds the maximum amount allowed to process the order, it must be less or equal to value to use this payment gateway."
+"The payment could not be continued because a pending order has been found.","The payment could not be continued because a pending order has been found."
 
 "Transactional key","Transactional key",
 "Site Identifier","Site Identifier",

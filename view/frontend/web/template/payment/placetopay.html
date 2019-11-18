@@ -1,4 +1,4 @@
-<div class="payment-method" data-bind="css: {'_active': (getCode() == isChecked())}">
+<div class="payment-method" id="payment-method-placetopay" data-bind="css: {'_active': (getCode() == isChecked())}">
     <div class="payment-method-title field choice">
         <input type="radio"
                name="payment[method]"
@@ -18,7 +18,7 @@
             <!-- ko i18n: 'You will be redirected to the PlacetoPay secure payment page when you place an order.'--><!-- /ko -->
         </div>
         <div class="placetopay-method-payments" data-bind="html: getPaymentIcons()"></div>
-        <div class="placetopay-method-message" data-bind="if: hasPendingPayment()">
+        <div class="placetopay-method-message" data-bind="if: hasPendingPayment() && allowPendingPayment()">
             <p class="placetopay-method-message-warning">
                 <!-- ko i18n: 'Warning!'--><!-- /ko -->
             </p>

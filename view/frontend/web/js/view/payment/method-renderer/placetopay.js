@@ -10,7 +10,9 @@ define(
         'Magento_Checkout/js/model/error-processor',
         'Magento_Checkout/js/model/full-screen-loader',
         'mage/translate',
-        'mage/url'
+        'mage/url',
+        'Magento_Ui/js/model/messageList',
+        'Magento_Checkout/js/model/totals'
     ],
     function (
         $,
@@ -23,7 +25,9 @@ define(
         errorProcessor,
         fullScreenLoader,
         $t,
-        url
+        url,
+        globalMessageList,
+        totals
     ) {
         'use strict';
 
@@ -56,25 +60,25 @@ define(
                 return false;
             },
 
-            selectPaymentMethod: function() {
+            selectPaymentMethod: function () {
                 selectPaymentMethodAction(this.getData());
                 checkoutData.setSelectedPaymentMethod(this.item.method);
                 return true;
             },
 
-            afterPlaceOrder: function() {
+            afterPlaceOrder: function () {
                 $.post(url.build('placetopay/payment/data'), 'json')
-                    .done( data => {
+                    .done(data => {
                         window.location = data.url;
-                    }).fail( response => {
-                     console.log(this.messageContainer);
+                    }).fail(response => {
+                    console.log(this.messageContainer);
                     errorProcessor.process('error', this.messageContainer);
-                }).always( () => {
+                }).always(() => {
                     fullScreenLoader.stopLoader();
                 });
             },
 
-            getLogo: function() {
+            getLogo: function () {
                 return '<img src="https://static.placetopay.com/redirect/images/providers/placetopay.svg" height="48" border="0" alt="PlacetoPay"/>';
             },
 
@@ -82,7 +86,7 @@ define(
                 return window.checkoutConfig.payment.placetopay.order.hasPendingOrder;
             },
 
-            hasCifin: function() {
+            hasCifin: function () {
                 return window.checkoutConfig.payment.placetopay.hasCifinMessage;
             },
 
@@ -97,8 +101,8 @@ define(
                 let authorization = window.checkoutConfig.payment.placetopay.order.authorization;
                 let data = [orderId, phone, email, authorization];
 
-                return $.mage.__("At this time your order #%1 display a checkout transaction which is pending receipt of confirmation from your financial institution, please wait a few minutes and check back later to see if your payment was successfully confirmed. For more information about the current state of your operation you may contact our customer service line at %2 or send your concerns to the email %3 and ask for the status of the transaction: '%4'.")
-                    .replace(/%(\d+)/g, (_, n) => data[+n-1]);
+                return $t("At this time your order #%1 display a checkout transaction which is pending receipt of confirmation from your financial institution, please wait a few minutes and check back later to see if your payment was successfully confirmed. For more information about the current state of your operation you may contact our customer service line at %2 or send your concerns to the email %3 and ask for the status of the transaction: '%4'.")
+                    .replace(/%(\d+)/g, (_, n) => data[+n - 1]);
             },
 
             securityMessage: function () {
@@ -108,8 +112,8 @@ define(
                 let brand = '<b>PlacetoPay</b>';
                 let data = [url, name, merchant, brand];
 
-                return $.mage.__("Any person who realizes a purchase in the site %1, acting freely and voluntarily, authorizes to %2, through the service provider %3 y/o %4 to consult and request information from credit, financial, commercial performance and services to third parties, even in countries of the same nature in the central risk, generating a footprint consultation.")
-                    .replace(/%(\d+)/g, (_, n) => data[+n-1]);
+                return $t('Any person who realizes a purchase in the site %1, acting freely and voluntarily, authorizes to %2, through the service provider %3 y/o %4 to consult and request information from credit, financial, commercial performance and services to third parties, even in countries of the same nature in the central risk, generating a footprint consultation.')
+                    .replace(/%(\d+)/g, (_, n) => data[+n - 1]);
             },
 
             getPaymentIcons: function () {
@@ -121,6 +125,63 @@ define(
                 });
 
                 return icons.join(' ');
+            },
+
+            getMinimum: function () {
+                return window.checkoutConfig.payment.placetopay.minimum;
+            },
+
+            getMaximum: function () {
+                return window.checkoutConfig.payment.placetopay.maximum;
+            },
+
+            getTotal: function () {
+                return totals.totals().grand_total;
+            },
+
+            showErrorMessage: function (message) {
+                document.getElementById('payment-method-placetopay').scrollIntoView(true);
+                this.messageContainer.addErrorMessage({message: message});
+            },
+
+            validate: function () {
+                let isValid = true;
+
+                if (! this.isMinimumValid()) {
+                    this.showErrorMessage(
+                        $t('Does not meet the minimum amount to process the order, the minimum amount must be greater or equal to value to use this payment gateway.')
+                            .replace('value', this.getMinimum())
+                    );
+
+                    isValid = false;
+                } else if (! this.isMaximumValid()) {
+                    this.showErrorMessage(
+                        $t('Exceeds the maximum amount allowed to process the order, it must be less or equal to value to use this payment gateway.')
+                            .replace('value', this.getMaximum())
+                    );
+
+                    isValid = false;
+                } else if (! this.allowPendingPayment()) {
+                    this.showErrorMessage(
+                        $t('The payment could not be continued because a pending order has been found.')
+                    );
+
+                    isValid = false;
+                }
+
+                return isValid;
+            },
+
+            isMinimumValid: function () {
+                return ! (this.getMinimum() != null && this.getTotal() < this.getMinimum());
+            },
+
+            isMaximumValid: function () {
+                return ! (this.getMaximum() != null && this.getTotal() > this.getMaximum());
+            },
+
+            allowPendingPayment: function () {
+                return window.checkoutConfig.payment.placetopay.allowPendingPayments;
             }
         });
     }
