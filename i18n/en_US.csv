@@ -60,6 +60,8 @@
 "Does not meet the minimum amount to process the order, the minimum amount must be greater or equal to value to use this payment gateway.","Does not meet the minimum amount to process the order, the minimum amount must be greater or equal to value to use this payment gateway."
 "Exceeds the maximum amount allowed to process the order, it must be less or equal to value to use this payment gateway.","Exceeds the maximum amount allowed to process the order, it must be less or equal to value to use this payment gateway."
 "The payment could not be continued because a pending order has been found.","The payment could not be continued because a pending order has been found."
+"Payment Detail","Payment Detail"
+"Authorization/CUS","Authorization/CUS"
 
 "Transactional key","Transactional key",
 "Site Identifier","Site Identifier",
