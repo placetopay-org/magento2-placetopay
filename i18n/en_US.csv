@@ -62,30 +62,6 @@
 "The payment could not be continued because a pending order has been found.","The payment could not be continued because a pending order has been found."
 "Payment Detail","Payment Detail"
 "Authorization/CUS","Authorization/CUS"
-
-"Transactional key","Transactional key",
-"Site Identifier","Site Identifier",
-"URL refers to the endpoint to use","URL refers to the endpoint to use",
-"Enviroments","Enviroments"
-"Environment","Environment",
-"Development","Development",
-"Production","Production",
-"URL for payment notifications: %1","URL for payment notifications: %1",
-"Notify URL","Notify URL",
-"We regret that you have decided to cancel the payment","We regret that you have decided to cancel the payment",
-"An error has occurred while checking the payment status","An error has occurred while checking the payment status",
-"invalid notification","invalid notification",
-"Payment approved","Payment approved",
-"Payment declined","Payment declined",
-"Invoice created","Invoice created",
-"Invoice #%1","Invoice #%1",
-"Sort Order","Sort Order",
-"State of the Order","State of the Order",
-"Initial state of the order","Initial state of the order",
-"Order status when the payment is approved","Order status when the payment is approved",
-"Order status when the payment is rejected","Order status when the payment is rejected",
-"transaction_approved_message", "Thanks, transaction approved by placetopay.",
-"transaction_declined_message", "We regret that you have decided to cancel the payment.",
-"transaction_pending_message","Transaction pending, please wait a moment while it automatically resolves.",
-
-
+"Thanks, transaction approved by placetopay.", "Thanks, transaction approved by placetopay.",
+"We regret that you have decided to cancel the payment.", "We regret that you have decided to cancel the payment.",
+"Transaction pending, please wait a moment while it automatically resolves.","Transaction pending, please wait a moment while it automatically resolves.",

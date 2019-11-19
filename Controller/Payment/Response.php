@@ -37,7 +37,7 @@ class Response extends Action
     protected $checkoutSession;
 
     /**
-     * @var OrderFactory
+     * @var OrderFactory $salesOrderFactory
      */
     protected $salesOrderFactory;
 
@@ -57,12 +57,12 @@ class Response extends Action
     protected $request;
 
     /**
-     * @var ScopeConfigInterface
+     * @var ScopeConfigInterface $scopeConfig
      */
     protected $scopeConfig;
 
     /**
-     * @var QuoteFactory
+     * @var QuoteFactory $quoteQuoteFactory
      */
     protected $quoteQuoteFactory;
 
@@ -77,17 +77,17 @@ class Response extends Action
     protected $eventManager;
 
     /**
-     * @var Session
+     * @var Session $_checkoutSession
      */
     protected $_checkoutSession;
 
     /**
-     * @var PaymentHelper
+     * @var PaymentHelper $_paymentHelper
      */
     protected $_paymentHelper;
 
     /**
-     * @var TransactionRepositoryInterface
+     * @var TransactionRepositoryInterface $_transactionRepository
      */
     protected $_transactionRepository;
 
@@ -200,23 +200,23 @@ class Response extends Action
                             $session->setQuoteId($order->getQuoteId());
                         }
 
-                        $this->messageManager->addErrorMessage(__('transaction_declined_message'));
+                        $this->messageManager->addErrorMessage(__('We regret that you have decided to cancel the payment.'));
 
                         $pathRedirect = 'checkout/onepage/failure';
                     } else {
-                        $this->messageManager->addWarningMessage(__('transaction_pending_message'));
+                        $this->messageManager->addWarningMessage(__('Transaction pending, please wait a moment while it automatically resolves.'));
 
                         $pathRedirect = 'checkout/cart';
                     }
                 } else {
                     if ($status->isApproved()) {
-                        $this->messageManager->addSuccessMessage(__('transaction_approved_message'));
+                        $this->messageManager->addSuccessMessage(__('Thanks, transaction approved by placetopay.'));
                         $this->setPaymentApproved($payment, $transaction);
                     } elseif ($status->isRejected()) {
-                        $this->messageManager->addErrorMessage(__('transaction_declined_message'));
+                        $this->messageManager->addErrorMessage(__('We regret that you have decided to cancel the payment.'));
                         $this->setPaymentDenied($payment, $transaction);
                     } else {
-                        $this->messageManager->addWarningMessage(__('transaction_pending_message'));
+                        $this->messageManager->addWarningMessage(__('Transaction pending, please wait a moment while it automatically resolves.'));
                     }
 
                     if ($this->customerSession->isLoggedIn()) {
@@ -234,7 +234,7 @@ class Response extends Action
                 $reference = $this->getRequest()->getParam('reference');
 
                 $this->logger->debug(
-                    'P2P_LOG: ResponseAction0 [' .
+                    'Response [' .
                     $order->getRealOrderId() . '] with Reference: ' . $reference
                 );
 
@@ -274,7 +274,7 @@ class Response extends Action
             return $resultRedirect;
         } catch (LocalizedException $exception) {
             $this->logger->debug(
-                'P2P_LOG: ResponseAction1 [' . $order->getRealOrderId() . ']' .
+                'Response [' . $order->getRealOrderId() . ']' .
                 $exception->getMessage() . ' ON ' .
                 $exception->getFile() . ' LINE ' .
                 $exception->getLine()
@@ -284,7 +284,7 @@ class Response extends Action
 
             return $this->_pageFactory->create();
         } catch (Exception $exception) {
-            $this->logger->debug('P2P_LOG: ResponseAction2 [' .
+            $this->logger->debug('Response [' .
                 $order->getRealOrderId() . ']' .
                 $exception->getMessage() . ' ON ' .
                 $exception->getFile() . ' LINE ' .
