@@ -204,7 +204,7 @@ class Response extends Action
 
                         $pathRedirect = 'checkout/onepage/failure';
                     } else {
-                        $this->messageManager->addSuccessMessage(__('transaction_pending_message'));
+                        $this->messageManager->addWarningMessage(__('transaction_pending_message'));
 
                         $pathRedirect = 'checkout/cart';
                     }
@@ -216,7 +216,7 @@ class Response extends Action
                         $this->messageManager->addErrorMessage(__('transaction_declined_message'));
                         $this->setPaymentDenied($payment, $transaction);
                     } else {
-                        $this->messageManager->addSuccessMessage(__('transaction_pending_message'));
+                        $this->messageManager->addWarningMessage(__('transaction_pending_message'));
                     }
 
                     if ($this->customerSession->isLoggedIn()) {
