@@ -97,7 +97,7 @@ Set up the module by running the following commands:
 
 ```bash
 cd /var/www/html \
-    && composer require placetopay/magento2-placetopay \
+    && composer require placetopay/magento2-placetopay-payments \
     && bin/magento module:enable PlacetoPay_Payments --clear-static-content \
     && bin/magento setup:upgrade \
     && bin/magento cache:flush \
@@ -108,7 +108,7 @@ If you run Magento in production mode, you also must compile and deploy the modu
 
 ```bash
 cd /var/www/html \
-    && composer require placetopay/magento2-placetopay \
+    && composer require placetopay/magento2-placetopay-payments \
     && bin/magento module:enable PlacetoPay_Payments --clear-static-content \
     && bin/magento setup:upgrade \
     && bin/magento setup:di:compile \
