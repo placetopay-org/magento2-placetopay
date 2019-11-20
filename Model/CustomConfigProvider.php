@@ -7,7 +7,6 @@ use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Asset\Repository;
-use Magento\Payment\Model\Method\AbstractMethod;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
@@ -108,8 +107,6 @@ class CustomConfigProvider implements ConfigProviderInterface
             ->addAttributeToFilter('status', ['in' => [
                 'pending',
                 'pending_payment',
-                'pending_placetopay',
-                AbstractMethod::STATUS_UNKNOWN,
             ]])
             ->addAttributeToSort('created_at', 'DESC')
             ->load()

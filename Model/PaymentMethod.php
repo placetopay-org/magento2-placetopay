@@ -32,6 +32,7 @@ use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
 use PlacetoPay\Payments\Helper\Data as Config;
 use PlacetoPay\Payments\Model\Info as InfoFactory;
 use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
 
 /**
  * Class PlaceToPay.
@@ -54,15 +55,56 @@ class PaymentMethod extends AbstractMethod
     protected $_canVoid = true;
     protected $_canFetchTransactionInfo = true;
     protected $_canReviewPayment = true;
+
+    /**
+     * @var Config $_config
+     */
     protected $_config;
+
+    /**
+     * @var Order $_order
+     */
     protected $_order;
+
+    /**
+     * @var Resolver $_store
+     */
     protected $_store;
+
+    /**
+     * @var UrlInterface $_url
+     */
     protected $_url;
+
+    /**
+     * @var RemoteAddress $remoteAddress
+     */
     protected $remoteAddress;
+
+    /**
+     * @var Header $httpHeader
+     */
     protected $httpHeader;
+
+    /**
+     * @var Item $taxItem
+     */
     protected $taxItem;
+
+    /**
+     * @var LoggerInterface $logger
+     */
     protected $logger;
+
+    /**
+     * @var Info $infoFactory
+     */
     protected $infoFactory;
+
+    /**
+     * @var OrderRepositoryInterface $orderRepository
+     */
+    protected $orderRepository;
 
     /**
      * PaymentMethod constructor.
@@ -77,6 +119,7 @@ class PaymentMethod extends AbstractMethod
      * @param Data                       $paymentData
      * @param ScopeConfigInterface       $scopeConfig
      * @param Logger                     $logger
+     * @param OrderRepositoryInterface   $orderRepository
      * @param Resolver                   $store
      * @param UrlInterface               $urlInterface
      * @param Item                       $taxItem
@@ -97,6 +140,7 @@ class PaymentMethod extends AbstractMethod
         Data $paymentData,
         ScopeConfigInterface $scopeConfig,
         Logger $logger,
+        OrderRepositoryInterface $orderRepository,
         Resolver $store,
         UrlInterface $urlInterface,
         Item $taxItem,
@@ -126,6 +170,7 @@ class PaymentMethod extends AbstractMethod
         $this->httpHeader = $httpHeader;
         $this->taxItem = $taxItem;
         $this->logger = $_logger;
+        $this->orderRepository = $orderRepository;
         $this->infoFactory = $infoFactory;
     }
 
@@ -227,6 +272,32 @@ class PaymentMethod extends AbstractMethod
         return new Status([
             'status' => $status,
         ]);
+    }
+
+    /**
+     * @param string $orderId
+     *
+     * @return bool
+     */
+    public function isPendingStatusOrder($orderId)
+    {
+        $status = $this->orderRepository->get($orderId)->getPayment()->getAdditionalInformation()['status'];
+
+        return Status::ST_PENDING === $status;
+    }
+
+    /**
+     * @param Order $order
+     * @param string $requestId
+     *
+     * @throws LocalizedException
+     * @throws PlacetoPayException
+     */
+    public function processPendingOrder($order, $requestId)
+    {
+        $transactionInfo = $this->gateway()->query($requestId);
+        $this->settleOrderStatus($transactionInfo, $order);
+        $this->logger->debug('Processed order with ID = ' . $order->getRealOrderId());
     }
 
     /**
@@ -518,7 +589,7 @@ class PaymentMethod extends AbstractMethod
 
         if (! $info || ! isset($info['request_id'])) {
             $this->_logger->debug(
-                'P2P_LOG: Abstract/Resolve No additional information for order: ' .
+                'No additional information for order: ' .
                 $order->getRealOrderId()
             );
 
@@ -531,7 +602,7 @@ class PaymentMethod extends AbstractMethod
             $this->settleOrderStatus($response, $order, $payment);
         } else {
             $this->_logger->debug(
-                'P2P_LOG: Abstract/Resolve Non successful: ' .
+                'Non successful: ' .
                 $response->status()->message() . ' ' .
                 $response->status()->reason()
             );
@@ -557,7 +628,7 @@ class PaymentMethod extends AbstractMethod
         $info = $payment->getAdditionalInformation();
 
         if (! $info || ! isset($info['request_id'])) {
-            $this->_logger->debug('P2P_LOG: Abstract/Resolve No additional information for order: ' . $order->getRealOrderId());
+            $this->_logger->debug('No additional information for order: ' . $order->getRealOrderId());
 
             throw new LocalizedException(__('No additional information for order: ' . $order->getRealOrderId()));
         }
