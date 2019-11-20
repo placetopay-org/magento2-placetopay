@@ -1,5 +1,5 @@
 {
-  "name": "placetopay/module-payments",
+  "name": "placetopay/magento2-module-payments",
   "type": "magento2-module",
   "description": "Shared component for accepting online payments in Magento 2 using the PlacetoPay payment gateway.",
   "version": "1.0.0",
