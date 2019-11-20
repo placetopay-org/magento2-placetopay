@@ -1,15 +1,15 @@
-FROM php:7.2-apache
+FROM php:7.3-apache
 
 LABEL maintainer="simon.godoy@placetopay.com"
-LABEL php_version="7.2"
-LABEL magento_version="2.3.2"
-LABEL description="Magento 2.3.2 with PHP 7.2"
+LABEL php_version="7.3"
+LABEL magento_version="2.3.3"
+LABEL description="Magento 2.3.3 with PHP 7.3"
 
 ARG PUID=1000
 ENV PUID ${PUID}
 ARG PGID=1000
 ENV PGID ${PGID}
-ENV MAGENTO_VERSION 2.3.2
+ENV MAGENTO_VERSION 2.3.3
 ENV INSTALL_DIR /var/www/html
 ENV COMPOSER_HOME /var/www/.composer/
 

@@ -34,7 +34,6 @@ mysql:
 
 .PHONY: install
 install: rebuild
-	docker exec -u magendock -it $(CONTAINER) composer install -d ./app/code/PlacetoPay/Payments
 
 .PHONY: install-magento
 install-magento:
