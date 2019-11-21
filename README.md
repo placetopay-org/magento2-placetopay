@@ -32,7 +32,7 @@
 
 | Magento | Plugin   | Comments       |
 |------------|----------|----------------|
-| 2.3.x      | ~1.0.0   | From 2.3.2  |
+| 2.3.x      | ~1.1.2   | From 2.3.2  |
 
 View releases [here][link-releases]
 
@@ -145,7 +145,7 @@ If you want, go to /etc/hosts file and add the next line:
 
 ```bash
 sudo vim /etc/hosts
-add -> 127.0.0.1 magento.io 
+add -> 127.0.0.1 magento.test
 ```
 
 __Magento 2 Admin Access__

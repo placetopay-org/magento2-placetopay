@@ -330,11 +330,6 @@ class PaymentMethod extends AbstractMethod
     {
         $data = $this->getRedirectRequestDataFromOrder($order);
 
-        $this->_logger->debug(
-            'CheckoutRedirect/Failure [' .
-            $order->getRealOrderId() . '] ' . $this->serialize($data)
-        );
-
         return $this->gateway()->request($data);
     }
 
@@ -358,7 +353,7 @@ class PaymentMethod extends AbstractMethod
                 $info->loadInformationFromRedirectResponse($payment, $response, $this->_config->getMode(), $order);
             } else {
                 $this->_logger->debug(
-                    'CheckoutRedirect/Failure [' .
+                    'Payment error [' .
                     $order->getRealOrderId() . '] ' .
                     $response->status()->message() . ' - ' .
                     $response->status()->reason() . ' ' .
@@ -370,10 +365,10 @@ class PaymentMethod extends AbstractMethod
             return $response->processUrl();
         } catch (Exception $ex) {
             $this->_logger->debug(
-                'CheckoutRedirect/Exception [' .
+                'Payment error [' .
                 $order->getRealOrderId() . '] ' .
-                $ex->getMessage() . ' ON ' . $ex->getFile() . ' LINE ' .
-                $ex->getLine() . ' -- ' . get_class($ex)
+                $ex->getMessage() . ' on ' . $ex->getFile() . ' line ' .
+                $ex->getLine() . ' - ' . get_class($ex)
             );
 
             throw new Exception($ex->getMessage());
@@ -467,7 +462,7 @@ class PaymentMethod extends AbstractMethod
                 }
             } catch (Exception $ex) {
                 $this->_logger->debug(
-                    'P2P_LOG: Error calculating taxes: [' .
+                    'Error calculating taxes: [' .
                     $order->getRealOrderId() .
                     '] ' . serialize($this->taxItem->getTaxItemsByOrderId($order->getId()))
                 );

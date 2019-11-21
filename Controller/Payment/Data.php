@@ -133,7 +133,7 @@ class Data extends Action
             $session->restoreQuote();
 
             $this->logger->debug(
-                'RedirectAction ' .
+                'Redirect action ' .
                 $exception->getMessage() . ' on ' .
                 $exception->getFile() . ' line ' .
                 $exception->getLine()
