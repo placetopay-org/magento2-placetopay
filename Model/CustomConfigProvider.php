@@ -105,7 +105,6 @@ class CustomConfigProvider implements ConfigProviderInterface
                 Order::STATE_NEW,
             ]])
             ->addAttributeToFilter('status', ['in' => [
-                'pending',
                 'pending_payment',
             ]])
             ->addAttributeToSort('created_at', 'DESC')

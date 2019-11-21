@@ -331,7 +331,7 @@ class PaymentMethod extends AbstractMethod
         $data = $this->getRedirectRequestDataFromOrder($order);
 
         $this->_logger->debug(
-            'P2P_LOG: CheckoutRedirect/Failure [' .
+            'CheckoutRedirect/Failure [' .
             $order->getRealOrderId() . '] ' . $this->serialize($data)
         );
 
@@ -358,7 +358,7 @@ class PaymentMethod extends AbstractMethod
                 $info->loadInformationFromRedirectResponse($payment, $response, $this->_config->getMode(), $order);
             } else {
                 $this->_logger->debug(
-                    'P2P_LOG: CheckoutRedirect/Failure [' .
+                    'CheckoutRedirect/Failure [' .
                     $order->getRealOrderId() . '] ' .
                     $response->status()->message() . ' - ' .
                     $response->status()->reason() . ' ' .
@@ -370,7 +370,7 @@ class PaymentMethod extends AbstractMethod
             return $response->processUrl();
         } catch (Exception $ex) {
             $this->_logger->debug(
-                'P2P_LOG: CheckoutRedirect/Exception [' .
+                'CheckoutRedirect/Exception [' .
                 $order->getRealOrderId() . '] ' .
                 $ex->getMessage() . ' ON ' . $ex->getFile() . ' LINE ' .
                 $ex->getLine() . ' -- ' . get_class($ex)

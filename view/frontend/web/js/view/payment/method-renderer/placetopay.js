@@ -162,11 +162,13 @@ define(
 
                     isValid = false;
                 } else if (! this.allowPendingPayment()) {
-                    this.showErrorMessage(
-                        $t('The payment could not be continued because a pending order has been found.')
-                    );
+                    if (this.hasPendingPayment()) {
+                        this.showErrorMessage(
+                            $t('The payment could not be continued because a pending order has been found.')
+                        );
 
-                    isValid = false;
+                        isValid = false;
+                    }
                 }
 
                 return isValid;

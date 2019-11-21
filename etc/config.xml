@@ -4,7 +4,7 @@
     <default>
         <payment>
             <placetopay>
-                <active>1</active>
+                <active>0</active>
                 <model>PlacetoPay\Payments\Model\PaymentMethod</model>
                 <!--<model>PlacetoPayPaymentsFacade</model>-->
                 <placetopay_development_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
