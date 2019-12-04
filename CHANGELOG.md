@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/placetopay-org/magento2-placetopay/tree/development)
 
+## [1.2.0] - 2019-12-04
+
+### Fixed
+- Stable php and magento 2 version in Dockerfile
+
+### Updated
+- Add support to php versions >= 7.1
+
 ## [1.1.2] - 2019-11-21
 
 ### Fixed

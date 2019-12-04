@@ -3,7 +3,7 @@
 [PlacetoPay][link-placetopay] Plugin Payment for [Magento 2][link-magento] Stable
 
 ## Prerequisites
-- `php` ~7.1.3 or ~7.3.10
+- `php` ^7.1
 - `ext-bcmath`
 - `ext-ctype`
 - `ext-curl`
@@ -32,7 +32,7 @@
 
 | Magento | Plugin   | Comments       |
 |------------|----------|----------------|
-| 2.3.x      | ~1.1.2   | From 2.3.2  |
+| 2.3.x      | ~1.2.0   | From 2.3.2  |
 
 View releases [here][link-releases]
 
@@ -80,7 +80,7 @@ cd /var/www/html \
     && bin/magento cacge:clean
 ```
 
-If for some reason's, the language not show in spanish, run these commands:
+If for some reasons, the language not show in spanish, run these commands:
 
 ```bash
 cd /var/www/html \
@@ -117,7 +117,7 @@ cd /var/www/html \
     && bin/magento cacge:clean
 ```
 
-If for some reason's, the language not show in spanish, run these commands:
+If for some reasons, the language not show in spanish, run these commands:
 
 ```bash
 cd /var/www/html \
@@ -176,6 +176,8 @@ You can change versions in `.docker/Dockerfile`
 ```bash
 MAGENTO_VERSION
 ```
+
+If you find an error in the docker installation process, you must verify and update the github-oauth in auth.json, to do so, you must log in your github personal account and go to the settings, then click on the developer settings option and generate a personal access token. 
 
 ## Quality
 
