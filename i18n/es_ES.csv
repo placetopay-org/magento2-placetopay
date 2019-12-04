@@ -62,6 +62,6 @@
 "The payment could not be continued because a pending order has been found.","El pago no pudo continuar porque se encontró una orden pendiente."
 "Payment Detail","Detalle Pago"
 "Authorization/CUS","Authorization/CUS"
-"Thanks, transaction approved by placetopay.", "Gracias, transacción aprobada por placetopay.",
-"We regret that you have decided to cancel the payment.", "Lamentamos que haya decidido cancelar el pago.",
+"Thanks, transaction approved by placetopay.","Gracias, transacción aprobada por placetopay.",
+"We regret that you have decided to cancel the payment.","Lamentamos que haya decidido cancelar el pago.",
 "Transaction pending, please wait a moment while it automatically resolves.","La transacción se encuentra pendiente, por favor espere un momento mientras se resuelve automáticamente.",
