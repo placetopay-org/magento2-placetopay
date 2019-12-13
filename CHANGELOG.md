@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/placetopay-org/magento2-placetopay/tree/development)
 
+## [1.2.1] - 2019-12-13
+
+### Updated
+- Add minimum stable version to composer
+
 ## [1.2.0] - 2019-12-04
 
 ### Fixed
