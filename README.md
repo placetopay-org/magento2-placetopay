@@ -32,7 +32,7 @@
 
 | Magento | Plugin   | Comments       |
 |------------|----------|----------------|
-| 2.3.x      | ~1.2.0   | From 2.3.2  |
+| 2.3.x      | ~1.2.1   | From 2.3.2  |
 
 View releases [here][link-releases]
 
@@ -168,7 +168,7 @@ if you wat to change the users and passwords, edit the env file.
 Default versions
 
 - Magento: 2.3.3
-- PHP: 7.3
+- PHP: 7.2
 - MySQL: 5.6.23
 
 You can change versions in `.docker/Dockerfile`

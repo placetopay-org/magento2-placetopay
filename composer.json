@@ -2,7 +2,8 @@
   "name": "placetopay/magento2-module-payments",
   "type": "magento2-module",
   "description": "Shared component for accepting online payments in Magento 2 using the PlacetoPay payment gateway.",
-  "version": "1.2.0",
+  "version": "1.2.1",
+  "minimum-stability": "stable",
   "require": {
     "php": "^7.1",
     "dnetix/redirection": "^1.0"
