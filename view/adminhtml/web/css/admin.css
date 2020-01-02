@@ -54,7 +54,7 @@ ul#payment_form_placetopay_payments {
 }
 
 .placetopay-admin-config .heading {
-    background: url("../img/placetopay_logo.png") no-repeat 0 50% / 18rem auto;
+    background: url("https://static.placetopay.com/placetopay-logo.svg") no-repeat 0 50% / 18rem auto;
     padding-left: 20rem;
 }
 
