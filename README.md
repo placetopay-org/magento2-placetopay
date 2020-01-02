@@ -66,7 +66,7 @@ Set up the module by running the following commands:
 cd /var/www/html \
     && bin/magento setup:upgrade \
     && bin/magento cache:flush \
-    && bin/magento cacge:clean
+    && bin/magento cache:clean
 ```
 
 If you run Magento in production mode, you also must compile and deploy the module’s static files:
@@ -77,7 +77,7 @@ cd /var/www/html \
     && bin/magento setup:di:compile \
     && bin/magento setup:static-content:deploy \
     && bin/magento cache:flush \
-    && bin/magento cacge:clean
+    && bin/magento cache:clean
 ```
 
 If for some reasons, the language not show in spanish, run these commands:
@@ -101,7 +101,7 @@ cd /var/www/html \
     && bin/magento module:enable PlacetoPay_Payments --clear-static-content \
     && bin/magento setup:upgrade \
     && bin/magento cache:flush \
-    && bin/magento cacge:clean
+    && bin/magento cache:clean
 ```
 
 If you run Magento in production mode, you also must compile and deploy the module’s static files:
@@ -114,7 +114,7 @@ cd /var/www/html \
     && bin/magento setup:di:compile \
     && bin/magento setup:static-content:deploy \
     && bin/magento cache:flush \
-    && bin/magento cacge:clean
+    && bin/magento cache:clean
 ```
 
 If for some reasons, the language not show in spanish, run these commands:
