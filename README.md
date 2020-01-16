@@ -108,9 +108,6 @@ If you run Magento in production mode, you also must compile and deploy the modu
 
 ```bash
 cd /var/www/html \
-    && composer require placetopay/magento2-placetopay-payments \
-    && bin/magento module:enable PlacetoPay_Payments --clear-static-content \
-    && bin/magento setup:upgrade \
     && bin/magento setup:di:compile \
     && bin/magento setup:static-content:deploy \
     && bin/magento cache:flush \
