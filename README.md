@@ -32,7 +32,7 @@
 
 | Magento | Plugin   | Comments       |
 |------------|----------|----------------|
-| 2.3.x      | ~1.5.0   | From 2.3.2  |
+| 2.3.x      | ~1.5.1   | From 2.3.2  |
 
 View releases [here][link-releases]
 

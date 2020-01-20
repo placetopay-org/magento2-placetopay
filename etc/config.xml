@@ -22,6 +22,7 @@
                 <fill_tax_information>0</fill_tax_information>
                 <fill_buyer_information>0</fill_buyer_information>
                 <skip_result>0</skip_result>
+                <tax_rate_parsing>iva_c:valueAddedTax|ice_c:ice|iva_e:valueAddedTax|ice_e:ice</tax_rate_parsing>
             </placetopay>
         </payment>
     </default>
