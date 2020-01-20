@@ -511,7 +511,7 @@ class PaymentMethod extends AbstractMethod
                 'name' => $address->getFirstname(),
                 'surname' => $address->getLastname(),
                 'email' => $address->getEmail(),
-                'mobile' => $address->getTelephone(),
+                //'mobile' => $address->getTelephone(),
                 'address' => [
                     'country' => $address->getCountryId(),
                     'state' => $address->getRegion(),
