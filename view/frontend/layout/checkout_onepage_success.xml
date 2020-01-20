@@ -1,0 +1,11 @@
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <block class="PlacetoPay\Payments\Block\Frontend\Onepage\Success" name="placetopay.checkout.success" template="PlacetoPay_Payments::onepage/success.phtml">
+                <container name="order.success.additional.info" label="Order Success Additional Info"/>
+            </block>
+
+            <referenceBlock name="checkout.success" remove="true" />
+        </referenceContainer>
+    </body>
+</page>
