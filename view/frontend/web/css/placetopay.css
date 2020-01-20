@@ -11,3 +11,21 @@
 .placetopay-method-message-recommendation {
     color: #ff0000 !important;
 }
+
+.placetopay-checkout-onepage .order-details {
+    list-style: none;
+    background-color: #f8f8f8;
+    padding: 0;
+    margin: 2em 0;
+}
+
+.placetopay-checkout-onepage .order-details li {
+    padding: 10px 15px;
+    font-size: 12px;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.placetopay-checkout-onepage .order-details li:first-child {
+    padding-top: 15px;
+}

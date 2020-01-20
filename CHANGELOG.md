@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/placetopay-org/magento2-placetopay/tree/development)
 
+## [1.5.0] - 2020-01-20
+
+### Updated
+- Add failure, success, pending redirect views to checkout.
+
+### Fixed
+- Remove mobile from request.
+
 ## [1.2.1] - 2019-12-13
 
 ### Updated
