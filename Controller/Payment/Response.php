@@ -206,7 +206,8 @@ class Response extends Action
                     } else {
                         $this->messageManager->addWarningMessage(__('Transaction pending, please wait a moment while it automatically resolves.'));
 
-                        $pathRedirect = 'checkout/cart';
+                        //$pathRedirect = 'checkout/cart';
+                        $pathRedirect = 'placetopay/onepage/pending';
                     }
                 } else {
                     if ($status->isApproved()) {
