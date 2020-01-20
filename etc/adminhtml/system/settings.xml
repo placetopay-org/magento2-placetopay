@@ -77,5 +77,11 @@
             <frontend_class>validate-number</frontend_class>
             <config_path>payment/placetopay/maximum_amount</config_path>
         </field>
+        <field id="tax_rate_parsing" translate="label comment" type="text" sortOrder="120" showInDefault="1" showInWebsite="1"
+               showInStore="1">
+            <label>Tax Rate Parsing</label>
+            <comment><![CDATA[Translates the Tax rate name to a PlacetoPay tax name.]]></comment>
+            <config_path>payment/placetopay/tax_rate_parsing</config_path>
+        </field>
     </group>
 </include>

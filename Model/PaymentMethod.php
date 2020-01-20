@@ -442,22 +442,29 @@ class PaymentMethod extends AbstractMethod
         if ($this->_config->getFillTaxInformation()) {
             try {
                 $map = [];
+
+                if ($mapping = $this->_config->getTaxRateParsing()) {
+                    foreach (explode('|', $mapping) as $item) {
+                        $t = explode(':', $item);
+
+                        if (is_array($t) && sizeof($t) == 2) {
+                            $map[$t[0]] = $t[1];
+                        }
+                    }
+                }
+
                 $taxInformation = $this->taxItem->getTaxItemsByOrderId($order->getId());
 
                 if (is_array($taxInformation) && sizeof($taxInformation) > 0) {
                     $taxes = [];
 
-                    while ($compound = array_pop($taxInformation)) {
-                        $taxAmount = $compound['amount'];
-                        $taxPercent = $compound['percent'];
-
-                        foreach ($compound['rates'] as $rate) {
-                            $taxes[] = [
-                                'kind' => isset($map[$rate['code']]) ? $map[$rate['code']] : 'valueAddedTax',
-                                'amount' => $taxAmount * ($rate['percent'] / $taxPercent),
-                            ];
-                        }
+                    foreach ($taxInformation as $item) {
+                        $taxes[] = [
+                            'kind' => isset($map[$item['code']]) ? $map[$item['code']] : 'valueAddedTax',
+                            'amount' => $item['real_amount'],
+                        ];
                     }
+
                     $data['payment']['amount']['taxes'] = $taxes;
                 }
             } catch (Exception $ex) {

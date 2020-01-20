@@ -23,6 +23,8 @@
 "Select a minimum amount per transaction.","Seleccione un monto mínimo por transacción."
 "Maximum Amount","Monto Máximo"
 "Select a maximum amount per transaction.","Seleccione un monto máximo por transacción."
+"Tax Rate Parsing","Ajuste de Tasa de Impuesto"
+"Translates the Tax rate name to a PlacetoPay tax name.","Traduce el nombre del tipo de impuesto al que utiliza PlacetoPay."
 "Connection Settings","Configuración de Conexión"
 "You will need to set your API keys before you can accept payments. If you do not yet have a PlacetoPay account, please <a href=""https://www.placetopay.com/web/contactanos"" target=""_blank"">click here</a> to contact and register.","Deberá configurar sus claves API antes de poder aceptar pagos. Si aún no tiene una cuenta de PlacetoPay, haga <a href=""https://www.placetopay.com/web/contactanos"" target=""_blank"">clic aquí</a> para contactar y registrarse."
 "Enabled","Habilitado"
@@ -62,54 +64,54 @@
 "The payment could not be continued because a pending order has been found.","El pago no pudo continuar porque se encontró una orden pendiente."
 "Payment Detail","Detalle Pago"
 "Authorization/CUS","Authorization/CUS"
-"Thanks, transaction approved by placetopay.","Gracias, transacción aprobada por placetopay.",
-"We regret that you have decided to cancel the payment.","Lamentamos que haya decidido cancelar el pago.",
-"Transaction pending, please wait a moment while it automatically resolves.","La transacción se encuentra pendiente, por favor espere un momento mientras se resuelve automáticamente.",
-"Request # %1","Solicitud # %1",
-"Date: %1","Fecha: %1",
-"Status: ","Estado: ",
-"EXPIRED","Vencida",
-"REJECTED","Rechazada",
-"DECLINED","Declinada",
-"CANCELED","Cancelada",
-"ERROR","Fallida",
-"FAILED","Fallida",
-"APPROVED","Aprobada",
-"PENDING","Pendiente",
-"UNKNOWN","Pendiente",
-"Reason: %1","Motivo: %1",
-"Finish payment","Completar el pago",
-"View payment details","Ver detalles del pago",
-"Transactions:","Transacciones:",
-"CR_VS","Visa",
-"CR_CR","Credencial Banco de Occidente",
-"CR_VE","Visa Electron",
-"CR_DN","Diners Club",
-"CR_AM","American Express",
-"RM_MC","MasterCard",
-"TY_EX","Tarjeta Éxito",
-"TY_AK","Alkosto",
-"_PSE_","Débito a cuentas corrientes y ahorros (PSE)",
-"SFPAY","Safety Pay",
-"_ATH_","Corresponsales bancarios Grupo Aval",
-"EFCTY","Efecty",
-"AC_WU","Western Union",
-"PYPAL","PayPal",
-"T1_BC","Bancolombia Recaudos",
-"AV_BO","Banco de Occidente Recaudos",
-"AV_AV","Banco AV Villas Recaudos",
-"AV_BB","Banco de Bogotá Recaudos",
-"VISAC","Visa Checkout",
-"GNPIN","GanaPIN",
-"GNRIS","Tarjeta RIS",
-"MSTRP","Masterpass",
-"DBTAC","Registro cuentas débito",
-"_PPD_","Débito pre-autorizado (PPD)",
-"Link: %1","Enlace: %1",
-"<br>For more information about the status of your order: <a href="%1" target="_blank">view order detail in placetopay</a>","<br>Para obtener más información sobre el estado de su pedido: <a href="%1" target="_blank">ver detalles de la orden en placetopay</a>",
-"Unfortunately your order cannot be processed as the originating bank/merchant has declined your transaction. Please attempt your purchase again.","Lamentablemente, tu pedido no puede procesarse el banco/comercio ha rechazado tu transacción. Por favor, intenta realizar la compra de nuevo.",
-"Order status:","Estado del pedido:",
-"Order Number:","Número de orden:",
-"Date:","Fecha:",
-"Total Paid:","Total Pagado",
-"Payment method:","Método de pago:",
+"Thanks, transaction approved by placetopay.","Gracias, transacción aprobada por placetopay."
+"We regret that you have decided to cancel the payment.","Lamentamos que haya decidido cancelar el pago."
+"Transaction pending, please wait a moment while it automatically resolves.","La transacción se encuentra pendiente, por favor espere un momento mientras se resuelve automáticamente."
+"Request # %1","Solicitud # %1"
+"Date: %1","Fecha: %1"
+"Status: ","Estado: "
+"EXPIRED","Vencida"
+"REJECTED","Rechazada"
+"DECLINED","Declinada"
+"CANCELED","Cancelada"
+"ERROR","Fallida"
+"FAILED","Fallida"
+"APPROVED","Aprobada"
+"PENDING","Pendiente"
+"UNKNOWN","Pendiente"
+"Reason: %1","Motivo: %1"
+"Finish payment","Completar el pago"
+"View payment details","Ver detalles del pago"
+"Transactions:","Transacciones:"
+"CR_VS","Visa"
+"CR_CR","Credencial Banco de Occidente"
+"CR_VE","Visa Electron"
+"CR_DN","Diners Club"
+"CR_AM","American Express"
+"RM_MC","MasterCard"
+"TY_EX","Tarjeta Éxito"
+"TY_AK","Alkosto"
+"_PSE_","Débito a cuentas corrientes y ahorros (PSE)"
+"SFPAY","Safety Pay"
+"_ATH_","Corresponsales bancarios Grupo Aval"
+"EFCTY","Efecty"
+"AC_WU","Western Union"
+"PYPAL","PayPal"
+"T1_BC","Bancolombia Recaudos"
+"AV_BO","Banco de Occidente Recaudos"
+"AV_AV","Banco AV Villas Recaudos"
+"AV_BB","Banco de Bogotá Recaudos"
+"VISAC","Visa Checkout"
+"GNPIN","GanaPIN"
+"GNRIS","Tarjeta RIS"
+"MSTRP","Masterpass"
+"DBTAC","Registro cuentas débito"
+"_PPD_","Débito pre-autorizado (PPD)"
+"Link: %1","Enlace: %1"
+"<br>For more information about the status of your order: <a href="%1" target="_blank">view order detail in placetopay</a>","<br>Para obtener más información sobre el estado de su pedido: <a href="%1" target="_blank">ver detalles de la orden en placetopay</a>"
+"Unfortunately your order cannot be processed as the originating bank/merchant has declined your transaction. Please attempt your purchase again.","Lamentablemente, tu pedido no puede procesarse el banco/comercio ha rechazado tu transacción. Por favor, intenta realizar la compra de nuevo."
+"Order status:","Estado del pedido:"
+"Order Number:","Número de orden:"
+"Date:","Fecha:"
+"Total Paid:","Total Pagado"
+"Payment method:","Método de pago:"

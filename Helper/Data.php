@@ -232,6 +232,17 @@ class Data extends BaseData
     }
 
     /**
+     * @return mixed
+     */
+    public function getTaxRateParsing()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/tax_rate_parsing',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
      * @return bool
      */
     public function getActive(): bool
