@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.5.2] - 2020-01-21
 
 ### Updated
+- Set hyperlink to brand image in the frontend.
+
+## [1.5.2] - 2020-01-21
+
+### Updated
 - Refactor string in cron log.
 
 ### Fixed
