@@ -297,7 +297,7 @@ class PaymentMethod extends AbstractMethod
     {
         $transactionInfo = $this->gateway()->query($requestId);
         $this->settleOrderStatus($transactionInfo, $order);
-        $this->logger->debug('Processed order with ID = ' . $order->getRealOrderId());
+        $this->logger->debug('Cron job processed order with ID = ' . $order->getRealOrderId());
     }
 
     /**
@@ -509,30 +509,28 @@ class PaymentMethod extends AbstractMethod
     /**
      * @param OrderAddressInterface $address
      *
-     * @return array|null
+     * @return array
      */
     public function parseAddressPerson($address)
     {
         if ($address) {
-            $data = [
+            return [
                 'name' => $address->getFirstname(),
                 'surname' => $address->getLastname(),
                 'email' => $address->getEmail(),
-                //'mobile' => $address->getTelephone(),
+                'mobile' => $address->getTelephone(),
                 'address' => [
                     'country' => $address->getCountryId(),
                     'state' => $address->getRegion(),
                     'city' => $address->getCity(),
                     'street' => implode(' ', $address->getStreet()),
-                    'phone' => $address->getTelephone(),
+                    //'phone' => $address->getTelephone(),
                     'postalCode' => $address->getPostcode(),
                 ],
             ];
-
-            return $data;
         }
 
-        return null;
+        return [];
     }
 
     /**
