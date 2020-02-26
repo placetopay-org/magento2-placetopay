@@ -10,6 +10,7 @@ use Magento\Sales\Model\OrderFactory;
 use PlacetoPay\Payments\Api\ServiceInterface as ApiInterface;
 use PlacetoPay\Payments\Model\PaymentMethod;
 use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
+use Magento\Framework\Event\ManagerInterface as EventManager;
 
 /**
  * Class Service.
@@ -32,20 +33,28 @@ class Service implements ApiInterface
     protected $logger;
 
     /**
+     * @var EventManager $manager
+     */
+    protected $manager;
+
+    /**
      * Service constructor.
      *
      * @param RequestInterface $request
-     * @param OrderFactory     $orderFactory
-     * @param LoggerInterface  $logger
+     * @param OrderFactory $orderFactory
+     * @param LoggerInterface $logger
+     * @param EventManager $manager
      */
     public function __construct(
         RequestInterface $request,
         OrderFactory $orderFactory,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        EventManager $manager
     ) {
         $this->request = $request;
         $this->orderFactory = $orderFactory;
         $this->logger = $logger;
+        $this->manager = $manager;
     }
 
     /**
@@ -76,6 +85,12 @@ class Service implements ApiInterface
             if ($notification->isValidNotification()) {
                 $information = $placetopay->gateway()->query($notification->requestId());
                 $placetopay->settleOrderStatus($information, $order);
+
+                if ($information->isApproved()) {
+                    $this->manager->dispatch('placetopay_api_success', [
+                        'order_ids' => [$order->getRealOrderId()],
+                    ]);
+                }
 
                 return ['success' => true];
             } else {

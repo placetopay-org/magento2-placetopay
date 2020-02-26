@@ -243,6 +243,17 @@ class Data extends BaseData
     }
 
     /**
+     * @return mixed
+     */
+    public function getEmailSuccessOption()
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/email_success',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
      * @return bool
      */
     public function getActive(): bool

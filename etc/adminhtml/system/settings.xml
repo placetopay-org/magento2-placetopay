@@ -83,5 +83,12 @@
             <comment><![CDATA[Translates the Tax rate name to a PlacetoPay tax name.]]></comment>
             <config_path>payment/placetopay/tax_rate_parsing</config_path>
         </field>
+        <field id="email_success" translate="label comment" type="select" sortOrder="130" showInDefault="1" showInWebsite="1"
+               showInStore="1">
+            <label>Email after payment success?</label>
+            <comment><![CDATA[If it is selected, the confirmation email will be sent after payment success response.]]></comment>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/placetopay/email_success</config_path>
+        </field>
     </group>
 </include>
