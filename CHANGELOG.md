@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/placetopay-org/magento2-placetopay/tree/development)
 
+## [1.6.1] - 2020-02-26
+
+### Added
+- Add email after payment success option.
+
+### Updated
+- Apply php-cs-fixer.
+
 ## [1.5.3] - 2020-01-21
 
 ### Updated
