@@ -8,17 +8,17 @@ namespace PlacetoPay\Payments\Model\Adminhtml\Source;
 class Mode
 {
     /**
-     * Mode Development
+     * Mode Development.
      */
     const DEVELOPMENT = 'development';
 
     /**
-     * Mode Test
+     * Mode Test.
      */
     const TEST = 'test';
 
     /**
-     * Mode Production
+     * Mode Production.
      */
     const PRODUCTION = 'production';
 
@@ -29,15 +29,15 @@ class Mode
     {
         return [
             [
-                'value' => Mode::DEVELOPMENT,
+                'value' => self::DEVELOPMENT,
                 'label' => __('Development'),
             ],
             [
-                'value' => Mode::TEST,
+                'value' => self::TEST,
                 'label' => __('Test'),
             ],
             [
-                'value' => Mode::PRODUCTION,
+                'value' => self::PRODUCTION,
                 'label' => __('Production'),
             ],
         ];

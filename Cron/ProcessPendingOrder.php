@@ -14,7 +14,7 @@ use PlacetoPay\Payments\Model\PaymentMethod;
 class ProcessPendingOrder
 {
     /**
-     * @var CollectionFactory $collectionFactory
+     * @var CollectionFactory
      */
     protected $collectionFactory;
 

@@ -8,7 +8,7 @@ namespace PlacetoPay\Payments\Model\Adminhtml\Source;
 class Expiration
 {
     /**
-     * Expiration int
+     * Expiration int.
      */
     const EXPIRATION_TIME_MINUTES_LIMIT = 40320;
 
@@ -21,7 +21,7 @@ class Expiration
         $format = '%d %s';
         $minutes = 10;
 
-        while ($minutes <= Expiration::EXPIRATION_TIME_MINUTES_LIMIT) {
+        while ($minutes <= self::EXPIRATION_TIME_MINUTES_LIMIT) {
             if ($minutes < 60) {
                 $options[$minutes] = sprintf($format, $minutes, __('Minutes'));
                 $minutes += 10;

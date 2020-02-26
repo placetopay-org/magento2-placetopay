@@ -11,7 +11,7 @@ use Magento\Framework\Event\ObserverInterface;
 class SendMailOnOrderSuccess implements ObserverInterface
 {
     /**
-     * @var \PlacetoPay\Payments\Helper\Data $config
+     * @var \PlacetoPay\Payments\Helper\Data
      */
     protected $config;
 
@@ -26,7 +26,7 @@ class SendMailOnOrderSuccess implements ObserverInterface
     protected $orderSender;
 
     /**
-     * @var \Magento\Checkout\Model\Session $session
+     * @var \Magento\Checkout\Model\Session
      */
     protected $session;
 

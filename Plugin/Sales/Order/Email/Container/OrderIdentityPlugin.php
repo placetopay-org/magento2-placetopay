@@ -8,12 +8,12 @@ namespace PlacetoPay\Payments\Plugin\Sales\Order\Email\Container;
 class OrderIdentityPlugin
 {
     /**
-     * @var \Magento\Checkout\Model\Session $session
+     * @var \Magento\Checkout\Model\Session
      */
     protected $session;
 
     /**
-     * @var \PlacetoPay\Payments\Helper\Data $config
+     * @var \PlacetoPay\Payments\Helper\Data
      */
     protected $config;
 

@@ -307,18 +307,21 @@ class Data extends BaseData
                     'payment/placetopay/placetopay_development_tk',
                     ScopeInterface::SCOPE_STORE
                 );
+
                 break;
             case Mode::TEST:
                 $tranKey = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_test_tk',
                     ScopeInterface::SCOPE_STORE
                 );
+
                 break;
             default:
                 $tranKey = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_production_tk',
                     ScopeInterface::SCOPE_STORE
                 );
+
                 break;
         }
 
@@ -338,18 +341,21 @@ class Data extends BaseData
                     'payment/placetopay/placetopay_development_lg',
                     ScopeInterface::SCOPE_STORE
                 );
+
                 break;
             case Mode::TEST:
                 $login = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_test_lg',
                     ScopeInterface::SCOPE_STORE
                 );
+
                 break;
             default:
                 $login = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_production_lg',
                     ScopeInterface::SCOPE_STORE
                 );
+
                 break;
         }
 
@@ -395,10 +401,12 @@ class Data extends BaseData
                     Mode::TEST => 'https://test.placetopay.ec/redirection',
                     Mode::PRODUCTION => 'https://secure.placetopay.ec/redirection',
                 ];
+
                 break;
             case Country::COLOMBIA:
             default:
                 $endpoints = self::getDefaultEndpoints();
+
                 break;
         }
 

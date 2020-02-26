@@ -26,15 +26,15 @@ class NotifyUrl extends BaseField
             $baseUrl = $store->getBaseUrl(UrlInterface::URL_TYPE_WEB, true);
 
             if ($baseUrl) {
-                $value = $baseUrl . 'rest/V1/placetopay/payment/notify';
-                $urlArray[] = "<div>" . $this->escapeHtml($value) . "</div>";
+                $value = $baseUrl.'rest/V1/placetopay/payment/notify';
+                $urlArray[] = '<div>'.$this->escapeHtml($value).'</div>';
             }
         }
 
         $urlArray = array_unique($urlArray);
 
         foreach ($urlArray as $uniqueUrl) {
-            $valueReturn .= "<div>" . $uniqueUrl . "</div>";
+            $valueReturn .= '<div>'.$uniqueUrl.'</div>';
         }
 
         return $valueReturn;

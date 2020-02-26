@@ -15,7 +15,7 @@ class Pending extends \Magento\Checkout\Controller\Onepage
         $lastQuoteId = $this->getOnepage()->getCheckout()->getLastQuoteId();
         $lastOrderId = $this->getOnepage()->getCheckout()->getLastOrderId();
 
-        if (!$lastQuoteId || !$lastOrderId) {
+        if (! $lastQuoteId || ! $lastOrderId) {
             return $this->resultRedirectFactory->create()->setPath('checkout/cart');
         }
 

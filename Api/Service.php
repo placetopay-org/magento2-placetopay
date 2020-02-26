@@ -4,13 +4,13 @@ namespace PlacetoPay\Payments\Api;
 
 use Dnetix\Redirection\Exceptions\PlacetoPayException;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\OrderFactory;
 use PlacetoPay\Payments\Api\ServiceInterface as ApiInterface;
-use PlacetoPay\Payments\Model\PaymentMethod;
 use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
-use Magento\Framework\Event\ManagerInterface as EventManager;
+use PlacetoPay\Payments\Model\PaymentMethod;
 
 /**
  * Class Service.
@@ -18,22 +18,22 @@ use Magento\Framework\Event\ManagerInterface as EventManager;
 class Service implements ApiInterface
 {
     /**
-     * @var RequestInterface $request
+     * @var RequestInterface
      */
     protected $request;
 
     /**
-     * @var OrderFactory $orderFactory
+     * @var OrderFactory
      */
     protected $orderFactory;
 
     /**
-     * @var LoggerInterface $logger
+     * @var LoggerInterface
      */
     protected $logger;
 
     /**
-     * @var EventManager $manager
+     * @var EventManager
      */
     protected $manager;
 
@@ -73,7 +73,7 @@ class Service implements ApiInterface
             $order = $this->orderFactory->create()->loadByIncrementId($data['reference']);
 
             if (! $order->getId()) {
-                $this->logger->debug('Non existent order for reference #' . $data['reference']);
+                $this->logger->debug('Non existent order for reference #'.$data['reference']);
 
                 throw new LocalizedException(__('Order not found.'));
             }
@@ -94,12 +94,12 @@ class Service implements ApiInterface
 
                 return ['success' => true];
             } else {
-                $this->logger->debug('Invalid notification for order #' . $order->getId());
+                $this->logger->debug('Invalid notification for order #'.$order->getId());
 
                 return $notification->makeSignature();
             }
         } else {
-            $this->logger->debug('Wrong or empty notification data for reference #' . $data['reference']);
+            $this->logger->debug('Wrong or empty notification data for reference #'.$data['reference']);
 
             throw new LocalizedException(__('Wrong or empty notification data.'));
         }

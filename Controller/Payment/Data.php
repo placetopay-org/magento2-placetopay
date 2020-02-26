@@ -24,32 +24,32 @@ use PlacetoPay\Payments\Model\PaymentMethod;
 class Data extends Action
 {
     /**
-     * @var Session $checkoutSession
+     * @var Session
      */
     protected $checkoutSession;
 
     /**
-     * @var LoggerInterface $logger
+     * @var LoggerInterface
      */
     protected $logger;
 
     /**
-     * @var ManagerInterface $messageManager
+     * @var ManagerInterface
      */
     protected $messageManager;
 
     /**
-     * @var JsonFactory $jsonFactory
+     * @var JsonFactory
      */
     protected $jsonFactory;
 
     /**
-     * @var ResultFactory $resultRedirect
+     * @var ResultFactory
      */
     protected $resultRedirect;
 
     /**
-     * @var OrderRepositoryInterface $orderRepository
+     * @var OrderRepositoryInterface
      */
     protected $orderRepository;
 
@@ -84,7 +84,7 @@ class Data extends Action
     }
 
     /**
-     * Get singleton of Checkout Session Model
+     * Get singleton of Checkout Session Model.
      *
      * @return Session
      */
@@ -104,18 +104,18 @@ class Data extends Action
 
         try {
             /**
-             * @var Order $order
+             * @var Order
              */
             $order = $session->getLastRealOrder();
 
             if (! $order->getId()) {
-                $this->logger->debug('Non existent order for reference #' . $order->getId());
+                $this->logger->debug('Non existent order for reference #'.$order->getId());
 
                 throw new LocalizedException(__('No order for processing was found.'));
             }
 
             /**
-             * @var PaymentMethod $placetopay
+             * @var PaymentMethod
              */
             $placetopay = $order->getPayment()->getMethodInstance();
             $url = $placetopay->getCheckoutRedirect($order);
@@ -133,9 +133,9 @@ class Data extends Action
             $session->restoreQuote();
 
             $this->logger->debug(
-                'Redirect action ' .
-                $exception->getMessage() . ' on ' .
-                $exception->getFile() . ' line ' .
+                'Redirect action '.
+                $exception->getMessage().' on '.
+                $exception->getFile().' line '.
                 $exception->getLine()
             );
 
