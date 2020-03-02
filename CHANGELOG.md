@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Updated
 - Apply php-cs-fixer.
+- Changed payment method icons list.
 
 ## [1.5.3] - 2020-01-21
 
