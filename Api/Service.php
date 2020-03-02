@@ -4,12 +4,13 @@ namespace PlacetoPay\Payments\Api;
 
 use Dnetix\Redirection\Exceptions\PlacetoPayException;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\OrderFactory;
 use PlacetoPay\Payments\Api\ServiceInterface as ApiInterface;
-use PlacetoPay\Payments\Model\PaymentMethod;
 use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
+use PlacetoPay\Payments\Model\PaymentMethod;
 
 /**
  * Class Service.
@@ -17,35 +18,43 @@ use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
 class Service implements ApiInterface
 {
     /**
-     * @var RequestInterface $request
+     * @var RequestInterface
      */
     protected $request;
 
     /**
-     * @var OrderFactory $orderFactory
+     * @var OrderFactory
      */
     protected $orderFactory;
 
     /**
-     * @var LoggerInterface $logger
+     * @var LoggerInterface
      */
     protected $logger;
+
+    /**
+     * @var EventManager
+     */
+    protected $manager;
 
     /**
      * Service constructor.
      *
      * @param RequestInterface $request
-     * @param OrderFactory     $orderFactory
-     * @param LoggerInterface  $logger
+     * @param OrderFactory $orderFactory
+     * @param LoggerInterface $logger
+     * @param EventManager $manager
      */
     public function __construct(
         RequestInterface $request,
         OrderFactory $orderFactory,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        EventManager $manager
     ) {
         $this->request = $request;
         $this->orderFactory = $orderFactory;
         $this->logger = $logger;
+        $this->manager = $manager;
     }
 
     /**
@@ -64,7 +73,7 @@ class Service implements ApiInterface
             $order = $this->orderFactory->create()->loadByIncrementId($data['reference']);
 
             if (! $order->getId()) {
-                $this->logger->debug('Non existent order for reference #' . $data['reference']);
+                $this->logger->debug('Non existent order for reference #'.$data['reference']);
 
                 throw new LocalizedException(__('Order not found.'));
             }
@@ -77,14 +86,20 @@ class Service implements ApiInterface
                 $information = $placetopay->gateway()->query($notification->requestId());
                 $placetopay->settleOrderStatus($information, $order);
 
+                if ($information->isApproved()) {
+                    $this->manager->dispatch('placetopay_api_success', [
+                        'order_ids' => [$order->getRealOrderId()],
+                    ]);
+                }
+
                 return ['success' => true];
             } else {
-                $this->logger->debug('Invalid notification for order #' . $order->getId());
+                $this->logger->debug('Invalid notification for order #'.$order->getId());
 
                 return $notification->makeSignature();
             }
         } else {
-            $this->logger->debug('Wrong or empty notification data for reference #' . $data['reference']);
+            $this->logger->debug('Wrong or empty notification data for reference #'.$data['reference']);
 
             throw new LocalizedException(__('Wrong or empty notification data.'));
         }

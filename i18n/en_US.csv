@@ -24,6 +24,8 @@
 "Maximum Amount","Maximum Amount"
 "Select a maximum amount per transaction.","Select a maximum amount per transaction."
 "Tax Rate Parsing","Tax Rate Parsing"
+"Email after payment success?","Email after payment success?"
+"If it is selected, the confirmation email will be sent after payment success response.","If it is selected, the confirmation email will be sent after payment success response."
 "Translates the Tax rate name to a PlacetoPay tax name.","Translates the Tax rate name to a PlacetoPay tax name."
 "Connection Settings","Connection Settings"
 "You will need to set your API keys before you can accept payments. If you do not yet have a PlacetoPay account, please <a href=""https://www.placetopay.com/web/contactanos"" target=""_blank"">click here</a> to contact and register.","You will need to set your API keys before you can accept payments. If you do not yet have a PlacetoPay account, please <a href=""https://www.placetopay.com/web/contactanos"" target=""_blank"">click here</a> to contact and register."

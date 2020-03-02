@@ -32,67 +32,67 @@ use PlacetoPay\Payments\Model\PaymentMethod;
 class Response extends Action
 {
     /**
-     * @var Session $checkoutSession
+     * @var Session
      */
     protected $checkoutSession;
 
     /**
-     * @var OrderFactory $salesOrderFactory
+     * @var OrderFactory
      */
     protected $salesOrderFactory;
 
     /**
-     * @var ManagerInterface $messageManager
+     * @var ManagerInterface
      */
     protected $messageManager;
 
     /**
-     * @var LoggerInterface $logger
+     * @var LoggerInterface
      */
     protected $logger;
 
     /**
-     * @var Http $request
+     * @var Http
      */
     protected $request;
 
     /**
-     * @var ScopeConfigInterface $scopeConfig
+     * @var ScopeConfigInterface
      */
     protected $scopeConfig;
 
     /**
-     * @var QuoteFactory $quoteQuoteFactory
+     * @var QuoteFactory
      */
     protected $quoteQuoteFactory;
 
     /**
-     * @var CustomerSession $customerSession
+     * @var CustomerSession
      */
     protected $customerSession;
 
     /**
-     * @var EventManager $eventManager
+     * @var EventManager
      */
     protected $eventManager;
 
     /**
-     * @var Session $_checkoutSession
+     * @var Session
      */
     protected $_checkoutSession;
 
     /**
-     * @var PaymentHelper $_paymentHelper
+     * @var PaymentHelper
      */
     protected $_paymentHelper;
 
     /**
-     * @var TransactionRepositoryInterface $_transactionRepository
+     * @var TransactionRepositoryInterface
      */
     protected $_transactionRepository;
 
     /**
-     * @var PageFactory $_pageFactory
+     * @var PageFactory
      */
     protected $_pageFactory;
 
@@ -163,7 +163,7 @@ class Response extends Action
                 $payment = $order->getPayment();
 
                 /**
-                 * @var PaymentMethod $placetopay
+                 * @var PaymentMethod
                  */
                 $placetopay = $payment->getMethodInstance();
 
@@ -184,7 +184,7 @@ class Response extends Action
                     $payment->getId()
                 );
 
-                if ($this->scopeConfig->getValue('payment/' . $placetopay->getCode() . '/final_page') == 'magento_default') {
+                if ($this->scopeConfig->getValue('payment/'.$placetopay->getCode().'/final_page') == 'magento_default') {
                     if ($status->isApproved()) {
                         $this->setPaymentApproved($payment, $transaction);
                         $this->_getCheckout()->setLastSuccessQuoteId($order->getQuoteId());
@@ -226,7 +226,7 @@ class Response extends Action
                             ['order_ids' => [$order->getRealOrderId()]]
                         );
 
-                        $pathRedirect = 'sales/order/view/order_id/' . $order->getRealOrderId();
+                        $pathRedirect = 'sales/order/view/order_id/'.$order->getRealOrderId();
                     } else {
                         $pathRedirect = 'sales/guest/form/';
                     }
@@ -235,12 +235,12 @@ class Response extends Action
                 $reference = $this->getRequest()->getParam('reference');
 
                 $this->logger->debug(
-                    'Response [' .
-                    $order->getRealOrderId() . '] with Reference: ' . $reference
+                    'Response ['.
+                    $order->getRealOrderId().'] with Reference: '.$reference
                 );
 
                 /**
-                 * @var Order $order
+                 * @var Order
                  */
                 $order = $this->salesOrderFactory->create()->loadByIncrementId($reference);
 
@@ -249,7 +249,7 @@ class Response extends Action
 
                     if ($payment) {
                         /**
-                         * @var PaymentMethod $placetopay
+                         * @var PaymentMethod
                          */
                         $placetopay = $payment->getMethodInstance();
 
@@ -275,9 +275,9 @@ class Response extends Action
             return $resultRedirect;
         } catch (LocalizedException $exception) {
             $this->logger->debug(
-                'Response [' . $order->getRealOrderId() . ']' .
-                $exception->getMessage() . ' ON ' .
-                $exception->getFile() . ' LINE ' .
+                'Response ['.$order->getRealOrderId().']'.
+                $exception->getMessage().' ON '.
+                $exception->getFile().' LINE '.
                 $exception->getLine()
             );
 
@@ -285,10 +285,10 @@ class Response extends Action
 
             return $this->_pageFactory->create();
         } catch (Exception $exception) {
-            $this->logger->debug('Response [' .
-                $order->getRealOrderId() . ']' .
-                $exception->getMessage() . ' ON ' .
-                $exception->getFile() . ' LINE ' .
+            $this->logger->debug('Response ['.
+                $order->getRealOrderId().']'.
+                $exception->getMessage().' ON '.
+                $exception->getFile().' LINE '.
                 $exception->getLine());
 
             return $this->_pageFactory->create();

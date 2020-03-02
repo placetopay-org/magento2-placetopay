@@ -29,3 +29,17 @@
 .placetopay-checkout-onepage .order-details li:first-child {
     padding-top: 15px;
 }
+
+.placetopay-icon-container {
+    float: right;
+    position: relative;
+    top: -0.6em;
+}
+
+.acceptance_logo {
+    max-width: 34px;
+    max-height: 22px;
+    position: relative;
+    top: 0.4em;
+    margin-right: 2px;
+}

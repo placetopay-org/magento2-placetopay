@@ -9,8 +9,8 @@ use Exception;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
-use Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface;
 use Magento\Sales\Model\Order\Payment\Transaction as TransactionModel;
+use Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface;
 
 /**
  * Class Info.
@@ -18,7 +18,7 @@ use Magento\Sales\Model\Order\Payment\Transaction as TransactionModel;
 class Info
 {
     /**
-     * @var BuilderInterface $transactionBuilder
+     * @var BuilderInterface
      */
     protected $transactionBuilder;
 
@@ -88,7 +88,7 @@ class Info
         $parsedTransactions = $information['transactions'];
         $lastTransaction = null;
 
-        if ($transactions && is_array($transactions) && sizeof($transactions) > 0) {
+        if ($transactions && is_array($transactions) && count($transactions) > 0) {
             $lastTransaction = $transactions[0];
 
             foreach ($transactions as $transaction) {

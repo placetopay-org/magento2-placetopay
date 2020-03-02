@@ -41,7 +41,7 @@ class Fieldset extends BaseField
     }
 
     /**
-     * Add custom css class
+     * Add custom css class.
      *
      * @param AbstractElement $element
      *
@@ -51,11 +51,11 @@ class Fieldset extends BaseField
     {
         $enabledString = $this->_isPaymentEnabled($element) ? ' enabled' : '';
 
-        return parent::_getFrontendClass($element) . ' with-button' . $enabledString;
+        return parent::_getFrontendClass($element).' with-button'.$enabledString;
     }
 
     /**
-     * Check whether current payment method is enabled
+     * Check whether current payment method is enabled.
      *
      * @param AbstractElement $element
      *
@@ -66,7 +66,7 @@ class Fieldset extends BaseField
         $groupConfig = $element->getGroup();
         $activityPaths = isset($groupConfig['activity_path']) ? $groupConfig['activity_path'] : [];
 
-        if (!is_array($activityPaths)) {
+        if (! is_array($activityPaths)) {
             $activityPaths = [$activityPaths];
         }
 
@@ -74,14 +74,14 @@ class Fieldset extends BaseField
 
         foreach ($activityPaths as $activityPath) {
             $isPaymentEnabled = $isPaymentEnabled
-                || (bool)(string)$this->_backendConfig->getConfigDataValue($activityPath);
+                || (bool) (string) $this->_backendConfig->getConfigDataValue($activityPath);
         }
 
         return $isPaymentEnabled;
     }
 
     /**
-     * Return header title part of html for payment solution
+     * Return header title part of html for payment solution.
      *
      * @param AbstractElement $element
      *
@@ -96,40 +96,40 @@ class Fieldset extends BaseField
         $disabledClassString = $this->_isPaymentEnabled($element) ? '' : ' disabled';
         $htmlId = $element->getHtmlId();
 
-        $html .= '<div class="button-container"><button type="button"' .
-            $disabledAttributeString .
-            ' class="button action-configure' .
-            (empty($groupConfig['paypal_ec_separate']) ? '' : ' paypal-ec-separate') .
-            $disabledClassString .
-            '" id="' .
-            $htmlId .
-            '-head" onclick="paypalToggleSolution.call(this, \'' .
-            $htmlId .
-            "', '" .
+        $html .= '<div class="button-container"><button type="button"'.
+            $disabledAttributeString.
+            ' class="button action-configure'.
+            (empty($groupConfig['paypal_ec_separate']) ? '' : ' paypal-ec-separate').
+            $disabledClassString.
+            '" id="'.
+            $htmlId.
+            '-head" onclick="paypalToggleSolution.call(this, \''.
+            $htmlId.
+            "', '".
             $this->getUrl(
                 'adminhtml/*/state'
-            ) . '\'); return false;"><span class="state-closed">' . __(
+            ).'\'); return false;"><span class="state-closed">'.__(
                 'Configure'
-            ) . '</span><span class="state-opened">' . __(
+            ).'</span><span class="state-opened">'.__(
                 'Close'
-            ) . '</span></button>';
+            ).'</span></button>';
 
-        if (!empty($groupConfig['more_url'])) {
-            $html .= '<a class="link-more" href="' . $groupConfig['more_url'] . '" target="_blank">' . __(
+        if (! empty($groupConfig['more_url'])) {
+            $html .= '<a class="link-more" href="'.$groupConfig['more_url'].'" target="_blank">'.__(
                 'Learn More'
-            ) . '</a>';
+            ).'</a>';
         }
-        if (!empty($groupConfig['demo_url'])) {
-            $html .= '<a class="link-demo" href="' . $groupConfig['demo_url'] . '" target="_blank">' . __(
+        if (! empty($groupConfig['demo_url'])) {
+            $html .= '<a class="link-demo" href="'.$groupConfig['demo_url'].'" target="_blank">'.__(
                 'View Demo'
-            ) . '</a>';
+            ).'</a>';
         }
 
         $html .= '</div>';
-        $html .= '<div class="heading"><strong>' . $element->getLegend() . '</strong>';
+        $html .= '<div class="heading"><strong>'.$element->getLegend().'</strong>';
 
         if ($element->getComment()) {
-            $html .= '<span class="heading-intro">' . $element->getComment() . '</span>';
+            $html .= '<span class="heading-intro">'.$element->getComment().'</span>';
         }
         $html .= '<div class="config-alt"></div>';
         $html .= '</div></div>';
@@ -138,7 +138,7 @@ class Fieldset extends BaseField
     }
 
     /**
-     * Return header comment part of html for payment solution
+     * Return header comment part of html for payment solution.
      *
      * @param AbstractElement $element
      *
@@ -151,7 +151,7 @@ class Fieldset extends BaseField
     }
 
     /**
-     * Get collapsed state on-load
+     * Get collapsed state on-load.
      *
      * @param AbstractElement $element
      *

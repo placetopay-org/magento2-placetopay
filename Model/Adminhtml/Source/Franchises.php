@@ -15,104 +15,104 @@ class Franchises
         return [
             [
                 'value' => 'CR_VS',
-                'label' => 'Visa'
+                'label' => 'Visa',
             ],
             [
                 'value' => 'CR_CR',
-                'label' => 'Credencial Banco de Occidente'
+                'label' => 'Credencial Banco de Occidente',
             ],
             [
                 'value' => 'CR_VE',
-                'label' => 'Visa Electron'
+                'label' => 'Visa Electron',
             ],
             [
                 'value' => 'CR_DN',
-                'label' => 'Diners Club'
+                'label' => 'Diners Club',
             ],
             [
                 'value' => 'CR_AM',
-                'label' => 'American Express'
+                'label' => 'American Express',
             ],
             [
                 'value' => 'RM_MC',
-                'label' => 'MasterCard'
+                'label' => 'MasterCard',
 
             ],
             [
                 'value' => 'TY_EX',
-                'label' => 'Tarjeta Éxito'
+                'label' => 'Tarjeta Éxito',
             ],
             [
                 'value' => 'TY_AK',
-                'label' => 'Alkosto'
+                'label' => 'Alkosto',
             ],
             [
                 'value' => '_PSE_',
-                'label' => 'Débito a cuentas corrientes y ahorros (PSE)'
+                'label' => 'Débito a cuentas corrientes y ahorros (PSE)',
             ],
             [
                 'value' => 'SFPAY',
-                'label' => 'Safety Pay'
+                'label' => 'Safety Pay',
             ],
             [
                 'value' => '_ATH_',
-                'label' => 'Corresponsales bancarios Grupo Aval'
+                'label' => 'Corresponsales bancarios Grupo Aval',
             ],
             [
                 'value' => 'AC_WU',
-                'label' => 'Western Union'
+                'label' => 'Western Union',
             ],
             [
                 'value' => 'PYPAL',
-                'label' => 'PayPal'
+                'label' => 'PayPal',
             ],
             [
                 'value' => 'T1_BC',
-                'label' => 'Bancolombia Recaudos'
+                'label' => 'Bancolombia Recaudos',
             ],
             [
                 'value' => 'AV_BO',
-                'label' => 'Banco de Occidente Recaudos'
+                'label' => 'Banco de Occidente Recaudos',
             ],
             [
                 'value' => 'AV_AV',
-                'label' => 'Banco AV Villas Recaudos'
+                'label' => 'Banco AV Villas Recaudos',
             ],
             [
                 'value' => 'AV_BB',
-                'label' => 'Banco de Bogotá Recaudos'
+                'label' => 'Banco de Bogotá Recaudos',
             ],
             [
                 'value' => 'VISAC',
-                'label' => 'Visa Checkout'
+                'label' => 'Visa Checkout',
             ],
             [
                 'value' => 'GNPIN',
-                'label' => 'GanaPIN'
+                'label' => 'GanaPIN',
             ],
             [
                 'value' => 'GNRIS',
-                'label' => 'Tarjeta RIS'
+                'label' => 'Tarjeta RIS',
             ],
             [
                 'value' => 'MSTRP',
-                'label' => 'Masterpass'
+                'label' => 'Masterpass',
             ],
             [
                 'value' => 'DBTAC',
-                'label' => 'Registro cuentas débito'
+                'label' => 'Registro cuentas débito',
             ],
             [
                 'value' => '_PPD_',
-                'label' => 'Débito pre-autorizado (PPD)'
+                'label' => 'Débito pre-autorizado (PPD)',
             ],
             [
                 'value' => 'CR_DS',
-                'label' => 'Discover'
+                'label' => 'Discover',
             ],
             [
                 'value' => 'EFCTY',
-                'label' => 'Efecty'
+                'label' => 'Efecty',
             ],
         ];
     }

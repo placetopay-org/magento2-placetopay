@@ -25,22 +25,22 @@ class CustomConfigProvider implements ConfigProviderInterface
     protected $_scopeConfig;
 
     /**
-     * @var Repository $_assetRepo
+     * @var Repository
      */
     protected $_assetRepo;
 
     /**
-     * @var CustomerSession $customerSession
+     * @var CustomerSession
      */
     protected $customerSession;
 
     /**
-     * @var CollectionFactory $collectionFactory
+     * @var CollectionFactory
      */
     protected $collectionFactory;
 
     /**
-     * @var StoreManagerInterface $storeManager
+     * @var StoreManagerInterface
      */
     protected $storeManager;
 
@@ -85,8 +85,8 @@ class CustomConfigProvider implements ConfigProviderInterface
                     'maximum' => $this->_scopeConfig->getMaximumAmount(),
                     'url' => $this->getUrl(),
                     'paymentMethods' => $this->getPaymentMethods(),
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -111,7 +111,7 @@ class CustomConfigProvider implements ConfigProviderInterface
             ->load()
             ->getItems();
 
-        $pendingOrders = sizeof($collection);
+        $pendingOrders = count($collection);
 
         if ($pendingOrders > 0) {
             $lastOrder = reset($collection);

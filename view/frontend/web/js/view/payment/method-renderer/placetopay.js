@@ -121,7 +121,7 @@ define(
                 let icons = [];
 
                 paymentMethods.forEach(function (icon) {
-                    icons.push('<img src="https://www.placetopay.com/images/providers/' + icon + '.png" alt="" class="acceptance_logo" style="max-width: 80px; max-height: 50px; display: inline-block; padding: 0 5px;" />');
+                    icons.push('<img src="https://www.placetopay.com/images/providers/' + icon + '.png" alt="" class="acceptance_logo" />');
                 });
 
                 return icons.join(' ');

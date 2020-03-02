@@ -24,6 +24,8 @@
 "Maximum Amount","Monto Máximo"
 "Select a maximum amount per transaction.","Seleccione un monto máximo por transacción."
 "Tax Rate Parsing","Ajuste de Tasa de Impuesto"
+"Email after payment success?","Correo electrónico después del pago exitoso?"
+"If it is selected, the confirmation email will be sent after payment success response.","Si se selecciona, el correo electrónico de confirmación se enviará después de la respuesta de pago exitoso"
 "Translates the Tax rate name to a PlacetoPay tax name.","Traduce el nombre del tipo de impuesto al que utiliza PlacetoPay."
 "Connection Settings","Configuración de Conexión"
 "You will need to set your API keys before you can accept payments. If you do not yet have a PlacetoPay account, please <a href=""https://www.placetopay.com/web/contactanos"" target=""_blank"">click here</a> to contact and register.","Deberá configurar sus claves API antes de poder aceptar pagos. Si aún no tiene una cuenta de PlacetoPay, haga <a href=""https://www.placetopay.com/web/contactanos"" target=""_blank"">clic aquí</a> para contactar y registrarse."

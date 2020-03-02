@@ -27,12 +27,12 @@ use Magento\Payment\Model\Method\AbstractMethod;
 use Magento\Payment\Model\Method\Logger;
 use Magento\Quote\Api\Data\CartInterface;
 use Magento\Sales\Api\Data\OrderAddressInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
 use PlacetoPay\Payments\Helper\Data as Config;
-use PlacetoPay\Payments\Model\Info as InfoFactory;
 use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
+use PlacetoPay\Payments\Model\Info as InfoFactory;
 
 /**
  * Class PlaceToPay.
@@ -40,69 +40,82 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 class PaymentMethod extends AbstractMethod
 {
     const CODE = 'placetopay';
+
     const EXPIRATION_TIME_MINUTES_DEFAULT = 120;
+
     const EXPIRATION_TIME_MINUTES_MIN = 10;
 
     protected $gateway;
+
     protected $_code = self::CODE;
+
     protected $_isGateway = true;
+
     protected $_canOrder = true;
+
     protected $_canAuthorize = true;
+
     protected $_canCapture = true;
+
     protected $_canCapturePartial = true;
+
     protected $_canRefund = false;
+
     protected $_canRefundInvoicePartial = false;
+
     protected $_canVoid = true;
+
     protected $_canFetchTransactionInfo = true;
+
     protected $_canReviewPayment = true;
 
     /**
-     * @var Config $_config
+     * @var Config
      */
     protected $_config;
 
     /**
-     * @var Order $_order
+     * @var Order
      */
     protected $_order;
 
     /**
-     * @var Resolver $_store
+     * @var Resolver
      */
     protected $_store;
 
     /**
-     * @var UrlInterface $_url
+     * @var UrlInterface
      */
     protected $_url;
 
     /**
-     * @var RemoteAddress $remoteAddress
+     * @var RemoteAddress
      */
     protected $remoteAddress;
 
     /**
-     * @var Header $httpHeader
+     * @var Header
      */
     protected $httpHeader;
 
     /**
-     * @var Item $taxItem
+     * @var Item
      */
     protected $taxItem;
 
     /**
-     * @var LoggerInterface $logger
+     * @var LoggerInterface
      */
     protected $logger;
 
     /**
-     * @var Info $infoFactory
+     * @var Info
      */
     protected $infoFactory;
 
     /**
-     * @var OrderRepositoryInterface $orderRepository
+     * @var OrderRepositoryInterface
      */
     protected $orderRepository;
 
@@ -258,12 +271,15 @@ class PaymentMethod extends AbstractMethod
         switch ($order->getStatus()) {
             case Order::STATE_PROCESSING:
                 $status = Status::ST_APPROVED;
+
                 break;
             case Order::STATE_CANCELED:
                 $status = Status::ST_REJECTED;
+
                 break;
             case Order::STATE_NEW:
                 $status = Status::ST_PENDING;
+
                 break;
             default:
                 $status = Status::ST_PENDING;
@@ -297,7 +313,7 @@ class PaymentMethod extends AbstractMethod
     {
         $transactionInfo = $this->gateway()->query($requestId);
         $this->settleOrderStatus($transactionInfo, $order);
-        $this->logger->debug('Cron job processed order with ID = ' . $order->getRealOrderId());
+        $this->logger->debug('Cron job processed order with ID = '.$order->getRealOrderId());
     }
 
     /**
@@ -313,7 +329,7 @@ class PaymentMethod extends AbstractMethod
             $this->gateway = new PlacetoPay([
                 'login' => $this->_config->getLogin(),
                 'tranKey' => $this->_config->getTranKey(),
-                'url' => $url[$env]
+                'url' => $url[$env],
             ]);
         }
 
@@ -353,22 +369,23 @@ class PaymentMethod extends AbstractMethod
                 $info->loadInformationFromRedirectResponse($payment, $response, $this->_config->getMode(), $order);
             } else {
                 $this->_logger->debug(
-                    'Payment error [' .
-                    $order->getRealOrderId() . '] ' .
-                    $response->status()->message() . ' - ' .
-                    $response->status()->reason() . ' ' .
+                    'Payment error ['.
+                    $order->getRealOrderId().'] '.
+                    $response->status()->message().' - '.
+                    $response->status()->reason().' '.
                     $response->status()->status()
                 );
 
                 throw new LocalizedException(__($response->status()->message()));
             }
+
             return $response->processUrl();
         } catch (Exception $ex) {
             $this->_logger->debug(
-                'Payment error [' .
-                $order->getRealOrderId() . '] ' .
-                $ex->getMessage() . ' on ' . $ex->getFile() . ' line ' .
-                $ex->getLine() . ' - ' . get_class($ex)
+                'Payment error ['.
+                $order->getRealOrderId().'] '.
+                $ex->getMessage().' on '.$ex->getFile().' line '.
+                $ex->getLine().' - '.get_class($ex)
             );
 
             throw new Exception($ex->getMessage());
@@ -388,7 +405,7 @@ class PaymentMethod extends AbstractMethod
         $discount = $order->getDiscountAmount() != 0 ? ($order->getDiscountAmount() * -1) : 0;
         $shipping = $order->getShippingAmount();
         $visibleItems = $order->getAllVisibleItems();
-        $expiration = date('c', strtotime($this->getExpirationTimeMinutes() . ' minutes'));
+        $expiration = date('c', strtotime($this->getExpirationTimeMinutes().' minutes'));
         $items = [];
 
         /** @var Order\Item $item */
@@ -447,7 +464,7 @@ class PaymentMethod extends AbstractMethod
                     foreach (explode('|', $mapping) as $item) {
                         $t = explode(':', $item);
 
-                        if (is_array($t) && sizeof($t) == 2) {
+                        if (is_array($t) && count($t) == 2) {
                             $map[$t[0]] = $t[1];
                         }
                     }
@@ -455,7 +472,7 @@ class PaymentMethod extends AbstractMethod
 
                 $taxInformation = $this->taxItem->getTaxItemsByOrderId($order->getId());
 
-                if (is_array($taxInformation) && sizeof($taxInformation) > 0) {
+                if (is_array($taxInformation) && count($taxInformation) > 0) {
                     $taxes = [];
 
                     foreach ($taxInformation as $item) {
@@ -469,9 +486,9 @@ class PaymentMethod extends AbstractMethod
                 }
             } catch (Exception $ex) {
                 $this->_logger->debug(
-                    'Error calculating taxes: [' .
-                    $order->getRealOrderId() .
-                    '] ' . serialize($this->taxItem->getTaxItemsByOrderId($order->getId()))
+                    'Error calculating taxes: ['.
+                    $order->getRealOrderId().
+                    '] '.serialize($this->taxItem->getTaxItemsByOrderId($order->getId()))
                 );
             }
         }
@@ -540,7 +557,7 @@ class PaymentMethod extends AbstractMethod
     {
         $minutes = $this->_config->getExpirationTime();
 
-        return !is_numeric($minutes) || $minutes < self::EXPIRATION_TIME_MINUTES_MIN
+        return ! is_numeric($minutes) || $minutes < self::EXPIRATION_TIME_MINUTES_MIN
             ? self::EXPIRATION_TIME_MINUTES_DEFAULT
             : $minutes;
     }
@@ -589,7 +606,7 @@ class PaymentMethod extends AbstractMethod
 
         if (! $info || ! isset($info['request_id'])) {
             $this->_logger->debug(
-                'No additional information for order: ' .
+                'No additional information for order: '.
                 $order->getRealOrderId()
             );
 
@@ -602,8 +619,8 @@ class PaymentMethod extends AbstractMethod
             $this->settleOrderStatus($response, $order, $payment);
         } else {
             $this->_logger->debug(
-                'Non successful: ' .
-                $response->status()->message() . ' ' .
+                'Non successful: '.
+                $response->status()->message().' '.
                 $response->status()->reason()
             );
         }
@@ -628,10 +645,11 @@ class PaymentMethod extends AbstractMethod
         $info = $payment->getAdditionalInformation();
 
         if (! $info || ! isset($info['request_id'])) {
-            $this->_logger->debug('No additional information for order: ' . $order->getRealOrderId());
+            $this->_logger->debug('No additional information for order: '.$order->getRealOrderId());
 
-            throw new LocalizedException(__('No additional information for order: ' . $order->getRealOrderId()));
+            throw new LocalizedException(__('No additional information for order: '.$order->getRealOrderId()));
         }
+
         return $this->gateway()->query($info['request_id']);
     }
 
@@ -651,14 +669,17 @@ class PaymentMethod extends AbstractMethod
             case Status::ST_APPROVED:
                 $state = Order::STATE_PROCESSING;
                 $orderStatus = Order::STATE_PROCESSING;
+
                 break;
             case Status::ST_REJECTED:
                 $state = Order::STATE_CANCELED;
                 $orderStatus = Order::STATE_CANCELED;
+
                 break;
             case Status::ST_PENDING:
                 $state = Order::STATE_NEW;
                 $orderStatus = Order::STATE_PENDING_PAYMENT;
+
                 break;
             default:
                 $state = $orderStatus = $comment = null;

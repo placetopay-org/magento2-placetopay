@@ -3,11 +3,11 @@
 namespace PlacetoPay\Payments\Logger;
 
 use Exception;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Filesystem\DriverInterface;
 use Magento\Framework\Logger\Handler\Base;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-use Magento\Framework\App\Filesystem\DirectoryList;
 use Monolog\Logger;
 
 /**
@@ -16,28 +16,28 @@ use Monolog\Logger;
 class Handler extends Base
 {
     /**
-     * Logging level
+     * Logging level.
      *
      * @var int
      */
     protected $loggerType = Logger::DEBUG;
 
     /**
-     * File name
+     * File name.
      *
      * @var string
      */
     protected $fileName = '';
 
     /**
-     * File path
+     * File path.
      *
      * @var string
      */
     public $filePath;
 
     /**
-     * @var TimezoneInterface $_localeDate
+     * @var TimezoneInterface
      */
     protected $_localeDate;
 
@@ -58,9 +58,9 @@ class Handler extends Base
     ) {
         $this->_localeDate = $localeDate;
 
-        $fileName = 'placetopay-' . $this->getTimeStamp() . '.log';
+        $fileName = 'placetopay-'.$this->getTimeStamp().'.log';
         $ds = DIRECTORY_SEPARATOR;
-        $this->filePath = $dir->getPath('log') . $ds . $fileName;
+        $this->filePath = $dir->getPath('log').$ds.$fileName;
 
         parent::__construct($filesystem, $this->filePath);
     }

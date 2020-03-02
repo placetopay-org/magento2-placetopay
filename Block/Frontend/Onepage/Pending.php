@@ -62,7 +62,7 @@ class Pending extends Template
     }
 
     /**
-     *  Payment custom error message
+     *  Payment custom error message.
      *
      * @return string
      */
@@ -72,7 +72,7 @@ class Pending extends Template
     }
 
     /**
-     * Continue shopping URL
+     * Continue shopping URL.
      *
      * @return string
      */

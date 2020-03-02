@@ -8,12 +8,12 @@ namespace PlacetoPay\Payments\Model\Adminhtml\Source;
 class Country
 {
     /**
-     * Country Colombia
+     * Country Colombia.
      */
     const COLOMBIA = 'CO';
 
     /**
-     * Country Ecuador
+     * Country Ecuador.
      */
     const ECUADOR = 'EC';
 
@@ -24,11 +24,11 @@ class Country
     {
         return [
             [
-                'value' => Country::COLOMBIA,
+                'value' => self::COLOMBIA,
                 'label' => __('Colombia'),
             ],
             [
-                'value' => Country::ECUADOR,
+                'value' => self::ECUADOR,
                 'label' => __('Ecuador'),
             ],
         ];
