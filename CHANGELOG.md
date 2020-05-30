@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/placetopay-org/magento2-placetopay/tree/development)
 
+## [1.6.2] - 2020-05-29
+
+### Updated
+- Merged list of taxes by key / value.
+
 ## [1.6.1] - 2020-02-26
 
 ### Added

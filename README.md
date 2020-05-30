@@ -32,7 +32,7 @@
 
 | Magento | Plugin   | Comments       |
 |------------|----------|----------------|
-| 2.3.x      | ~1.6.1   | From 2.3.2  |
+| 2.3.x      | ~1.6.2   | From 2.3.2  |
 
 View releases [here][link-releases]
 
@@ -97,7 +97,7 @@ Set up the module by running the following commands:
 
 ```bash
 cd /var/www/html \
-    && composer require placetopay/magento2-placetopay-payments \
+    && composer require placetopay/magento2-module-payments \
     && bin/magento module:enable PlacetoPay_Payments --clear-static-content \
     && bin/magento setup:upgrade \
     && bin/magento cache:flush \
