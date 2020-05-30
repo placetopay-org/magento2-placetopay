@@ -482,7 +482,19 @@ class PaymentMethod extends AbstractMethod
                         ];
                     }
 
-                    $data['payment']['amount']['taxes'] = $taxes;
+                    $mergedTaxes = [];
+
+                    foreach ($taxes as $elem) {
+                        $mergedTaxes[$elem['kind']]['kind'] = $elem['kind'];
+                        $mergedTaxes[$elem['kind']]['amount'] =
+                            isset($mergedTaxes[$elem['kind']]['amount']) ?
+                                number_format((float) $mergedTaxes[$elem['kind']]['amount'] + (float) $elem['amount'], 4, '.', '') :
+                                number_format((float) $elem['amount'], 4, '.', '');
+                    }
+
+                    $mergedTaxes = array_values($mergedTaxes);
+
+                    $data['payment']['amount']['taxes'] = $mergedTaxes;
                 }
             } catch (Exception $ex) {
                 $this->_logger->debug(
