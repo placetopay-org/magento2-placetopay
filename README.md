@@ -47,7 +47,7 @@ mkdir /var/www/html/app/code/PlacetoPay/Payments
 Clone Project in modules
  
 ```bash
-git clone https://github.com/placetopay/magento2-gateway.git /var/www/html/app/code/PlacetoPay/Payments
+git clone https://github.com/placetopay-org/magento2-gateway.git /var/www/html/app/code/PlacetoPay/Payments
 ```
 
 Set permissions and install dependencies with composer
