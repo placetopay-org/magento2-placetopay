@@ -200,7 +200,7 @@ class Response extends Action
                             $session->setQuoteId($order->getQuoteId());
                         }
 
-                        $this->messageManager->addErrorMessage(__('We regret that you have decided to cancel the payment.'));
+                        $this->messageManager->addErrorMessage(__('The payment process has been declined.'));
 
                         $pathRedirect = 'placetopay/onepage/failure';
                     } else {
@@ -213,7 +213,7 @@ class Response extends Action
                         $this->messageManager->addSuccessMessage(__('Thanks, transaction approved by placetopay.'));
                         $this->setPaymentApproved($payment, $transaction);
                     } elseif ($status->isRejected()) {
-                        $this->messageManager->addErrorMessage(__('We regret that you have decided to cancel the payment.'));
+                        $this->messageManager->addErrorMessage(__('The payment process has been declined.'));
                         $this->setPaymentDenied($payment, $transaction);
                     } else {
                         $this->messageManager->addWarningMessage(__('Transaction pending, please wait a moment while it automatically resolves.'));
