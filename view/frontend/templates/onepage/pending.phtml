@@ -28,10 +28,8 @@ $information = $payment->getAdditionalInformation();
             <?php if (isset($information['process_url'])) : ?>
                 <p>
                     <?= $block->escapeHtml(
-                        __(
-                            '<br>For more information about the status of your order: <a href="%1" target="_blank">view order detail in placetopay</a>',
-                            $information['process_url']
-                        ), ['a']
+                        __('For more information about the status of your order: <a href="%1" target="_blank">view order detail in placetopay</a>', $information['process_url']),
+                        ['a']
                     ) ?>
                 </p>
             <?php endif ?>

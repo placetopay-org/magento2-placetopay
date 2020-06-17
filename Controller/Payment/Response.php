@@ -202,11 +202,10 @@ class Response extends Action
 
                         $this->messageManager->addErrorMessage(__('We regret that you have decided to cancel the payment.'));
 
-                        $pathRedirect = 'checkout/onepage/failure';
+                        $pathRedirect = 'placetopay/onepage/failure';
                     } else {
                         $this->messageManager->addWarningMessage(__('Transaction pending, please wait a moment while it automatically resolves.'));
 
-                        //$pathRedirect = 'checkout/cart';
                         $pathRedirect = 'placetopay/onepage/pending';
                     }
                 } else {
