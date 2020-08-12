@@ -32,7 +32,7 @@
 
 | Magento | Plugin   | Comments       |
 |------------|----------|----------------|
-| 2.3.x      | ~1.6.2   | From 2.3.2  |
+| 2.x.x      | ~1.7.1   | From 2.0.x  |
 
 View releases [here][link-releases]
 
@@ -126,11 +126,18 @@ cd /var/www/html \
 ```
 
 ## Docker Installation
+First, you must edit the auth.json, follow the next instructions:
+
+```bash
+cd /path/to/magento/.docker/magento-{version}
+cp auth.json.example auth.json
+```
+
 For install magento 2, just exec this command in terminal, make sure you can execute make commands 
  
 ```bash
 cd /var/www/html/
-make install
+make build-magento-{version}
 ```
 
 Then... (Please wait few minutes, while install ALL and load Apache :D to continue), you can go to

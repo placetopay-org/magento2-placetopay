@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/placetopay-org/magento2-placetopay/tree/development)
 
+## [1.7.1] - 2020-08-12
+
+### Added
+- Support magento 2.0 / 2.1 / 2.2
+- Optional parameters in redirection request method.
+
+## [1.7.0] - 2020-06-17
+
+### Updated
+- Using magento success info block instead of overriding success default page.
+- Text translations for failure texts and others.
+
+### Added
+- Failure custom page.
+- Checkbox for terms and conditions in a checkout.
+
 ## [1.6.2] - 2020-05-29
 
 ### Updated
