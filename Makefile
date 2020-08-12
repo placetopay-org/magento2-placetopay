@@ -19,11 +19,6 @@ stop:
 down:
 	docker-compose down
 
-.PHONY: rebuild
-rebuild: down
-	docker-compose up -d --build
-	docker exec -it $(CONTAINER) service cron start
-
 .PHONY: bash
 bash:
 	docker-compose exec -u www-data $(SERVICE) bash
@@ -32,8 +27,37 @@ bash:
 mysql:
 	docker exec -it $(CONTAINER) mysql --user=root --password=root magento
 
-.PHONY: install
-install: rebuild
+.PHONY: build-magento-20
+build-magento-20: rebuild-magento-20
+
+.PHONY: rebuild-magento-20
+rebuild-magento-20: down
+	docker-compose -f docker-compose.yml -f docker-compose-magento-20.yml up -d --build
+	docker exec -it $(CONTAINER) service cron start
+
+.PHONY: build-magento-21
+build-magento-21: rebuild-magento-21
+
+.PHONY: rebuild-magento-21
+rebuild-magento-21: down
+	docker-compose -f docker-compose.yml -f docker-compose-magento-21.yml up -d --build
+	docker exec -it $(CONTAINER) service cron start
+
+.PHONY: build-magento-22
+build-magento-22: rebuild-magento-22
+
+.PHONY: rebuild-magento-22
+rebuild-magento-22: down
+	docker-compose -f docker-compose.yml -f docker-compose-magento-22.yml up -d --build
+	docker exec -it $(CONTAINER) service cron start
+
+.PHONY: build-magento-23
+build-magento-23: rebuild-magento-23
+
+.PHONY: rebuild-magento-23
+rebuild-magento-23: down
+	docker-compose -f docker-compose.yml -f docker-compose-magento-23.yml up -d --build
+	docker exec -it $(CONTAINER) service cron start
 
 .PHONY: install-magento
 install-magento:
