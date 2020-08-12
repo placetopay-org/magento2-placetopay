@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/placetopay-org/magento2-placetopay/tree/development)
 
+## [1.6.3] - 2020-08-11
+
+### Added
+- Support magento 2.0 / 2.1 / 2.2
+- Optional parameters in redirection request method.
+
 ## [1.6.2] - 2020-05-29
 
 ### Updated

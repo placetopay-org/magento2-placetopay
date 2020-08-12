@@ -181,7 +181,8 @@ class Response extends Action
                 /** @var Transaction $transaction */
                 $transaction = $this->_transactionRepository->getByTransactionType(
                     Transaction::TYPE_ORDER,
-                    $payment->getId()
+                    $payment->getId(),
+                    $payment->getOrder()->getId()
                 );
 
                 if ($this->scopeConfig->getValue('payment/'.$placetopay->getCode().'/final_page') == 'magento_default') {
