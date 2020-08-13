@@ -156,7 +156,7 @@ class Response extends Action
     {
         $session = $this->_getCheckout();
         $order = $session->getLastRealOrder();
-        $pathRedirect = 'checkout/onepage/success';
+        $pathRedirect = 'placetopay/onepage/success';
 
         try {
             if ($order && $this->request->getParam('reference') == $order->getRealOrderId()) {
