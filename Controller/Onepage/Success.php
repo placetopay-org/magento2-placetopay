@@ -2,23 +2,36 @@
 
 namespace PlacetoPay\Payments\Controller\Onepage;
 
+use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
+
 /**
  * Class Success.
  */
-class Success extends \Magento\Checkout\Controller\Onepage
+class Success extends \Magento\Checkout\Controller\Onepage implements HttpGetActionInterface
 {
     /**
      * @return \Magento\Framework\View\Result\Page|\Magento\Framework\Controller\Result\Redirect
      */
     public function execute()
     {
-        $lastQuoteId = $this->getOnepage()->getCheckout()->getLastQuoteId();
-        $lastOrderId = $this->getOnepage()->getCheckout()->getLastOrderId();
+        $session = $this->getOnepage()->getCheckout();
 
-        if (! $lastQuoteId || ! $lastOrderId) {
+        if (!$this->_objectManager->get(\Magento\Checkout\Model\Session\SuccessValidator::class)->isValid()) {
             return $this->resultRedirectFactory->create()->setPath('checkout/cart');
         }
 
-        return $this->resultPageFactory->create();
+        $session->clearQuote();
+
+        $resultPage = $this->resultPageFactory->create();
+
+        $this->_eventManager->dispatch(
+            'checkout_onepage_controller_success_action',
+            [
+                'order_ids' => [$session->getLastOrderId()],
+                'order' => $session->getLastRealOrder()
+            ]
+        );
+
+        return $resultPage;
     }
 }
