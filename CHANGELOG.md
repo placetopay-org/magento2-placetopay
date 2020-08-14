@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/placetopay-org/magento2-placetopay/tree/development)
 
+## [1.7.2] - 2020-08-14
+
+### Added
+- Success custom page.
+
+### Fixed
+- Return page bug for magento 2.0 / 2.1 / 2.2
+
 ## [1.7.1] - 2020-08-12
 
 ### Added
