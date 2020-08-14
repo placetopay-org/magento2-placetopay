@@ -2,12 +2,10 @@
 
 namespace PlacetoPay\Payments\Controller\Onepage;
 
-use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
-
 /**
  * Class Success.
  */
-class Success extends \Magento\Checkout\Controller\Onepage implements HttpGetActionInterface
+class Success extends \Magento\Checkout\Controller\Onepage
 {
     /**
      * @return \Magento\Framework\View\Result\Page|\Magento\Framework\Controller\Result\Redirect
