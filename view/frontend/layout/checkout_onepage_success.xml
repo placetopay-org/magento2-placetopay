@@ -1,7 +1,0 @@
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <body>
-        <referenceContainer name="order.success.additional.info">
-            <block class="PlacetoPay\Payments\Block\Frontend\Onepage\Success" name="placetopay.checkout.success" template="PlacetoPay_Payments::onepage/success.phtml" after="-"/>
-        </referenceContainer>
-    </body>
-</page>

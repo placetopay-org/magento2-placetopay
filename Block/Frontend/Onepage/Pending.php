@@ -35,6 +35,16 @@ class Pending extends Template
      */
     protected $priceCurrency;
 
+    /**
+     * Pending constructor.
+     *
+     * @param Context $context
+     * @param Session $checkoutSession
+     * @param OrderRepositoryInterface $orderRepository
+     * @param TimezoneInterface $timezoneInterface
+     * @param PriceCurrencyInterface $priceCurrency
+     * @param array $data
+     */
     public function __construct(
         Context $context,
         Session $checkoutSession,
