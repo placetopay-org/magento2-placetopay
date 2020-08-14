@@ -57,7 +57,7 @@
                                 <span><?= $block->escapeHtml(__('Reorder')) ?></span>
                             </a>
                             <?php if (isset($info['process_url'])) : ?>
-                                <a href="<?php echo $info['process_url'] ?>" class="link-view"><?php echo $block->escapeHtml(__('Payment Detail')) ?></a>
+                                <a href="<?php echo $info['process_url'] ?>" class="link-view" target="_blank"><?php echo $block->escapeHtml(__('Payment Detail')) ?></a>
                             <?php endif ?>
                         <?php endif ?>
                     </td>

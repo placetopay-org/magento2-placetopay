@@ -156,7 +156,7 @@ class Response extends Action
     {
         $session = $this->_getCheckout();
         $order = $session->getLastRealOrder();
-        $pathRedirect = 'checkout/onepage/success';
+        $pathRedirect = 'placetopay/onepage/success';
 
         try {
             if ($order && $this->request->getParam('reference') == $order->getRealOrderId()) {
@@ -188,9 +188,12 @@ class Response extends Action
                 if ($this->scopeConfig->getValue('payment/'.$placetopay->getCode().'/final_page') == 'magento_default') {
                     if ($status->isApproved()) {
                         $this->setPaymentApproved($payment, $transaction);
-                        $this->_getCheckout()->setLastSuccessQuoteId($order->getQuoteId());
-                        $this->_getCheckout()->setLastQuoteId($order->getQuoteId());
-                        $this->_getCheckout()->setLastOrderId($order->getEntityId());
+
+                        $session->setLastQuoteId($order->getQuoteId())
+                            ->setLastSuccessQuoteId($order->getQuoteId())
+                            ->setLastOrderId($order->getId())
+                            ->setLastRealOrderId($order->getIncrementId())
+                            ->setLastOrderStatus($order->getStatus());
                     } elseif ($status->isRejected()) {
                         $this->setPaymentDenied($payment, $transaction);
 
@@ -257,14 +260,18 @@ class Response extends Action
                             $additional = $payment->getAdditionalInformation();
 
                             if ($placetopay->isPendingOrder($order) && $additional && isset($additional['request_id'])) {
-                                if ($placetopay->isPendingOrder($order) && $additional && isset($additional['request_id'])) {
-                                    $information = $placetopay->gateway()->query($additional['request_id']);
+                                $information = $placetopay->gateway()->query($additional['request_id']);
 
-                                    $placetopay->settleOrderStatus($information, $order);
-                                }
+                                $placetopay->settleOrderStatus($information, $order);
                             }
                         }
                     }
+
+                    $session->setLastQuoteId($order->getQuoteId())
+                        ->setLastSuccessQuoteId($order->getQuoteId())
+                        ->setLastOrderId($order->getId())
+                        ->setLastRealOrderId($order->getIncrementId())
+                        ->setLastOrderStatus($order->getStatus());
                 }
             }
 

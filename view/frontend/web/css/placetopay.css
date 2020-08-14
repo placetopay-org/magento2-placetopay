@@ -43,3 +43,9 @@
     top: 0.4em;
     margin-right: 2px;
 }
+
+.placetopay-onepage-success .print {
+    display: block;
+    float: right;
+    margin: 23px 0 0;
+}
