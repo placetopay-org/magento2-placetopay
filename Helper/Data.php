@@ -367,12 +367,10 @@ class Data extends BaseData
      */
     public function getCountryCode()
     {
-        $country = $this->scopeConfig->getValue(
+        return $this->scopeConfig->getValue(
             'payment/placetopay/country',
             ScopeInterface::SCOPE_STORE
         );
-
-        return $country;
     }
 
     /**
@@ -383,7 +381,7 @@ class Data extends BaseData
         return [
             Mode::DEVELOPMENT => 'https://dev.placetopay.com/redirection',
             Mode::TEST => 'https://test.placetopay.com/redirection',
-            Mode::PRODUCTION => 'https://secure.placetopay.com/redirection',
+            Mode::PRODUCTION => 'https://checkout.placetopay.com',
         ];
     }
 
@@ -399,11 +397,12 @@ class Data extends BaseData
                 $endpoints = [
                     Mode::DEVELOPMENT => 'https://dev.placetopay.ec/redirection',
                     Mode::TEST => 'https://test.placetopay.ec/redirection',
-                    Mode::PRODUCTION => 'https://secure.placetopay.ec/redirection',
+                    Mode::PRODUCTION => 'https://checkout.placetopay.ec',
                 ];
 
                 break;
             case Country::COLOMBIA:
+            case Country::COSTA_RICA:
             default:
                 $endpoints = self::getDefaultEndpoints();
 

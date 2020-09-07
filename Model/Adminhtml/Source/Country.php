@@ -13,6 +13,11 @@ class Country
     const COLOMBIA = 'CO';
 
     /**
+     * Country Costa Rica
+     */
+    const COSTA_RICA = 'CR';
+
+    /**
      * Country Ecuador.
      */
     const ECUADOR = 'EC';
@@ -26,6 +31,10 @@ class Country
             [
                 'value' => self::COLOMBIA,
                 'label' => __('Colombia'),
+            ],
+            [
+                'value' => self::COSTA_RICA,
+                'label' => __('Costa Rica'),
             ],
             [
                 'value' => self::ECUADOR,

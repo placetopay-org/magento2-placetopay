@@ -99,7 +99,8 @@ class CustomConfigProvider implements ConfigProviderInterface
         $customerId = $this->customerSession->getCustomer()->getId();
 
         $collection = $this->collectionFactory->create()
-            ->addAttributeToSelect('*')->addFieldToFilter('customer_id', $customerId)
+            ->addAttributeToSelect('*')
+            ->addFieldToFilter('customer_id', $customerId)
             ->addAttributeToFilter('state', ['in' => [
                 Order::STATE_PENDING_PAYMENT,
                 Order::STATE_NEW,
@@ -148,6 +149,7 @@ class CustomConfigProvider implements ConfigProviderInterface
         if ($pm = $this->_scopeConfig->getPaymentMethods()) {
             $parsingsCountry = [
                 'CO' => [],
+                'CR' => [],
                 'EC' => [
                     'CR_VS' => 'ID_VS',
                     'RM_MC' => 'ID_MC',
