@@ -3,7 +3,6 @@
 namespace PlacetoPay\Payments\Model;
 
 use Dnetix\Redirection\Entities\Status;
-use Dnetix\Redirection\Entities\Transaction;
 use Dnetix\Redirection\Message\RedirectResponse;
 use Exception;
 use Magento\Framework\Exception\LocalizedException;
@@ -11,6 +10,7 @@ use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Sales\Model\Order\Payment\Transaction as TransactionModel;
 use Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface;
+use PlacetoPay\Payments\Exception\PlacetoPayException;
 
 /**
  * Class Info.
@@ -24,7 +24,6 @@ class Info
 
     /**
      * Info constructor.
-     *
      * @param BuilderInterface $transactionBuilder
      */
     public function __construct(BuilderInterface $transactionBuilder)
@@ -33,15 +32,18 @@ class Info
     }
 
     /**
-     * @param Payment          $payment
+     * @param Payment $payment
      * @param RedirectResponse $response
-     * @param string           $env
-     * @param Order            $order
-     *
+     * @param string $env
+     * @param Order $order
      * @throws LocalizedException
-     * @throws Exception
+     * @throws PlacetoPayException
      */
-    public function loadInformationFromRedirectResponse(&$payment, $response, $env, $order)
+    public function loadInformationFromRedirectResponse(
+        Payment $payment,
+        RedirectResponse $response,
+        string $env,
+        Order $order)
     {
         $payment->setLastTransId($response->requestId());
         $payment->setTransactionId($response->requestId);
@@ -71,24 +73,24 @@ class Info
         try {
             $payment->save();
         } catch (Exception $ex) {
-            throw new Exception($ex->getMessage());
+            throw new PlacetoPayException($ex->getMessage(), 401);
         }
     }
 
     /**
-     * @param Payment     $payment
-     * @param Status      $status
-     * @param Transaction $transactions
-     *
+     * @param Payment $payment
+     * @param Status $status
+     * @param array|null $transactions
      * @throws LocalizedException
+     * @throws PlacetoPayException
      */
-    public function updateStatus(&$payment, $status, $transactions = null)
+    public function updateStatus(Payment $payment, Status $status, ?array $transactions = null)
     {
         $information = $payment->getAdditionalInformation();
         $parsedTransactions = $information['transactions'];
         $lastTransaction = null;
 
-        if ($transactions && is_array($transactions) && count($transactions) > 0) {
+        if ($transactions && is_array($transactions) && empty($transactions)) {
             $lastTransaction = $transactions[0];
 
             foreach ($transactions as $transaction) {
@@ -119,11 +121,10 @@ class Info
     /**
      * @param Payment $payment
      * @param array $data
-     *
      * @throws LocalizedException
-     * @throws Exception
+     * @throws PlacetoPayException
      */
-    public function importToPayment(&$payment, $data)
+    public function importToPayment(Payment $payment, array $data)
     {
         $actual = $payment->getAdditionalInformation() ? $payment->getAdditionalInformation() : [];
 
@@ -132,7 +133,7 @@ class Info
         try {
             $payment->save();
         } catch (Exception $ex) {
-            throw new Exception($ex->getMessage());
+            throw new PlacetoPayException($ex->getMessage(), 401);
         }
     }
 }
