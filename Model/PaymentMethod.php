@@ -40,33 +40,20 @@ use PlacetoPay\Payments\Model\Info as InfoFactory;
 class PaymentMethod extends AbstractMethod
 {
     const CODE = 'placetopay';
-
     const EXPIRATION_TIME_MINUTES_DEFAULT = 120;
-
     const EXPIRATION_TIME_MINUTES_MIN = 10;
 
     protected $gateway;
-
     protected $_code = self::CODE;
-
     protected $_isGateway = true;
-
     protected $_canOrder = true;
-
     protected $_canAuthorize = true;
-
     protected $_canCapture = true;
-
     protected $_canCapturePartial = true;
-
     protected $_canRefund = false;
-
     protected $_canRefundInvoicePartial = false;
-
     protected $_canVoid = true;
-
     protected $_canFetchTransactionInfo = true;
-
     protected $_canReviewPayment = true;
 
     /**
@@ -226,11 +213,7 @@ class PaymentMethod extends AbstractMethod
      */
     public function isActive($storeId = null)
     {
-        if ($this->_config->getActive()) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->_config->getActive();
     }
 
     /**

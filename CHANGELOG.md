@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/placetopay-org/magento2-placetopay/tree/development)
 
+### [1.7.3] - 2020-09-14
+
+### Added
+- Support to php 7.4
+- Costa Rica to Countries list
+
+### Updated
+- Payment gateway production endpoint
+
 ## [1.7.2] - 2020-08-14
 
 ### Added
