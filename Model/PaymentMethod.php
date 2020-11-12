@@ -677,7 +677,7 @@ class PaymentMethod extends AbstractMethod
 
                 break;
             default:
-                $state = $orderStatus = $comment = null;
+                $state = $orderStatus = null;
         }
 
         if ($state !== null) {

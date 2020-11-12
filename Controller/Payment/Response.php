@@ -214,7 +214,7 @@ class Response extends Action
                     }
                 } else {
                     if ($status->isApproved()) {
-                        $this->messageManager->addSuccessMessage(__('Thanks, transaction approved by placetopay.'));
+                        $this->messageManager->addSuccessMessage(__('Thanks, transaction approved by Placetopay.'));
                         $this->setPaymentApproved($payment, $transaction);
                     } elseif ($status->isRejected()) {
                         $this->messageManager->addErrorMessage(__('The payment process has been declined.'));

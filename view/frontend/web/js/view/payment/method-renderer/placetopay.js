@@ -109,7 +109,7 @@ define(
                 let url = window.checkoutConfig.payment.placetopay.url;
                 let name = window.checkoutConfig.payment.placetopay.legalName;
                 let merchant = '<b>EGM Ingeniería Sin Fronteras S.A.S</b>';
-                let brand = '<b>PlacetoPay</b>';
+                let brand = '<b>Placetopay</b>';
                 let data = [url, name, merchant, brand];
 
                 return $t('Any person who realizes a purchase in the site %1, acting freely and voluntarily, authorizes to %2, through the service provider %3 y/o %4 to consult and request information from credit, financial, commercial performance and services to third parties, even in countries of the same nature in the central risk, generating a footprint consultation.')

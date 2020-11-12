@@ -3,8 +3,8 @@
     <system>
         <section id="payment">
             <group id="placetopay" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>PlacetoPay</label>
-                <comment>Accept payments by credit cards and debits account using PlacetoPay.</comment>
+                <label>Placetopay</label>
+                <comment>Accept payments by credit cards and debits account using Placetopay.</comment>
                 <fieldset_css>complex placetopay-admin-config</fieldset_css>
                 <frontend_model>PlacetoPay\Payments\Block\Adminhtml\System\Config\Fieldset</frontend_model>
                 <attribute type="displayIn">recommended_solutions</attribute>
