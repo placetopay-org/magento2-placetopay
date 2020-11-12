@@ -4,7 +4,7 @@
     <group id="gateway" translate="label comment" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
         <label>Connection Settings</label>
         <comment>
-            <![CDATA[You will need to set your API keys before you can accept payments. If you do not yet have a PlacetoPay account, please <a href="https://www.placetopay.com/web/contactanos" target="_blank">click here</a> to contact and register.]]></comment>
+            <![CDATA[You will need to set your API keys before you can accept payments. If you do not yet have a Placetopay account, please <a href="https://www.placetopay.com/web/contactanos" target="_blank">click here</a> to contact and register.]]></comment>
         <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>Enabled</label>
@@ -40,7 +40,7 @@
                showInWebsite="1" showInStore="1">
             <label>Development Login</label>
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> > Sites > Development Login]]></comment>
+                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your Placetopay Account</a> > Sites > Development Login]]></comment>
             <depends>
                 <field id="placetopay_mode">development</field>
             </depends>
@@ -50,7 +50,7 @@
                showInWebsite="1" showInStore="1">
             <label>Development TranKey</label>
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> > Sites > Development TranKey]]></comment>
+                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your Placetopay Account</a> > Sites > Development TranKey]]></comment>
             <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
             <depends>
                 <field id="placetopay_mode">development</field>
@@ -62,7 +62,7 @@
                showInStore="1">
             <label>Test Login</label>
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> > Sites > Test Login]]></comment>
+                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your Placetopay Account</a> > Sites > Test Login]]></comment>
             <depends>
                 <field id="placetopay_mode">test</field>
             </depends>
@@ -72,7 +72,7 @@
                showInWebsite="1" showInStore="1">
             <label>Test TranKey</label>
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> > Sites > Test TranKey]]></comment>
+                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your Placetopay Account</a> > Sites > Test TranKey]]></comment>
             <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
             <depends>
                 <field id="placetopay_mode">test</field>
@@ -83,7 +83,7 @@
                showInWebsite="1" showInStore="1">
             <label>Production Login</label>
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> > Sites > Production Login]]></comment>
+                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your Placetopay Account</a> > Sites > Production Login]]></comment>
             <depends>
                 <field id="placetopay_mode">production</field>
             </depends>
@@ -93,7 +93,7 @@
                showInWebsite="1" showInStore="1">
             <label>Production TranKey</label>
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your PlacetoPay Account</a> > Sites > Production TranKey]]></comment>
+                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your Placetopay Account</a> > Sites > Production TranKey]]></comment>
             <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
             <depends>
                 <field id="placetopay_mode">production</field>
