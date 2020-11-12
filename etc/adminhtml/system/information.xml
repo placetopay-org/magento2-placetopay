@@ -8,7 +8,7 @@
                showInStore="1">
             <label>Notification URL</label>
             <frontend_model>PlacetoPay\Payments\Block\Adminhtml\System\Config\Form\Field\NotifyUrl</frontend_model>
-            <comment><![CDATA[URL where PlacetoPay will send payment status to Magento.]]></comment>
+            <comment><![CDATA[URL where Placetopay will send payment status to Magento.]]></comment>
             <config_path>payment/placetopay/notification_url</config_path>
         </field>
     </group>

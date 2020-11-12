@@ -6,7 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/placetopay-org/magento2-placetopay/tree/development)
 
-### [1.7.3] - 2020-09-14
+## [1.7.4] - 2020-11-11
+
+### Updated
+- Brand name in views.
+
+## [1.7.3] - 2020-09-14
 
 ### Added
 - Support to php 7.4
