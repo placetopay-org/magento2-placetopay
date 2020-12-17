@@ -100,7 +100,7 @@ class Failure extends Template
      * @param string $format
      * @return string
      */
-    public function dateFormat($date, $format = 'd F Y'): string
+    public function dateFormat($date, $format = 'd F Y')
     {
         return $this->_timezoneInterface->date($date)->format($format);
     }
@@ -109,7 +109,7 @@ class Failure extends Template
      * @param $amount
      * @return string
      */
-    public function getFormattedPrice($amount): string
+    public function getFormattedPrice($amount)
     {
         return $this->_priceCurrency->convertAndFormat($amount);
     }

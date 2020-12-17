@@ -23,7 +23,7 @@ use Magento\Sales\Api\TransactionRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Sales\Model\OrderFactory;
-use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
+use PlacetoPay\Payments\Helper\PlacetoPayLogger;
 use PlacetoPay\Payments\Model\PaymentMethod;
 
 /**
@@ -31,6 +31,11 @@ use PlacetoPay\Payments\Model\PaymentMethod;
  */
 class Response extends Action
 {
+    /**
+     * @var PlacetoPayLogger
+     */
+    protected $_logger;
+
     /**
      * @var Session
      */
@@ -45,11 +50,6 @@ class Response extends Action
      * @var ManagerInterface
      */
     protected $messageManager;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
 
     /**
      * @var Http
@@ -98,26 +98,25 @@ class Response extends Action
 
     /**
      * Response constructor.
-     *
-     * @param Context                        $context
-     * @param Session                        $checkoutSession
-     * @param OrderFactory                   $salesOrderFactory
-     * @param ManagerInterface               $messageManager
-     * @param LoggerInterface                $logger
-     * @param Http                           $request
-     * @param ScopeConfigInterface           $scopeConfig
-     * @param QuoteFactory                   $quoteQuoteFactory
-     * @param CustomerSession                $customerSession
-     * @param EventManager                   $eventManager
+     * @param Context $context
+     * @param Session $checkoutSession
+     * @param OrderFactory $salesOrderFactory
+     * @param ManagerInterface $messageManager
+     * @param PlacetoPayLogger $logger
+     * @param Http $request
+     * @param ScopeConfigInterface $scopeConfig
+     * @param QuoteFactory $quoteQuoteFactory
+     * @param CustomerSession $customerSession
+     * @param EventManager $eventManager
      * @param TransactionRepositoryInterface $transactionRepository
-     * @param PageFactory                    $pageFactory
+     * @param PageFactory $pageFactory
      */
     public function __construct(
         Context $context,
         Session $checkoutSession,
         OrderFactory $salesOrderFactory,
         ManagerInterface $messageManager,
-        LoggerInterface $logger,
+        PlacetoPayLogger $logger,
         Http $request,
         ScopeConfigInterface $scopeConfig,
         QuoteFactory $quoteQuoteFactory,
@@ -126,12 +125,10 @@ class Response extends Action
         TransactionRepositoryInterface $transactionRepository,
         PageFactory $pageFactory
     ) {
-        parent::__construct($context);
-
+        $this->_logger = $logger;
         $this->checkoutSession = $checkoutSession;
         $this->salesOrderFactory = $salesOrderFactory;
         $this->messageManager = $messageManager;
-        $this->logger = $logger;
         $this->request = $request;
         $this->scopeConfig = $scopeConfig;
         $this->quoteQuoteFactory = $quoteQuoteFactory;
@@ -139,14 +136,7 @@ class Response extends Action
         $this->eventManager = $eventManager;
         $this->_transactionRepository = $transactionRepository;
         $this->_pageFactory = $pageFactory;
-    }
-
-    /**
-     * @return Session
-     */
-    protected function _getCheckout()
-    {
-        return $this->checkoutSession;
+        parent::__construct($context);
     }
 
     /**
@@ -154,8 +144,9 @@ class Response extends Action
      */
     public function execute()
     {
-        $session = $this->_getCheckout();
-        $order = $session->getLastRealOrder();
+        $reference = $this->request->getParam('reference');
+        $order = $this->salesOrderFactory->create()->loadByIncrementId($reference);
+        $session = $this->checkoutSession;
         $pathRedirect = 'placetopay/onepage/success';
 
         try {
@@ -167,7 +158,7 @@ class Response extends Action
                  */
                 $placetopay = $payment->getMethodInstance();
 
-                if (0 !== strpos($placetopay->getCode(), 'placetopay')) {
+                if (strcmp($placetopay->getCode(), 'placetopay') !== 0) {
                     throw new LocalizedException(__('Unknown payment method.'));
                 }
 
@@ -185,7 +176,7 @@ class Response extends Action
                     $payment->getOrder()->getId()
                 );
 
-                if ($this->scopeConfig->getValue('payment/'.$placetopay->getCode().'/final_page') == 'magento_default') {
+                if ($this->scopeConfig->getValue('payment/' . $placetopay->getCode() . '/final_page') == 'magento_default') {
                     if ($status->isApproved()) {
                         $this->setPaymentApproved($payment, $transaction);
 
@@ -194,6 +185,8 @@ class Response extends Action
                             ->setLastOrderId($order->getId())
                             ->setLastRealOrderId($order->getIncrementId())
                             ->setLastOrderStatus($order->getStatus());
+
+                        $this->messageManager->addSuccessMessage(__('Thanks, transaction approved by Placetopay.'));
                     } elseif ($status->isRejected()) {
                         $this->setPaymentDenied($payment, $transaction);
 
@@ -212,6 +205,10 @@ class Response extends Action
 
                         $pathRedirect = 'placetopay/onepage/failure';
                     } else {
+                        $session->setLastOrderId($order->getId())
+                            ->setLastRealOrderId($order->getIncrementId())
+                            ->setLastOrderStatus($order->getStatus());
+
                         $this->messageManager->addWarningMessage(__('Transaction pending, please wait a moment while it automatically resolves.'));
 
                         $pathRedirect = 'placetopay/onepage/pending';
@@ -233,19 +230,12 @@ class Response extends Action
                             ['order_ids' => [$order->getRealOrderId()]]
                         );
 
-                        $pathRedirect = 'sales/order/view/order_id/'.$order->getRealOrderId();
+                        $pathRedirect = 'sales/order/view/order_id/' . $order->getRealOrderId();
                     } else {
                         $pathRedirect = 'sales/guest/form/';
                     }
                 }
             } else {
-                $reference = $this->getRequest()->getParam('reference');
-
-                $this->logger->debug(
-                    'Response ['.
-                    $order->getRealOrderId().'] with Reference: '.$reference
-                );
-
                 /**
                  * @var Order
                  */
@@ -285,22 +275,23 @@ class Response extends Action
 
             return $resultRedirect;
         } catch (LocalizedException $exception) {
-            $this->logger->debug(
-                'Response ['.$order->getRealOrderId().']'.
-                $exception->getMessage().' ON '.
-                $exception->getFile().' LINE '.
-                $exception->getLine()
-            );
+            $this->_logger->logger($this, 'error', __FUNCTION__ . ' error', [
+                'response' => $exception->getMessage(),
+                'code_exception' => $exception->getCode(),
+                'file_exception' => $exception->getFile(),
+                'line_exception' => $exception->getLine(),
+            ]);
 
             $this->messageManager->addErrorMessage($exception->getMessage());
 
             return $this->_pageFactory->create();
         } catch (Exception $exception) {
-            $this->logger->debug('Response ['.
-                $order->getRealOrderId().']'.
-                $exception->getMessage().' ON '.
-                $exception->getFile().' LINE '.
-                $exception->getLine());
+            $this->_logger->logger($this, 'error', __FUNCTION__ . ' error', [
+                'response' => $exception->getMessage(),
+                'code_exception' => $exception->getCode(),
+                'file_exception' => $exception->getFile(),
+                'line_exception' => $exception->getLine(),
+            ]);
 
             return $this->_pageFactory->create();
         }

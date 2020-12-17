@@ -58,9 +58,9 @@ class Handler extends Base
     ) {
         $this->_localeDate = $localeDate;
 
-        $fileName = 'placetopay-'.$this->getTimeStamp().'.log';
+        $fileName = 'placetopay-' . $this->getTimeStamp() . '.log';
         $ds = DIRECTORY_SEPARATOR;
-        $this->filePath = $dir->getPath('log').$ds.$fileName;
+        $this->filePath = $dir->getPath('log') . $ds . $fileName;
 
         parent::__construct($filesystem, $this->filePath);
     }
