@@ -201,7 +201,11 @@ class Response extends Action
 
                         if ($quote->getId()) {
                             $quote->setIsActive(true)->save();
-                            $session->setQuoteId($order->getQuoteId());
+
+                            $session->setLastQuoteId($order->getQuoteId())
+                                ->setLastOrderId($order->getId())
+                                ->setLastRealOrderId($order->getIncrementId())
+                                ->setLastOrderStatus($order->getStatus());
                         }
 
                         $this->messageManager->addErrorMessage(__('The payment process has been declined.'));
