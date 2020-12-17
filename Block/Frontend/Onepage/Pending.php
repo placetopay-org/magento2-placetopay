@@ -7,7 +7,6 @@ use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 
 /**
@@ -18,22 +17,22 @@ class Pending extends Template
     /**
      * @var Session
      */
-    protected $checkoutSession;
+    protected $_checkoutSession;
 
     /**
      * @var OrderRepositoryInterface
      */
-    protected $orderRepository;
+    protected $_orderRepository;
 
     /**
      * @var TimezoneInterface
      */
-    protected $timezoneInterface;
+    protected $_timezoneInterface;
 
     /**
      * @var PriceCurrencyInterface
      */
-    protected $priceCurrency;
+    protected $_priceCurrency;
 
     /**
      * Pending constructor.
@@ -53,14 +52,12 @@ class Pending extends Template
         PriceCurrencyInterface $priceCurrency,
         array $data = []
     ) {
-        $this->checkoutSession = $checkoutSession;
-
+        $this->_checkoutSession = $checkoutSession;
+        $this->_orderRepository = $orderRepository;
+        $this->_timezoneInterface = $timezoneInterface;
+        $this->_priceCurrency = $priceCurrency;
         parent::__construct($context, $data);
-
         $this->_isScopePrivate = true;
-        $this->orderRepository = $orderRepository;
-        $this->timezoneInterface = $timezoneInterface;
-        $this->priceCurrency = $priceCurrency;
     }
 
     /**
@@ -68,21 +65,21 @@ class Pending extends Template
      */
     public function getRealOrderId()
     {
-        return $this->checkoutSession->getLastRealOrderId();
+        return $this->_checkoutSession->getLastRealOrderId();
     }
 
     /**
-     *  Payment custom error message.
+     *  Payment custom error message
      *
      * @return string
      */
-    public function getErrorMessage()
+    public function getWarningMessage()
     {
-        return $this->checkoutSession->getErrorMessage();
+        return $this->_checkoutSession->getWarningMessage();
     }
 
     /**
-     * Continue shopping URL.
+     * Continue shopping URL
      *
      * @return string
      */
@@ -92,11 +89,11 @@ class Pending extends Template
     }
 
     /**
-     * @return OrderInterface
+     * @return \Magento\Sales\Api\Data\OrderInterface
      */
     public function getOrder()
     {
-        return $this->orderRepository->get($this->checkoutSession->getLastRealOrderId());
+        return $this->_orderRepository->get($this->getRealOrderId());
     }
 
     /**
@@ -106,7 +103,7 @@ class Pending extends Template
      */
     public function dateFormat($date, $format = 'd F Y')
     {
-        return $this->timezoneInterface->date($date)->format($format);
+        return $this->_timezoneInterface->date($date)->format($format);
     }
 
     /**
@@ -115,6 +112,6 @@ class Pending extends Template
      */
     public function getFormattedPrice($amount)
     {
-        return $this->priceCurrency->convertAndFormat($amount);
+        return $this->_priceCurrency->convertAndFormat($amount);
     }
 }
