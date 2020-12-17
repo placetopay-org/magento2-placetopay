@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.7.5] - 2020-12-17
+
 ### Added
 - Custom placetopay logger
 
@@ -118,7 +120,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - First release
 
-[Unreleased]: https://github.com/placetopay-org/magento2-placetopay/compare/1.7.4...HEAD
+[Unreleased]: https://github.com/placetopay-org/magento2-placetopay/compare/1.7.5...HEAD
+[1.7.5]: https://github.com/placetopay-org/magento2-placetopay/compare/1.7.4...1.7.5
 [1.7.4]: https://github.com/placetopay-org/magento2-placetopay/compare/1.7.3...1.7.4
 [1.7.3]: https://github.com/placetopay-org/magento2-placetopay/compare/1.7.2...1.7.3
 [1.7.2]: https://github.com/placetopay-org/magento2-placetopay/compare/1.7.1...1.7.2
