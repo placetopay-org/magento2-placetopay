@@ -2,10 +2,13 @@
 
 namespace PlacetoPay\Payments\Controller\Onepage;
 
+use Magento\Checkout\Controller\Onepage;
+use Magento\Checkout\Model\Session\SuccessValidator;
+
 /**
  * Class Success.
  */
-class Success extends \Magento\Checkout\Controller\Onepage
+class Success extends Onepage
 {
     /**
      * @return \Magento\Framework\View\Result\Page|\Magento\Framework\Controller\Result\Redirect
@@ -14,7 +17,7 @@ class Success extends \Magento\Checkout\Controller\Onepage
     {
         $session = $this->getOnepage()->getCheckout();
 
-        if (!$this->_objectManager->get(\Magento\Checkout\Model\Session\SuccessValidator::class)->isValid()) {
+        if (!$this->_objectManager->get(SuccessValidator::class)->isValid()) {
             return $this->resultRedirectFactory->create()->setPath('checkout/cart');
         }
 
