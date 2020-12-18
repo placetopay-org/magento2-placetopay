@@ -20,9 +20,9 @@ use Magento\Framework\View\Result\PageFactory;
 use Magento\Payment\Helper\Data as PaymentHelper;
 use Magento\Quote\Model\QuoteFactory;
 use Magento\Sales\Api\TransactionRepositoryInterface;
-use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Sales\Model\OrderFactory;
+use Magento\Store\Model\ScopeInterface;
 use PlacetoPay\Payments\Helper\PlacetoPayLogger;
 use PlacetoPay\Payments\Model\PaymentMethod;
 
@@ -150,121 +150,91 @@ class Response extends Action
         $pathRedirect = 'placetopay/onepage/success';
 
         try {
-            if ($order && $this->request->getParam('reference') == $order->getRealOrderId()) {
-                $payment = $order->getPayment();
+            $payment = $order->getPayment();
 
-                /**
-                 * @var PaymentMethod
-                 */
-                $placetopay = $payment->getMethodInstance();
+            /** @var PaymentMethod $placetopay */
+            $placetopay = $payment->getMethodInstance();
 
-                if (strcmp($placetopay->getCode(), 'placetopay') !== 0) {
-                    throw new LocalizedException(__('Unknown payment method.'));
-                }
+            if (strcmp($placetopay->getCode(), 'placetopay') !== 0) {
+                throw new LocalizedException(__('Unknown payment method.'));
+            }
 
-                if ($placetopay->isPendingOrder($order)) {
-                    $response = $placetopay->resolve($order, $payment);
-                    $status = $response->status();
-                } else {
-                    $status = $placetopay->parseOrderState($order);
-                }
-
-                /** @var Transaction $transaction */
-                $transaction = $this->_transactionRepository->getByTransactionType(
-                    Transaction::TYPE_ORDER,
-                    $payment->getId()
-                );
-
-                if ($this->scopeConfig->getValue('payment/' . $placetopay->getCode() . '/final_page') == 'magento_default') {
-                    if ($status->isApproved()) {
-                        $this->setPaymentApproved($payment, $transaction);
-
-                        $session->setLastQuoteId($order->getQuoteId())
-                            ->setLastSuccessQuoteId($order->getQuoteId())
-                            ->setLastOrderId($order->getId())
-                            ->setLastRealOrderId($order->getIncrementId())
-                            ->setLastOrderStatus($order->getStatus());
-
-                        $this->messageManager->addSuccessMessage(__('Thanks, transaction approved by Placetopay.'));
-                    } elseif ($status->isRejected()) {
-                        $this->setPaymentDenied($payment, $transaction);
-
-                        $quote = $this->quoteQuoteFactory->create()->load($order->getQuoteId());
-
-                        if ($quote->getId()) {
-                            $quote->setIsActive(true)->save();
-
-                            $session->setLastQuoteId($order->getQuoteId())
-                                ->setLastOrderId($order->getId())
-                                ->setLastRealOrderId($order->getIncrementId())
-                                ->setLastOrderStatus($order->getStatus());
-                        }
-
-                        $this->messageManager->addErrorMessage(__('The payment process has been declined.'));
-
-                        $pathRedirect = 'placetopay/onepage/failure';
-                    } else {
-                        $session->setLastOrderId($order->getId())
-                            ->setLastRealOrderId($order->getIncrementId())
-                            ->setLastOrderStatus($order->getStatus());
-
-                        $this->messageManager->addWarningMessage(__('Transaction pending, please wait a moment while it automatically resolves.'));
-
-                        $pathRedirect = 'placetopay/onepage/pending';
-                    }
-                } else {
-                    if ($status->isApproved()) {
-                        $this->messageManager->addSuccessMessage(__('Thanks, transaction approved by Placetopay.'));
-                        $this->setPaymentApproved($payment, $transaction);
-                    } elseif ($status->isRejected()) {
-                        $this->messageManager->addErrorMessage(__('The payment process has been declined.'));
-                        $this->setPaymentDenied($payment, $transaction);
-                    } else {
-                        $this->messageManager->addWarningMessage(__('Transaction pending, please wait a moment while it automatically resolves.'));
-                    }
-
-                    if ($this->customerSession->isLoggedIn()) {
-                        $this->eventManager->dispatch(
-                            'checkout_onepage_controller_success_action',
-                            ['order_ids' => [$order->getRealOrderId()]]
-                        );
-
-                        $pathRedirect = 'sales/order/view/order_id/' . $order->getRealOrderId();
-                    } else {
-                        $pathRedirect = 'sales/guest/form/';
-                    }
-                }
+            if ($placetopay->isPendingOrder($order)) {
+                $response = $placetopay->resolve($order, $payment);
+                $status = $response->status();
             } else {
-                /**
-                 * @var Order
-                 */
-                $order = $this->salesOrderFactory->create()->loadByIncrementId($reference);
+                $status = $placetopay->parseOrderState($order);
+            }
 
-                if ($order->getId()) {
-                    $payment = $order->getPayment();
+            /** @var Transaction $transaction */
+            $transaction = $this->_transactionRepository->getByTransactionType(
+                Transaction::TYPE_ORDER,
+                $payment->getId()
+            );
 
-                    if ($payment) {
-                        /**
-                         * @var PaymentMethod
-                         */
-                        $placetopay = $payment->getMethodInstance();
+            $path = $this->scopeConfig->getValue(
+                'payment/' . $placetopay->getCode() . '/final_page',
+                ScopeInterface::SCOPE_STORE,
+                $order->getStore()
+            );
 
-                        if ($placetopay instanceof PaymentMethod) {
-                            $additional = $payment->getAdditionalInformation();
-
-                            if ($placetopay->isPendingOrder($order) && $additional && isset($additional['request_id'])) {
-                                $information = $placetopay->gateway()->query($additional['request_id']);
-
-                                $placetopay->settleOrderStatus($information, $order);
-                            }
-                        }
-                    }
+            if (strcmp($path, 'magento_default') === 0) {
+                if ($status->isApproved()) {
+                    $this->setPaymentApproved($payment, $transaction);
 
                     $session->setLastQuoteId($order->getQuoteId())
                         ->setLastSuccessQuoteId($order->getQuoteId())
                         ->setLastOrderId($order->getId())
                         ->setLastRealOrderId($order->getIncrementId())
                         ->setLastOrderStatus($order->getStatus());
+
+                    $this->messageManager->addSuccessMessage(__('Thanks, transaction approved by Placetopay.'));
+                } elseif ($status->isRejected()) {
+                    $this->setPaymentDenied($payment, $transaction);
+
+                    $quote = $this->quoteQuoteFactory->create()->load($order->getQuoteId());
+
+                    if ($quote->getId()) {
+                        $quote->setIsActive(true)->save();
+
+                        $session->setLastQuoteId($order->getQuoteId())
+                            ->setLastOrderId($order->getId())
+                            ->setLastRealOrderId($order->getIncrementId())
+                            ->setLastOrderStatus($order->getStatus());
+                    }
+
+                    $this->messageManager->addErrorMessage(__('The payment process has been declined.'));
+
+                    $pathRedirect = 'placetopay/onepage/failure';
+                } else {
+                    $session->setLastOrderId($order->getId())
+                        ->setLastRealOrderId($order->getIncrementId())
+                        ->setLastOrderStatus($order->getStatus());
+
+                    $this->messageManager->addWarningMessage(__('Transaction pending, please wait a moment while it automatically resolves.'));
+
+                    $pathRedirect = 'placetopay/onepage/pending';
+                }
+            } else {
+                if ($status->isApproved()) {
+                    $this->messageManager->addSuccessMessage(__('Thanks, transaction approved by Placetopay.'));
+                    $this->setPaymentApproved($payment, $transaction);
+                } elseif ($status->isRejected()) {
+                    $this->messageManager->addErrorMessage(__('The payment process has been declined.'));
+                    $this->setPaymentDenied($payment, $transaction);
+                } else {
+                    $this->messageManager->addWarningMessage(__('Transaction pending, please wait a moment while it automatically resolves.'));
+                }
+
+                if ($this->customerSession->isLoggedIn()) {
+                    $this->eventManager->dispatch(
+                        'checkout_onepage_controller_success_action',
+                        ['order_ids' => [$order->getRealOrderId()]]
+                    );
+
+                    $pathRedirect = 'sales/order/view/order_id/' . $order->getRealOrderId();
+                } else {
+                    $pathRedirect = 'sales/guest/form/';
                 }
             }
 
@@ -296,33 +266,13 @@ class Response extends Action
         }
     }
 
-    /**
-     * @param Order\Payment $payment
-     * @param Transaction   $transaction
-     *
-     * @throws Exception
-     */
-    public function setPaymentApproved($payment, $transaction)
+    public function setPaymentApproved($payment, Transaction $transaction)
     {
-        $message = __('Payment approved');
-
-        $payment->addTransactionCommentsToOrder($transaction, $message);
-
-        $transaction->save();
+        $payment->addTransactionCommentsToOrder($transaction, __('Payment approved'));
     }
 
-    /**
-     * @param Order\Payment $payment
-     * @param Transaction   $transaction
-     *
-     * @throws Exception
-     */
-    public function setPaymentDenied($payment, $transaction)
+    public function setPaymentDenied($payment, Transaction $transaction)
     {
-        $message = __('Payment declined');
-
-        $payment->addTransactionCommentsToOrder($transaction, $message);
-
-        $transaction->save();
+        $payment->addTransactionCommentsToOrder($transaction, __('Payment declined'));
     }
 }
