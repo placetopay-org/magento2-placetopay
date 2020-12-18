@@ -7,7 +7,7 @@ use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\OrderFactory;
 
 /**
  * Class Success.
@@ -17,48 +17,74 @@ class Success extends Template
     /**
      * @var Session
      */
-    protected $checkoutSession;
+    protected $_checkoutSession;
 
     /**
-     * @var OrderRepositoryInterface
+     * @var OrderFactory
      */
-    protected $orderRepository;
+    protected $_orderFactory;
 
     /**
      * @var TimezoneInterface
      */
-    protected $timezoneInterface;
+    protected $_timezone;
 
     /**
      * @var PriceCurrencyInterface
      */
-    protected $priceCurrency;
+    protected $_priceCurrency;
 
     /**
      * Success constructor.
-     *
      * @param Context $context
      * @param Session $checkoutSession
-     * @param OrderRepositoryInterface $orderRepository
-     * @param TimezoneInterface $timezoneInterface
+     * @param OrderFactory $orderFactory
+     * @param TimezoneInterface $timezone
      * @param PriceCurrencyInterface $priceCurrency
      * @param array $data
      */
     public function __construct(
         Context $context,
         Session $checkoutSession,
-        OrderRepositoryInterface $orderRepository,
-        TimezoneInterface $timezoneInterface,
+        OrderFactory $orderFactory,
+        TimezoneInterface $timezone,
         PriceCurrencyInterface $priceCurrency,
         array $data = []
     ) {
-        $this->checkoutSession = $checkoutSession;
-
+        $this->_checkoutSession = $checkoutSession;
+        $this->_orderFactory = $orderFactory;
+        $this->_timezone = $timezone;
+        $this->_priceCurrency = $priceCurrency;
         parent::__construct($context, $data);
+        $this->_isScopePrivate = true;
+    }
 
-        $this->orderRepository = $orderRepository;
-        $this->timezoneInterface = $timezoneInterface;
-        $this->priceCurrency = $priceCurrency;
+    /**
+     * @return mixed
+     */
+    public function getRealOrderId()
+    {
+        return $this->_checkoutSession->getLastRealOrderId();
+    }
+
+    /**
+     *  Payment custom error message
+     *
+     * @return string
+     */
+    public function getSuccessMessage()
+    {
+        return $this->_checkoutSession->getSuccessMessage();
+    }
+
+    /**
+     * Continue shopping URL
+     *
+     * @return string
+     */
+    public function getContinueShoppingUrl()
+    {
+        return $this->getUrl('checkout/cart');
     }
 
     /**
@@ -66,7 +92,7 @@ class Success extends Template
      */
     public function getOrder()
     {
-        return $this->orderRepository->get($this->checkoutSession->getLastRealOrderId());
+        return $this->_orderFactory->create()->loadByIncrementId($this->getRealOrderId());
     }
 
     /**
@@ -76,7 +102,7 @@ class Success extends Template
      */
     public function dateFormat($date, $format = 'd F Y')
     {
-        return $this->timezoneInterface->date($date)->format($format);
+        return $this->_timezone->date($date)->format($format);
     }
 
     /**
@@ -85,6 +111,6 @@ class Success extends Template
      */
     public function getFormattedPrice($amount)
     {
-        return $this->priceCurrency->convertAndFormat($amount);
+        return $this->_priceCurrency->convertAndFormat($amount);
     }
 }

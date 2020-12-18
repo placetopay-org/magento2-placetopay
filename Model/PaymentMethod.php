@@ -296,7 +296,7 @@ class PaymentMethod extends AbstractMethod
     {
         $transactionInfo = $this->gateway()->query($requestId);
         $this->settleOrderStatus($transactionInfo, $order);
-        $this->logger->debug('Cron job processed order with ID = '.$order->getRealOrderId());
+        $this->logger->debug('Cron job processed order with ID = ' . $order->getRealOrderId());
     }
 
     /**
@@ -352,10 +352,10 @@ class PaymentMethod extends AbstractMethod
                 $info->loadInformationFromRedirectResponse($payment, $response, $this->_config->getMode(), $order);
             } else {
                 $this->_logger->debug(
-                    'Payment error ['.
-                    $order->getRealOrderId().'] '.
-                    $response->status()->message().' - '.
-                    $response->status()->reason().' '.
+                    'Payment error [' .
+                    $order->getRealOrderId() . '] ' .
+                    $response->status()->message() . ' - ' .
+                    $response->status()->reason() . ' ' .
                     $response->status()->status()
                 );
 
@@ -365,10 +365,10 @@ class PaymentMethod extends AbstractMethod
             return $response->processUrl();
         } catch (Exception $ex) {
             $this->_logger->debug(
-                'Payment error ['.
-                $order->getRealOrderId().'] '.
-                $ex->getMessage().' on '.$ex->getFile().' line '.
-                $ex->getLine().' - '.get_class($ex)
+                'Payment error [' .
+                $order->getRealOrderId() . '] ' .
+                $ex->getMessage() . ' on ' . $ex->getFile() . ' line ' .
+                $ex->getLine() . ' - ' . get_class($ex)
             );
 
             throw new Exception($ex->getMessage());
@@ -388,7 +388,7 @@ class PaymentMethod extends AbstractMethod
         $discount = $order->getDiscountAmount() != 0 ? ($order->getDiscountAmount() * -1) : 0;
         $shipping = $order->getShippingAmount();
         $visibleItems = $order->getAllVisibleItems();
-        $expiration = date('c', strtotime($this->getExpirationTimeMinutes().' minutes'));
+        $expiration = date('c', strtotime($this->getExpirationTimeMinutes() . ' minutes'));
         $items = [];
 
         /** @var Order\Item $item */
@@ -481,9 +481,9 @@ class PaymentMethod extends AbstractMethod
                 }
             } catch (Exception $ex) {
                 $this->_logger->debug(
-                    'Error calculating taxes: ['.
-                    $order->getRealOrderId().
-                    '] '.serialize($this->taxItem->getTaxItemsByOrderId($order->getId()))
+                    'Error calculating taxes: [' .
+                    $order->getRealOrderId() .
+                    '] ' . serialize($this->taxItem->getTaxItemsByOrderId($order->getId()))
                 );
             }
         }
@@ -601,7 +601,7 @@ class PaymentMethod extends AbstractMethod
 
         if (! $info || ! isset($info['request_id'])) {
             $this->_logger->debug(
-                'No additional information for order: '.
+                'No additional information for order: ' .
                 $order->getRealOrderId()
             );
 
@@ -614,38 +614,13 @@ class PaymentMethod extends AbstractMethod
             $this->settleOrderStatus($response, $order, $payment);
         } else {
             $this->_logger->debug(
-                'Non successful: '.
-                $response->status()->message().' '.
+                'Non successful: ' .
+                $response->status()->message() . ' ' .
                 $response->status()->reason()
             );
         }
 
         return $response;
-    }
-
-    /**
-     * @param Order         $order
-     * @param Order\Payment $payment
-     *
-     * @return RedirectInformation
-     * @throws LocalizedException
-     * @throws PlacetoPayException
-     */
-    public function query($order, $payment = null)
-    {
-        if (! $payment) {
-            $payment = $order->getPayment();
-        }
-
-        $info = $payment->getAdditionalInformation();
-
-        if (! $info || ! isset($info['request_id'])) {
-            $this->_logger->debug('No additional information for order: '.$order->getRealOrderId());
-
-            throw new LocalizedException(__('No additional information for order: '.$order->getRealOrderId()));
-        }
-
-        return $this->gateway()->query($info['request_id']);
     }
 
     /**

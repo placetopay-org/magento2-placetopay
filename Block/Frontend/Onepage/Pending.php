@@ -7,7 +7,7 @@ use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\OrderFactory;
 
 /**
  * Class Pending.
@@ -20,14 +20,14 @@ class Pending extends Template
     protected $_checkoutSession;
 
     /**
-     * @var OrderRepositoryInterface
+     * @var OrderFactory
      */
-    protected $_orderRepository;
+    protected $_orderFactory;
 
     /**
      * @var TimezoneInterface
      */
-    protected $_timezoneInterface;
+    protected $_timezone;
 
     /**
      * @var PriceCurrencyInterface
@@ -36,25 +36,24 @@ class Pending extends Template
 
     /**
      * Pending constructor.
-     *
      * @param Context $context
      * @param Session $checkoutSession
-     * @param OrderRepositoryInterface $orderRepository
-     * @param TimezoneInterface $timezoneInterface
+     * @param OrderFactory $orderFactory
+     * @param TimezoneInterface $timezone
      * @param PriceCurrencyInterface $priceCurrency
      * @param array $data
      */
     public function __construct(
         Context $context,
         Session $checkoutSession,
-        OrderRepositoryInterface $orderRepository,
-        TimezoneInterface $timezoneInterface,
+        OrderFactory $orderFactory,
+        TimezoneInterface $timezone,
         PriceCurrencyInterface $priceCurrency,
         array $data = []
     ) {
         $this->_checkoutSession = $checkoutSession;
-        $this->_orderRepository = $orderRepository;
-        $this->_timezoneInterface = $timezoneInterface;
+        $this->_orderFactory = $orderFactory;
+        $this->_timezone = $timezone;
         $this->_priceCurrency = $priceCurrency;
         parent::__construct($context, $data);
         $this->_isScopePrivate = true;
@@ -93,7 +92,7 @@ class Pending extends Template
      */
     public function getOrder()
     {
-        return $this->_orderRepository->get($this->getRealOrderId());
+        return $this->_orderFactory->create()->loadByIncrementId($this->getRealOrderId());
     }
 
     /**
@@ -103,7 +102,7 @@ class Pending extends Template
      */
     public function dateFormat($date, $format = 'd F Y')
     {
-        return $this->_timezoneInterface->date($date)->format($format);
+        return $this->_timezone->date($date)->format($format);
     }
 
     /**

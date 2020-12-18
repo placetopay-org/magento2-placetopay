@@ -90,7 +90,7 @@ class Info
         $parsedTransactions = $information['transactions'];
         $lastTransaction = null;
 
-        if ($transactions && is_array($transactions) && empty($transactions)) {
+        if ($transactions && is_array($transactions) && !empty($transactions)) {
             $lastTransaction = $transactions[0];
 
             foreach ($transactions as $transaction) {

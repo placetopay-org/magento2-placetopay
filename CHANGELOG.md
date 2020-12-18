@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- Support to multiples stores in the same magento instance
+
+### Fixed
+- Get return url from current store for multiples stores
+- Show current notification url on admin panel for multiples stores configuration
+
 ## [1.7.5] - 2020-12-17
 
 ### Added

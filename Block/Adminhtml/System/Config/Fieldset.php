@@ -36,7 +36,6 @@ class Fieldset extends BaseField
         array $data = []
     ) {
         $this->_backendConfig = $backendConfig;
-
         parent::__construct($context, $authSession, $jsHelper, $data);
     }
 
@@ -51,7 +50,7 @@ class Fieldset extends BaseField
     {
         $enabledString = $this->_isPaymentEnabled($element) ? ' enabled' : '';
 
-        return parent::_getFrontendClass($element).' with-button'.$enabledString;
+        return parent::_getFrontendClass($element) . ' with-button' . $enabledString;
     }
 
     /**
@@ -96,40 +95,40 @@ class Fieldset extends BaseField
         $disabledClassString = $this->_isPaymentEnabled($element) ? '' : ' disabled';
         $htmlId = $element->getHtmlId();
 
-        $html .= '<div class="button-container"><button type="button"'.
-            $disabledAttributeString.
-            ' class="button action-configure'.
-            (empty($groupConfig['paypal_ec_separate']) ? '' : ' paypal-ec-separate').
-            $disabledClassString.
-            '" id="'.
-            $htmlId.
-            '-head" onclick="paypalToggleSolution.call(this, \''.
-            $htmlId.
-            "', '".
+        $html .= '<div class="button-container"><button type="button"' .
+            $disabledAttributeString .
+            ' class="button action-configure' .
+            (empty($groupConfig['paypal_ec_separate']) ? '' : ' paypal-ec-separate') .
+            $disabledClassString .
+            '" id="' .
+            $htmlId .
+            '-head" onclick="paypalToggleSolution.call(this, \'' .
+            $htmlId .
+            "', '" .
             $this->getUrl(
                 'adminhtml/*/state'
-            ).'\'); return false;"><span class="state-closed">'.__(
+            ) . '\'); return false;"><span class="state-closed">' . __(
                 'Configure'
-            ).'</span><span class="state-opened">'.__(
+            ) . '</span><span class="state-opened">' . __(
                 'Close'
-            ).'</span></button>';
+            ) . '</span></button>';
 
         if (! empty($groupConfig['more_url'])) {
-            $html .= '<a class="link-more" href="'.$groupConfig['more_url'].'" target="_blank">'.__(
+            $html .= '<a class="link-more" href="' . $groupConfig['more_url'] . '" target="_blank">' . __(
                 'Learn More'
-            ).'</a>';
+            ) . '</a>';
         }
         if (! empty($groupConfig['demo_url'])) {
-            $html .= '<a class="link-demo" href="'.$groupConfig['demo_url'].'" target="_blank">'.__(
+            $html .= '<a class="link-demo" href="' . $groupConfig['demo_url'] . '" target="_blank">' . __(
                 'View Demo'
-            ).'</a>';
+            ) . '</a>';
         }
 
         $html .= '</div>';
-        $html .= '<div class="heading"><strong>'.$element->getLegend().'</strong>';
+        $html .= '<div class="heading"><strong>' . $element->getLegend() . '</strong>';
 
         if ($element->getComment()) {
-            $html .= '<span class="heading-intro">'.$element->getComment().'</span>';
+            $html .= '<span class="heading-intro">' . $element->getComment() . '</span>';
         }
         $html .= '<div class="config-alt"></div>';
         $html .= '</div></div>';

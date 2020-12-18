@@ -6,16 +6,15 @@ use Dnetix\Redirection\Exceptions\PlacetoPayException;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Sales\Model\Order;
+use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Sales\Model\OrderFactory;
-use PlacetoPay\Payments\Api\ServiceInterface as ApiInterface;
-use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
+use PlacetoPay\Payments\Helper\PlacetoPayLogger;
 use PlacetoPay\Payments\Model\PaymentMethod;
 
 /**
  * Class Service.
  */
-class Service implements ApiInterface
+class Service implements ServiceInterface
 {
     /**
      * @var RequestInterface
@@ -28,9 +27,9 @@ class Service implements ApiInterface
     protected $orderFactory;
 
     /**
-     * @var LoggerInterface
+     * @var PlacetoPayLogger
      */
-    protected $logger;
+    protected $_logger;
 
     /**
      * @var EventManager
@@ -38,44 +37,53 @@ class Service implements ApiInterface
     protected $manager;
 
     /**
+     * @var Json
+     */
+    protected $_json;
+
+    /**
      * Service constructor.
      *
      * @param RequestInterface $request
      * @param OrderFactory $orderFactory
-     * @param LoggerInterface $logger
+     * @param PlacetoPayLogger $logger
      * @param EventManager $manager
+     * @param Json $json
      */
     public function __construct(
         RequestInterface $request,
         OrderFactory $orderFactory,
-        LoggerInterface $logger,
-        EventManager $manager
+        PlacetoPayLogger $logger,
+        EventManager $manager,
+        Json $json
     ) {
         $this->request = $request;
         $this->orderFactory = $orderFactory;
-        $this->logger = $logger;
+        $this->_logger = $logger;
         $this->manager = $manager;
+        $this->_json = $json;
     }
 
     /**
      * Endpoint for the notification of PlacetoPay.
      *
-     * @return array|mixed|string
+     * @return mixed
      * @throws LocalizedException
      * @throws PlacetoPayException
      */
     public function notify()
     {
-        $data = json_decode($this->request->getContent(), true);
+        $data = $this->_json->unserialize($this->request->getContent());
 
         if ($data && ! empty($data['reference']) && ! empty($data['signature']) && ! empty($data['requestId'])) {
-            /** @var Order $order */
             $order = $this->orderFactory->create()->loadByIncrementId($data['reference']);
 
             if (! $order->getId()) {
-                $this->logger->debug('Non existent order for reference #'.$data['reference']);
+                $this->_logger->log($this, 'error', __FUNCTION__ . ' message', [
+                    'Non existent order for reference #' . $data['reference'],
+                ]);
 
-                throw new LocalizedException(__('Order not found.'));
+                return ['success' => false];
             }
 
             /** @var PaymentMethod $placetopay */
@@ -94,14 +102,18 @@ class Service implements ApiInterface
 
                 return ['success' => true];
             } else {
-                $this->logger->debug('Invalid notification for order #'.$order->getId());
+                $this->_logger->log($this, 'error', __FUNCTION__ . ' message', [
+                    'Invalid notification for order #' . $order->getId(),
+                ]);
 
                 return $notification->makeSignature();
             }
         } else {
-            $this->logger->debug('Wrong or empty notification data for reference #'.$data['reference']);
+            $this->_logger->log($this, 'error', __FUNCTION__ . ' message', [
+                'Wrong or empty notification data for reference #' . $data['reference']
+            ]);
 
-            throw new LocalizedException(__('Wrong or empty notification data.'));
+            return ['success' => false];
         }
     }
 }

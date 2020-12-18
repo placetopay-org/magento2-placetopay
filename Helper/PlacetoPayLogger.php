@@ -2,8 +2,12 @@
 
 namespace PlacetoPay\Payments\Helper;
 
+use Magento\Framework\Serialize\Serializer\Json;
 use PlacetoPay\Payments\Logger\Logger;
 
+/**
+ * Class PlacetoPayLogger.
+ */
 class PlacetoPayLogger
 {
     /**
@@ -12,12 +16,19 @@ class PlacetoPayLogger
     protected $_logger;
 
     /**
+     * @var Json
+     */
+    protected $_json;
+
+    /**
      * PlacetoPayLogger constructor.
      * @param Logger $logger
+     * @param Json $json
      */
-    public function __construct(Logger $logger)
+    public function __construct(Logger $logger, Json $json)
     {
         $this->_logger = $logger;
+        $this->_json = $json;
     }
 
     /**
@@ -26,8 +37,8 @@ class PlacetoPayLogger
      * @param string $message
      * @param array $context
      */
-    public function logger(object $class, string $type, string $message, array $context = [])
+    public function log(object $class, string $type, string $message, array $context = [])
     {
-        $this->_logger->$type(get_class($class) . ' - ' . $message . ' ' . json_encode($context));
+        $this->_logger->$type(get_class($class) . ' - ' . $message . ' ' . $this->_json->serialize($context));
     }
 }
