@@ -2,41 +2,27 @@
 
 namespace PlacetoPay\Payments\Block\Adminhtml\System\Config\Form\Field;
 
-use Magento\Config\Block\System\Config\Form\Field as BaseField;
+use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 use Magento\Framework\UrlInterface;
 
 /**
  * Class NotifyUrl.
  */
-class NotifyUrl extends BaseField
+class NotifyUrl extends Field
 {
     /**
      * @param AbstractElement $element
-     *
      * @return string
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    protected function _getElementHtml(AbstractElement $element)
+    protected function _getElementHtml(AbstractElement $element): string
     {
-        $stores = $this->_storeManager->getStores();
-        $valueReturn = '';
-        $urlArray = [];
+        $id = $element->_getData('scope_id');
 
-        foreach ($stores as $store) {
-            $baseUrl = $store->getBaseUrl(UrlInterface::URL_TYPE_WEB, true);
+        $baseUrl = $this->_storeManager->getStore($id)
+            ->getBaseUrl(UrlInterface::URL_TYPE_WEB, true);
 
-            if ($baseUrl) {
-                $value = $baseUrl.'rest/V1/placetopay/payment/notify';
-                $urlArray[] = '<div>'.$this->escapeHtml($value).'</div>';
-            }
-        }
-
-        $urlArray = array_unique($urlArray);
-
-        foreach ($urlArray as $uniqueUrl) {
-            $valueReturn .= '<div>'.$uniqueUrl.'</div>';
-        }
-
-        return $valueReturn;
+        return "{$baseUrl}rest/V1/placetopay/payment/notify";
     }
 }

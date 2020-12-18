@@ -3,7 +3,6 @@
 namespace PlacetoPay\Payments\Block;
 
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Phrase;
 use Magento\Framework\View\Element\Template;
 
 /**
@@ -12,7 +11,7 @@ use Magento\Framework\View\Element\Template;
 class Response extends Template
 {
     /**
-     * @return Phrase
+     * @return string
      */
     public function getMessage()
     {

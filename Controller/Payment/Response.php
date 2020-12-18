@@ -172,8 +172,7 @@ class Response extends Action
                 /** @var Transaction $transaction */
                 $transaction = $this->_transactionRepository->getByTransactionType(
                     Transaction::TYPE_ORDER,
-                    $payment->getId(),
-                    $payment->getOrder()->getId()
+                    $payment->getId()
                 );
 
                 if ($this->scopeConfig->getValue('payment/' . $placetopay->getCode() . '/final_page') == 'magento_default') {
@@ -275,7 +274,7 @@ class Response extends Action
 
             return $resultRedirect;
         } catch (LocalizedException $exception) {
-            $this->_logger->logger($this, 'error', __FUNCTION__ . ' error', [
+            $this->_logger->log($this, 'error', __FUNCTION__ . ' error', [
                 'response' => $exception->getMessage(),
                 'code_exception' => $exception->getCode(),
                 'file_exception' => $exception->getFile(),
@@ -286,7 +285,7 @@ class Response extends Action
 
             return $this->_pageFactory->create();
         } catch (Exception $exception) {
-            $this->_logger->logger($this, 'error', __FUNCTION__ . ' error', [
+            $this->_logger->log($this, 'error', __FUNCTION__ . ' error', [
                 'response' => $exception->getMessage(),
                 'code_exception' => $exception->getCode(),
                 'file_exception' => $exception->getFile(),
