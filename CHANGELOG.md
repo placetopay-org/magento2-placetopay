@@ -6,7 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### [1.7.6] - 2020-12-18
+### Added
+- Extra payment methods
+
+### Updated
+- Redirection package
+
+## [1.7.6] - 2020-12-18
 
 ### Added
 - Support to multiples stores in the same magento instance
