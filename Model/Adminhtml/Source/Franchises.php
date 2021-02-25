@@ -75,6 +75,14 @@ class Franchises
                 'label' => 'Banco de Occidente Recaudos',
             ],
             [
+                'value' => 'AV_BP',
+                'label' => 'Banco popular Recaudos',
+            ],
+            [
+                'value' => 'CDNSA',
+                'label' => 'Codensa',
+            ],
+            [
                 'value' => 'AV_AV',
                 'label' => 'Banco AV Villas Recaudos',
             ],
@@ -114,6 +122,10 @@ class Franchises
                 'value' => 'EFCTY',
                 'label' => 'Efecty',
             ],
+            [
+                'value' => 'SOMOS',
+                'label' => 'somos'
+            ]
         ];
     }
 }
