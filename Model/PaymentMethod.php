@@ -43,7 +43,6 @@ class PaymentMethod extends AbstractMethod
     const EXPIRATION_TIME_MINUTES_DEFAULT = 120;
     const EXPIRATION_TIME_MINUTES_MIN = 10;
 
-    protected $gateway;
     protected $_code = self::CODE;
     protected $_isGateway = true;
     protected $_canOrder = true;
@@ -59,37 +58,37 @@ class PaymentMethod extends AbstractMethod
     /**
      * @var Config
      */
-    protected $_config;
+    protected Config $_config;
 
     /**
      * @var Order
      */
-    protected $_order;
+    protected Order $_order;
 
     /**
      * @var Resolver
      */
-    protected $_store;
+    protected Resolver $_store;
 
     /**
      * @var UrlInterface
      */
-    protected $_url;
+    protected UrlInterface $_url;
 
     /**
      * @var RemoteAddress
      */
-    protected $remoteAddress;
+    protected RemoteAddress $remoteAddress;
 
     /**
      * @var Header
      */
-    protected $httpHeader;
+    protected Header $httpHeader;
 
     /**
      * @var Item
      */
-    protected $taxItem;
+    protected Item $taxItem;
 
     /**
      * @var LoggerInterface
@@ -99,35 +98,35 @@ class PaymentMethod extends AbstractMethod
     /**
      * @var Info
      */
-    protected $infoFactory;
+    protected Info $infoFactory;
 
     /**
      * @var OrderRepositoryInterface
      */
-    protected $orderRepository;
+    protected OrderRepositoryInterface $orderRepository;
 
     /**
      * PaymentMethod constructor.
      *
-     * @param LoggerInterface            $_logger
-     * @param InfoFactory                $infoFactory
-     * @param Config                     $config
-     * @param Context                    $context
-     * @param Registry                   $registry
+     * @param LoggerInterface $_logger
+     * @param InfoFactory $infoFactory
+     * @param Config $config
+     * @param Context $context
+     * @param Registry $registry
      * @param ExtensionAttributesFactory $extensionFactory
-     * @param AttributeValueFactory      $customAttributeFactory
-     * @param Data                       $paymentData
-     * @param ScopeConfigInterface       $scopeConfig
-     * @param Logger                     $logger
-     * @param OrderRepositoryInterface   $orderRepository
-     * @param Resolver                   $store
-     * @param UrlInterface               $urlInterface
-     * @param Item                       $taxItem
-     * @param Header                     $httpHeader
-     * @param RemoteAddress              $remoteAddress
-     * @param AbstractResource           $resource
-     * @param AbstractDb                 $resourceCollection
-     * @param array                      $data
+     * @param AttributeValueFactory $customAttributeFactory
+     * @param Data $paymentData
+     * @param ScopeConfigInterface $scopeConfig
+     * @param Logger $logger
+     * @param OrderRepositoryInterface $orderRepository
+     * @param Resolver $store
+     * @param UrlInterface $urlInterface
+     * @param Item $taxItem
+     * @param Header $httpHeader
+     * @param RemoteAddress $remoteAddress
+     * @param AbstractResource|null $resource
+     * @param AbstractDb|null $resourceCollection
+     * @param array $data
      */
     public function __construct(
         LoggerInterface $_logger,
@@ -176,10 +175,9 @@ class PaymentMethod extends AbstractMethod
 
     /**
      * @param string $currencyCode
-     *
      * @return bool
      */
-    public function canUseForCurrency($currencyCode)
+    public function canUseForCurrency($currencyCode): bool
     {
         return Currency::isValidCurrency($currencyCode);
     }
@@ -187,10 +185,9 @@ class PaymentMethod extends AbstractMethod
     /**
      * @param string $paymentAction
      * @param object $stateObject
-     *
-     * @return $this|AbstractMethod
+     * @return PaymentMethod
      */
-    public function initialize($paymentAction, $stateObject)
+    public function initialize($paymentAction, $stateObject): PaymentMethod
     {
         $stateObject->setState(Order::STATE_PENDING_PAYMENT);
         $stateObject->setState(AbstractMethod::STATUS_UNKNOWN);
@@ -202,7 +199,7 @@ class PaymentMethod extends AbstractMethod
     /**
      * @return InfoFactory
      */
-    public function getInfoModel()
+    public function getInfoModel(): InfoFactory
     {
         return $this->infoFactory;
     }
@@ -211,25 +208,20 @@ class PaymentMethod extends AbstractMethod
      * @param null $storeId
      * @return bool
      */
-    public function isActive($storeId = null)
+    public function isActive($storeId = null): bool
     {
         return $this->_config->getActive();
     }
 
     /**
      * @param CartInterface|null $quote
-     *
      * @return bool
      */
-    public function isAvailable(CartInterface $quote = null)
+    public function isAvailable(CartInterface $quote = null): bool
     {
-        if (! $this->_config->getTranKey() ||
-            ! $this->_config->getLogin() ||
-            ! $this->_config->getEndpointsTo($this->_config->getCountryCode())) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(!$this->_config->getTranKey()
+            || !$this->_config->getLogin()
+            || !$this->_config->getEndpointsTo($this->_config->getCountryCode()));
     }
 
     /**
@@ -237,32 +229,26 @@ class PaymentMethod extends AbstractMethod
      *
      * @return Phrase
      */
-    public static function trans($value)
+    public static function trans($value): Phrase
     {
         return __($value);
     }
 
     /**
      * @param Order $order
-     *
      * @return Status
      */
-    public function parseOrderState($order)
+    public function parseOrderState(Order $order): Status
     {
-        $status = null;
-
         switch ($order->getStatus()) {
             case Order::STATE_PROCESSING:
                 $status = Status::ST_APPROVED;
-
                 break;
             case Order::STATE_CANCELED:
                 $status = Status::ST_REJECTED;
-
                 break;
             case Order::STATE_NEW:
                 $status = Status::ST_PENDING;
-
                 break;
             default:
                 $status = Status::ST_PENDING;
@@ -278,7 +264,7 @@ class PaymentMethod extends AbstractMethod
      *
      * @return bool
      */
-    public function isPendingStatusOrder($orderId)
+    public function isPendingStatusOrder(string $orderId): bool
     {
         $status = $this->orderRepository->get($orderId)->getPayment()->getAdditionalInformation()['status'];
 
@@ -288,11 +274,10 @@ class PaymentMethod extends AbstractMethod
     /**
      * @param Order $order
      * @param string $requestId
-     *
      * @throws LocalizedException
      * @throws PlacetoPayException
      */
-    public function processPendingOrder($order, $requestId)
+    public function processPendingOrder(Order $order, string $requestId): void
     {
         $transactionInfo = $this->gateway()->query($requestId);
         $this->settleOrderStatus($transactionInfo, $order);
@@ -303,20 +288,13 @@ class PaymentMethod extends AbstractMethod
      * @return PlacetoPay
      * @throws PlacetoPayException
      */
-    public function gateway()
+    public function gateway(): PlacetoPay
     {
-        if (! $this->gateway) {
-            $env = $this->_config->getMode();
-            $url = $this->_config->getEndpointsTo($this->_config->getCountryCode());
-
-            $this->gateway = new PlacetoPay([
-                'login' => $this->_config->getLogin(),
-                'tranKey' => $this->_config->getTranKey(),
-                'url' => $url[$env],
-            ]);
-        }
-
-        return $this->gateway;
+        return new PlacetoPay([
+            'login' => $this->_config->getLogin(),
+            'tranKey' => $this->_config->getTranKey(),
+            'url' => $this->_config->getUri(),
+        ]);
     }
 
     /**

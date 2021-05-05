@@ -2,30 +2,18 @@
 
 namespace PlacetoPay\Payments\Model\Adminhtml\Source;
 
-/**
- * Class Mode.
- */
 class Mode
 {
-    /**
-     * Mode Development.
-     */
     const DEVELOPMENT = 'development';
-
-    /**
-     * Mode Test.
-     */
     const TEST = 'test';
-
-    /**
-     * Mode Production.
-     */
     const PRODUCTION = 'production';
+    const CUSTOM = 'custom';
 
     /**
+     *
      * @return array
      */
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
         return [
             [
@@ -40,6 +28,10 @@ class Mode
                 'value' => self::PRODUCTION,
                 'label' => __('Production'),
             ],
+            [
+                'value' => self::CUSTOM,
+                'label' => __('Custom'),
+            ]
         ];
     }
 }
