@@ -12,9 +12,6 @@ use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use PlacetoPay\Payments\Helper\Data;
 
-/**
- * Class CustomConfigProvider.
- */
 class CustomConfigProvider implements ConfigProviderInterface
 {
     const CODE = PaymentMethod::CODE;
@@ -22,36 +19,35 @@ class CustomConfigProvider implements ConfigProviderInterface
     /**
      * @var Data
      */
-    protected $_scopeConfig;
+    protected Data $_scopeConfig;
 
     /**
      * @var Repository
      */
-    protected $_assetRepo;
+    protected Repository $_assetRepo;
 
     /**
      * @var CustomerSession
      */
-    protected $customerSession;
+    protected CustomerSession $customerSession;
 
     /**
      * @var CollectionFactory
      */
-    protected $collectionFactory;
+    protected CollectionFactory $collectionFactory;
 
     /**
      * @var StoreManagerInterface
      */
-    protected $storeManager;
+    protected StoreManagerInterface $storeManager;
 
     /**
      * CustomConfigProvider constructor.
-     *
-     * @param Data                  $scopeConfig
-     * @param Repository            $assetRepo
+     * @param Data $scopeConfig
+     * @param Repository $assetRepo
      * @param StoreManagerInterface $storeManager
-     * @param CustomerSession       $customerSession
-     * @param CollectionFactory     $collectionFactory
+     * @param CustomerSession $customerSession
+     * @param CollectionFactory $collectionFactory
      */
     public function __construct(
         Data $scopeConfig,
@@ -68,15 +64,16 @@ class CustomConfigProvider implements ConfigProviderInterface
     }
 
     /**
-     * @return array
+     * @return array[][]
      * @throws NoSuchEntityException
      */
-    public function getConfig()
+    public function getConfig(): array
     {
         return [
             'payment' => [
                 self::CODE => [
                     'logoUrl' => $this->_assetRepo->getUrl('PlacetoPay_Payments::images/logo.png'),
+                    'logo' => $this->getImage(),
                     'legalName' => $this->_scopeConfig->getLegalName(),
                     'order' => $this->getLastOrder(),
                     'hasCifinMessage' => $this->_scopeConfig->getHasCifin(),
@@ -91,9 +88,40 @@ class CustomConfigProvider implements ConfigProviderInterface
     }
 
     /**
-     * @return array
+     * @return string
+     * @throws NoSuchEntityException
      */
-    public function getLastOrder()
+    protected function getImage(): string
+    {
+        $url = $this->_scopeConfig->getImageUrl();
+
+        if (is_null($url)) {
+            $image = 'https://static.placetopay.com/placetopay-logo.svg';
+        } elseif ($this->checkValidUrl($url)) {
+            $image = $url;
+        } elseif ($this->checkDirectory($url)) {
+            $image = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA).$url;
+        } else {
+            $image = 'https://static.placetopay.com/'.$url.'.svg';
+        }
+
+        return $image;
+    }
+
+    protected function checkDirectory(string $path): bool
+    {
+        return substr($path, 0, 1) === '/';
+    }
+
+    protected function checkValidUrl(string $url): bool
+    {
+        return filter_var($url, FILTER_VALIDATE_URL);
+    }
+
+    /**
+     * @return array|false[]
+     */
+    public function getLastOrder(): array
     {
         $data = ['hasPendingOrder' => false];
         $customerId = $this->customerSession->getCustomer()->getId();
@@ -123,7 +151,7 @@ class CustomConfigProvider implements ConfigProviderInterface
                 'id' => $lastOrder->getRealOrderId(),
                 'phone' => $this->_scopeConfig->getPhone(),
                 'email' => $this->_scopeConfig->getEmail(),
-                'authorization' => isset($information['authorization']) ? $information['authorization'] : null,
+                'authorization' => $information['authorization'] ?? null,
             ];
         }
 
@@ -131,10 +159,10 @@ class CustomConfigProvider implements ConfigProviderInterface
     }
 
     /**
-     * @return mixed
+     * @return string
      * @throws NoSuchEntityException
      */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_WEB, true);
     }
@@ -142,7 +170,7 @@ class CustomConfigProvider implements ConfigProviderInterface
     /**
      * @return array
      */
-    public function getPaymentMethods()
+    public function getPaymentMethods(): array
     {
         $paymentMethods = [];
 
@@ -168,8 +196,6 @@ class CustomConfigProvider implements ConfigProviderInterface
                     $paymentMethods[] = $paymentMethod;
                 }
             }
-
-            $data['paymentMethod'] = implode(',', $paymentMethods);
         }
 
         return $paymentMethods;

@@ -307,10 +307,26 @@
         </field>
 
         <field
+            id="payment_button_image"
+            translate="label comment"
+            type="text"
+            sortOrder="150"
+            showInDefault="1"
+            showInWebsite="1"
+            showInStore="1"
+        >
+            <label>Payment Button Image</label>
+
+            <comment><![CDATA[It can be a URL, an image name (provide the image to the placetopay team as svg format for this to work) or a local path (save the image to the pub/media folder).]]></comment>
+
+            <config_path>payment/placetopay/payment_button_image</config_path>
+        </field>
+
+        <field
             id="sort_order"
             translate="label"
             type="text"
-            sortOrder="150"
+            sortOrder="160"
             showInDefault="1"
             showInWebsite="1"
             showInStore="1"

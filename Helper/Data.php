@@ -408,6 +408,17 @@ class Data extends BaseData
     }
 
     /**
+     * @return string|null
+     */
+    public function getImageUrl(): ?string
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/payment_button_image',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
      * @return string[]
      */
     public static function getDefaultEndpoints(): array
