@@ -79,7 +79,7 @@ define(
             },
 
             getLogo: function () {
-                return '<a href="https://www.placetopay.com/web/" target=”_blank”><img src="https://static.placetopay.com/placetopay-logo.svg" height="48" border="0" alt="PlacetoPay"/></a>';
+                return '<a href="https://www.placetopay.com/web/" target=”_blank”><img src="'+window.checkoutConfig.payment.placetopay.logo+'" height="48" alt="PlacetoPay"/></a>';
             },
 
             hasPendingPayment: function () {

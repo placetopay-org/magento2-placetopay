@@ -2,20 +2,14 @@
 
 namespace PlacetoPay\Payments\Model\Adminhtml\Source;
 
-/**
- * Class Expiration.
- */
 class Expiration
 {
-    /**
-     * Expiration int.
-     */
     const EXPIRATION_TIME_MINUTES_LIMIT = 40320;
 
     /**
      * @return array
      */
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
         $options = [];
         $format = '%d %s';

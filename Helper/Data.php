@@ -14,25 +14,21 @@ use PlacetoPay\Payments\Logger\Logger;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Country;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 
-/**
- * Class Data.
- */
 class Data extends BaseData
 {
     /**
      * @var Logger
      */
-    protected $_placeToPayLogger;
+    protected Logger $logger;
 
     /**
      * @var string
      */
-    protected $_mode;
+    protected $mode;
 
     /**
      * Data constructor.
-     *
-     * @param Logger $placeToPayLogger
+     * @param Logger $logger
      * @param Context $context
      * @param LayoutFactory $layoutFactory
      * @param Factory $paymentMethodFactory
@@ -41,7 +37,7 @@ class Data extends BaseData
      * @param Initial $initialConfig
      */
     public function __construct(
-        Logger $placeToPayLogger,
+        Logger $logger,
         Context $context,
         LayoutFactory $layoutFactory,
         Factory $paymentMethodFactory,
@@ -58,18 +54,18 @@ class Data extends BaseData
             $initialConfig
         );
 
-        $this->_placeToPayLogger = $placeToPayLogger;
+        $this->logger = $logger;
 
-        $this->_mode = $this->scopeConfig->getValue(
+        $this->mode = $this->scopeConfig->getValue(
             'payment/placetopay/placetopay_mode',
             ScopeInterface::SCOPE_STORE
         );
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getMerchantId()
+    public function getMerchantId(): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/merchant_id',
@@ -78,9 +74,9 @@ class Data extends BaseData
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getLegalName()
+    public function getLegalName(): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/legal_name',
@@ -89,9 +85,9 @@ class Data extends BaseData
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/email',
@@ -100,9 +96,9 @@ class Data extends BaseData
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getPhone()
+    public function getPhone(): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/phone',
@@ -111,9 +107,9 @@ class Data extends BaseData
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getExpirationTime()
+    public function getExpirationTime(): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/expiration',
@@ -122,9 +118,9 @@ class Data extends BaseData
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getFinalPage()
+    public function getFinalPage(): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/final_page',
@@ -199,9 +195,9 @@ class Data extends BaseData
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPaymentMethods()
+    public function getPaymentMethods(): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/payment_methods',
@@ -210,9 +206,9 @@ class Data extends BaseData
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMinimumAmount()
+    public function getMinimumAmount(): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/minimum_amount',
@@ -221,9 +217,9 @@ class Data extends BaseData
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMaximumAmount()
+    public function getMaximumAmount(): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/maximum_amount',
@@ -232,9 +228,9 @@ class Data extends BaseData
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getTaxRateParsing()
+    public function getTaxRateParsing(): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/tax_rate_parsing',
@@ -243,9 +239,9 @@ class Data extends BaseData
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getEmailSuccessOption()
+    public function getEmailSuccessOption(): bool
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/email_success',
@@ -265,9 +261,9 @@ class Data extends BaseData
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getTile()
+    public function getTile(): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/title',
@@ -276,9 +272,9 @@ class Data extends BaseData
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/description',
@@ -287,41 +283,78 @@ class Data extends BaseData
     }
 
     /**
-     * @return mixed|string
+     * @return string|null
      */
-    public function getMode()
+    public function getMode(): ?string
     {
-        return $this->_mode;
+        return $this->mode;
     }
 
     /**
      * @return string|null
      */
-    public function getTranKey()
+    public function getCustomConnectionUrl(): ?string
     {
-        $tranKey = null;
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/placetopay_custom_url',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
 
-        switch ($this->_mode) {
+    /**
+     * @return bool
+     */
+    public function isCustomEnvironment(): bool
+    {
+        return $this->getMode() === Mode::CUSTOM;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUri(): ?string
+    {
+        $uri = null;
+        $endpoints = $this->getEndpointsTo($this->getCountryCode());
+
+        if ($this->isCustomEnvironment()) {
+            $uri = $this->getCustomConnectionUrl();
+        } elseif (!empty($endpoints[$this->getMode()])) {
+            $uri = $endpoints[$this->getMode()];
+        }
+
+        return $uri;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTranKey(): ?string
+    {
+        switch ($this->mode) {
             case Mode::DEVELOPMENT:
                 $tranKey = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_development_tk',
                     ScopeInterface::SCOPE_STORE
                 );
-
                 break;
             case Mode::TEST:
                 $tranKey = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_test_tk',
                     ScopeInterface::SCOPE_STORE
                 );
-
+                break;
+            case Mode::CUSTOM:
+                $tranKey = $this->scopeConfig->getValue(
+                    'payment/placetopay/placetopay_custom_tk',
+                    ScopeInterface::SCOPE_STORE
+                );
                 break;
             default:
                 $tranKey = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_production_tk',
                     ScopeInterface::SCOPE_STORE
                 );
-
                 break;
         }
 
@@ -331,31 +364,32 @@ class Data extends BaseData
     /**
      * @return string|null
      */
-    public function getLogin()
+    public function getLogin(): ?string
     {
-        $login = null;
-
-        switch ($this->_mode) {
+        switch ($this->mode) {
             case Mode::DEVELOPMENT:
                 $login = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_development_lg',
                     ScopeInterface::SCOPE_STORE
                 );
-
                 break;
             case Mode::TEST:
                 $login = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_test_lg',
                     ScopeInterface::SCOPE_STORE
                 );
-
+                break;
+            case Mode::CUSTOM:
+                $login = $this->scopeConfig->getValue(
+                    'payment/placetopay/placetopay_custom_lg',
+                    ScopeInterface::SCOPE_STORE
+                );
                 break;
             default:
                 $login = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_production_lg',
                     ScopeInterface::SCOPE_STORE
                 );
-
                 break;
         }
 
@@ -363,9 +397,9 @@ class Data extends BaseData
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getCountryCode()
+    public function getCountryCode(): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/country',
@@ -374,9 +408,20 @@ class Data extends BaseData
     }
 
     /**
-     * @return array
+     * @return string|null
      */
-    public static function getDefaultEndpoints()
+    public function getImageUrl(): ?string
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/payment_button_image',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getDefaultEndpoints(): array
     {
         return [
             Mode::DEVELOPMENT => 'https://dev.placetopay.com/redirection',
@@ -387,10 +432,9 @@ class Data extends BaseData
 
     /**
      * @param $countryCode
-     *
-     * @return array
+     * @return string[]
      */
-    public function getEndpointsTo($countryCode)
+    public function getEndpointsTo($countryCode): array
     {
         switch ($countryCode) {
             case Country::ECUADOR:
@@ -399,13 +443,18 @@ class Data extends BaseData
                     Mode::TEST => 'https://test.placetopay.ec/redirection',
                     Mode::PRODUCTION => 'https://checkout.placetopay.ec',
                 ];
-
+                break;
+            case Country::CHILE:
+                $endpoints = [
+                    Mode::DEVELOPMENT => 'https://uat-checkout.placetopay.ws/redirection',
+                    Mode::TEST => 'https://uat-checkout.placetopay.ws/redirection',
+                    Mode::PRODUCTION => 'https://checkout-getnet-cl.placetopay.com',
+                ];
                 break;
             case Country::COLOMBIA:
             case Country::COSTA_RICA:
             default:
                 $endpoints = self::getDefaultEndpoints();
-
                 break;
         }
 
