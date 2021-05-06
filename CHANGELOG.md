@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added
+
+- Support to Chile country
+- Custom payment url
+- Custom image
+
+## [1.7.7] - 2021-02-25
+
+### Added
 - Extra payment methods
 
 ### Updated
@@ -135,7 +143,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - First release
 
-[Unreleased]: https://github.com/placetopay-org/magento2-placetopay/compare/1.7.6...HEAD
+[Unreleased]: https://github.com/placetopay-org/magento2-placetopay/compare/1.7.7...HEAD
+[1.7.7]: https://github.com/placetopay-org/magento2-placetopay/compare/1.7.6...1.7.7
 [1.7.6]: https://github.com/placetopay-org/magento2-placetopay/compare/1.7.5...1.7.6
 [1.7.5]: https://github.com/placetopay-org/magento2-placetopay/compare/1.7.4...1.7.5
 [1.7.4]: https://github.com/placetopay-org/magento2-placetopay/compare/1.7.3...1.7.4

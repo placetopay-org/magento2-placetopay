@@ -2,15 +2,12 @@
 
 namespace PlacetoPay\Payments\Model\Adminhtml\Source;
 
-/**
- * Class FinalPage.
- */
 class FinalPage
 {
     /**
      * @return array
      */
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
         return [
             [

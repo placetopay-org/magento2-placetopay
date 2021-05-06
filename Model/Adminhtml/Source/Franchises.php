@@ -2,15 +2,12 @@
 
 namespace PlacetoPay\Payments\Model\Adminhtml\Source;
 
-/**
- * Class Franchises.
- */
 class Franchises
 {
     /**
      * @return array
      */
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
         return [
             [
@@ -124,7 +121,7 @@ class Franchises
             ],
             [
                 'value' => 'SOMOS',
-                'label' => 'somos'
+                'label' => 'SOMOS'
             ]
         ];
     }
