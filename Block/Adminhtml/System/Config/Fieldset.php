@@ -125,7 +125,7 @@ class Fieldset extends BaseField
         }
 
         $html .= '</div>';
-        $html .= '<div class="heading"><strong>' . $element->getLegend() . '</strong>';
+        $html .= '<div class="'.__('heading').'"><strong>' . $element->getLegend() . '</strong>';
 
         if ($element->getComment()) {
             $html .= '<span class="heading-intro">' . $element->getComment() . '</span>';

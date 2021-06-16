@@ -124,5 +124,6 @@
 "Total Paid:","Total Pagado"
 "Payment method:","Método de pago:"
 "Order # %1","Pedido # %1"
-"Payment Button Image":"Imagen Botón de Pago"
+"Payment Button Image","Imagen Botón de Pago"
 "It can be a URL, an image name (provide the image to the placetopay team as svg format for this to work) or a local path (save the image to the pub/media folder).","Puede ser una URL, un nombre de imagen (proporcione la imagen al equipo de placetopay en formato svg para que esto funcione) o una ruta local (guarde la imagen en la carpeta pub/media)."
+"heading","heading"

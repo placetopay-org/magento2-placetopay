@@ -19,7 +19,7 @@ class Data extends BaseData
     /**
      * @var Logger
      */
-    protected Logger $logger;
+    protected $logger;
 
     /**
      * @var string

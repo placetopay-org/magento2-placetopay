@@ -58,37 +58,37 @@ class PaymentMethod extends AbstractMethod
     /**
      * @var Config
      */
-    protected Config $_config;
+    protected $_config;
 
     /**
      * @var Order
      */
-    protected Order $_order;
+    protected $_order;
 
     /**
      * @var Resolver
      */
-    protected Resolver $_store;
+    protected $_store;
 
     /**
      * @var UrlInterface
      */
-    protected UrlInterface $_url;
+    protected $_url;
 
     /**
      * @var RemoteAddress
      */
-    protected RemoteAddress $remoteAddress;
+    protected $remoteAddress;
 
     /**
      * @var Header
      */
-    protected Header $httpHeader;
+    protected $httpHeader;
 
     /**
      * @var Item
      */
-    protected Item $taxItem;
+    protected $taxItem;
 
     /**
      * @var LoggerInterface
@@ -98,12 +98,12 @@ class PaymentMethod extends AbstractMethod
     /**
      * @var Info
      */
-    protected Info $infoFactory;
+    protected $infoFactory;
 
     /**
      * @var OrderRepositoryInterface
      */
-    protected OrderRepositoryInterface $orderRepository;
+    protected $orderRepository;
 
     /**
      * PaymentMethod constructor.
