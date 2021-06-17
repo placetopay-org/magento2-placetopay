@@ -141,11 +141,11 @@ class Data extends Action
 
             $this->messageManager->addErrorMessage($exception->getMessage());
 
-            $resultRedirect = $this->resultRedirect->create(ResultFactory::TYPE_REDIRECT);
+            $result = $this->resultRedirect->create(ResultFactory::TYPE_REDIRECT);
 
-            $resultRedirect->setUrl($this->_redirect->getRefererUrl());
+            $result->setUrl($this->_redirect->getRefererUrl());
 
-            return $resultRedirect;
+            return $result;
         }
     }
 }

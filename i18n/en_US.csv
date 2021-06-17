@@ -123,7 +123,7 @@
 "Date:","Date:"
 "Total Paid:","Total Paid:"
 "Payment method:","Payment method:"
-"Order # %1","Order # %1"
+"Payment in PlacetoPay No: %1","Payment in PlacetoPay No: %1"
 "Payment Button Image","Payment Button Image"
 "It can be a URL, an image name (provide the image to the placetopay team as svg format for this to work) or a local path (save the image to the pub/media folder).","It can be a URL, an image name (provide the image to the placetopay team as svg format for this to work) or a local path (save the image to the pub/media folder)."
 "heading","heading"
