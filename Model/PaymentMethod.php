@@ -58,37 +58,37 @@ class PaymentMethod extends AbstractMethod
     /**
      * @var Config
      */
-    protected Config $_config;
+    protected $_config;
 
     /**
      * @var Order
      */
-    protected Order $_order;
+    protected $_order;
 
     /**
      * @var Resolver
      */
-    protected Resolver $_store;
+    protected $_store;
 
     /**
      * @var UrlInterface
      */
-    protected UrlInterface $_url;
+    protected $_url;
 
     /**
      * @var RemoteAddress
      */
-    protected RemoteAddress $remoteAddress;
+    protected $remoteAddress;
 
     /**
      * @var Header
      */
-    protected Header $httpHeader;
+    protected $httpHeader;
 
     /**
      * @var Item
      */
-    protected Item $taxItem;
+    protected $taxItem;
 
     /**
      * @var LoggerInterface
@@ -98,12 +98,12 @@ class PaymentMethod extends AbstractMethod
     /**
      * @var Info
      */
-    protected Info $infoFactory;
+    protected $infoFactory;
 
     /**
      * @var OrderRepositoryInterface
      */
-    protected OrderRepositoryInterface $orderRepository;
+    protected $orderRepository;
 
     /**
      * PaymentMethod constructor.
@@ -386,7 +386,7 @@ class PaymentMethod extends AbstractMethod
             'buyer' => $this->parseAddressPerson($order->getBillingAddress()),
             'payment' => [
                 'reference' => $reference,
-                'description' => __('Order # %1', $order->getId()),
+                'description' => __('Payment in PlacetoPay No: %1', $order->getId())->render(),
                 'amount' => [
                     'details' => [
                         [
@@ -467,27 +467,10 @@ class PaymentMethod extends AbstractMethod
         }
 
         if ($pm = $this->_config->getPaymentMethods()) {
-            $parsingsCountry = [
-                'CO' => [],
-                'EC' => [
-                    'CR_VS' => 'ID_VS',
-                    'RM_MC' => 'ID_MC',
-                    'CR_DN' => 'ID_DN',
-                    'CR_DS' => 'ID_DS',
-                    'CR_AM' => 'ID_AM',
-                    'CR_CR' => 'ID_CR',
-                    'CR_VE' => 'ID_VE',
-                ],
-            ];
-
             $paymentMethods = [];
 
             foreach (explode(',', $pm) as $paymentMethod) {
-                if (isset($parsingsCountry[$this->_config->getCountryCode()][$paymentMethod])) {
-                    $paymentMethods[] = $parsingsCountry[$this->_config->getCountryCode()][$paymentMethod];
-                } else {
-                    $paymentMethods[] = $paymentMethod;
-                }
+                $paymentMethods[] = $paymentMethod;
             }
 
             $data['paymentMethod'] = implode(',', $paymentMethods);
@@ -609,7 +592,7 @@ class PaymentMethod extends AbstractMethod
      * @throws LocalizedException
      * @throws Exception
      */
-    public function settleOrderStatus(RedirectInformation $information, &$order, $payment = null)
+    public function settleOrderStatus(RedirectInformation $information, $order, $payment = null)
     {
         $status = $information->status();
 

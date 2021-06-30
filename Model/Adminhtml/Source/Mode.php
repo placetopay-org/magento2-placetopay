@@ -10,7 +10,6 @@ class Mode
     const CUSTOM = 'custom';
 
     /**
-     *
      * @return array
      */
     public function toOptionArray(): array

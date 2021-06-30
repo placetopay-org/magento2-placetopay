@@ -19,27 +19,27 @@ class CustomConfigProvider implements ConfigProviderInterface
     /**
      * @var Data
      */
-    protected Data $_scopeConfig;
+    protected $_scopeConfig;
 
     /**
      * @var Repository
      */
-    protected Repository $_assetRepo;
+    protected $_assetRepo;
 
     /**
      * @var CustomerSession
      */
-    protected CustomerSession $customerSession;
+    protected $customerSession;
 
     /**
      * @var CollectionFactory
      */
-    protected CollectionFactory $collectionFactory;
+    protected $collectionFactory;
 
     /**
      * @var StoreManagerInterface
      */
-    protected StoreManagerInterface $storeManager;
+    protected $storeManager;
 
     /**
      * CustomConfigProvider constructor.
@@ -72,6 +72,7 @@ class CustomConfigProvider implements ConfigProviderInterface
         return [
             'payment' => [
                 self::CODE => [
+                    'media' => $this->_assetRepo->getUrl('PlacetoPay_Payments::images'),
                     'logoUrl' => $this->_assetRepo->getUrl('PlacetoPay_Payments::images/logo.png'),
                     'logo' => $this->getImage(),
                     'legalName' => $this->_scopeConfig->getLegalName(),
@@ -175,26 +176,8 @@ class CustomConfigProvider implements ConfigProviderInterface
         $paymentMethods = [];
 
         if ($pm = $this->_scopeConfig->getPaymentMethods()) {
-            $parsingsCountry = [
-                'CO' => [],
-                'CR' => [],
-                'EC' => [
-                    'CR_VS' => 'ID_VS',
-                    'RM_MC' => 'ID_MC',
-                    'CR_DN' => 'ID_DN',
-                    'CR_DS' => 'ID_DS',
-                    'CR_AM' => 'ID_AM',
-                    'CR_CR' => 'ID_CR',
-                    'CR_VE' => 'ID_VE',
-                ],
-            ];
-
             foreach (explode(',', $pm) as $paymentMethod) {
-                if (isset($parsingsCountry[$this->_scopeConfig->getCountryCode()][$paymentMethod])) {
-                    $paymentMethods[] = $parsingsCountry[$this->_scopeConfig->getCountryCode()][$paymentMethod];
-                } else {
-                    $paymentMethods[] = $paymentMethod;
-                }
+                $paymentMethods[] = $paymentMethod;
             }
         }
 

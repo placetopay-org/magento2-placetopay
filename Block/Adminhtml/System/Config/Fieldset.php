@@ -48,35 +48,7 @@ class Fieldset extends BaseField
      */
     public function _getFrontendClass($element)
     {
-        $enabledString = $this->_isPaymentEnabled($element) ? ' enabled' : '';
-
-        return parent::_getFrontendClass($element) . ' with-button' . $enabledString;
-    }
-
-    /**
-     * Check whether current payment method is enabled.
-     *
-     * @param AbstractElement $element
-     *
-     * @return bool
-     */
-    public function _isPaymentEnabled($element)
-    {
-        $groupConfig = $element->getGroup();
-        $activityPaths = isset($groupConfig['activity_path']) ? $groupConfig['activity_path'] : [];
-
-        if (! is_array($activityPaths)) {
-            $activityPaths = [$activityPaths];
-        }
-
-        $isPaymentEnabled = false;
-
-        foreach ($activityPaths as $activityPath) {
-            $isPaymentEnabled = $isPaymentEnabled
-                || (bool) (string) $this->_backendConfig->getConfigDataValue($activityPath);
-        }
-
-        return $isPaymentEnabled;
+        return parent::_getFrontendClass($element) . ' with-button enabled';
     }
 
     /**
@@ -91,18 +63,14 @@ class Fieldset extends BaseField
     {
         $html = '<div class="config-heading" >';
         $groupConfig = $element->getGroup();
-        $disabledAttributeString = $this->_isPaymentEnabled($element) ? '' : ' disabled="disabled"';
-        $disabledClassString = $this->_isPaymentEnabled($element) ? '' : ' disabled';
         $htmlId = $element->getHtmlId();
 
-        $html .= '<div class="button-container"><button type="button"' .
-            $disabledAttributeString .
+        $html .= '<div class="button-container"><button type="button" ' .
             ' class="button action-configure' .
-            (empty($groupConfig['paypal_ec_separate']) ? '' : ' paypal-ec-separate') .
-            $disabledClassString .
+            (empty($groupConfig['placetopay_ec_separate']) ? '' : ' placetopay-ec-separate') .
             '" id="' .
             $htmlId .
-            '-head" onclick="paypalToggleSolution.call(this, \'' .
+            '-head" onclick="placetopayToggleSolution.call(this, \'' .
             $htmlId .
             "', '" .
             $this->getUrl(
@@ -125,7 +93,7 @@ class Fieldset extends BaseField
         }
 
         $html .= '</div>';
-        $html .= '<div class="heading"><strong>' . $element->getLegend() . '</strong>';
+        $html .= '<div class="'.__('heading').'"><strong>' . $element->getLegend() . '</strong>';
 
         if ($element->getComment()) {
             $html .= '<span class="heading-intro">' . $element->getComment() . '</span>';
@@ -171,7 +139,7 @@ class Fieldset extends BaseField
     protected function _getExtraJs($element)
     {
         $script = "require(['jquery', 'prototype'], function(jQuery){
-            window.paypalToggleSolution = function (id, url) {
+            window.placetopayToggleSolution = function (id, url) {
                 var doScroll = false;
                 Fieldset.toggleCollapse(id, url);
                 if ($(this).hasClassName(\"open\")) {
