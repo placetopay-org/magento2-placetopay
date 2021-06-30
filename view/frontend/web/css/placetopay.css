@@ -44,6 +44,10 @@
     margin-right: 2px;
 }
 
+.test-manteca {
+    background-image: url("../icon_card/cafam.svg");
+}
+
 .placetopay-onepage-success .print {
     display: block;
     float: right;
