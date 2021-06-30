@@ -11,9 +11,11 @@ use Dnetix\Redirection\Validators\Currency;
 use Exception;
 use Magento\Framework\Api\AttributeValueFactory;
 use Magento\Framework\Api\ExtensionAttributesFactory;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\HTTP\Header;
 use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
 use Magento\Framework\Locale\Resolver;
@@ -27,6 +29,7 @@ use Magento\Payment\Model\Method\AbstractMethod;
 use Magento\Payment\Model\Method\Logger;
 use Magento\Quote\Api\Data\CartInterface;
 use Magento\Sales\Api\Data\OrderAddressInterface;
+use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
@@ -106,6 +109,11 @@ class PaymentMethod extends AbstractMethod
     protected $orderRepository;
 
     /**
+     * @var SearchCriteriaBuilder
+     */
+    protected $searchCriteriaBuilder;
+
+    /**
      * PaymentMethod constructor.
      *
      * @param LoggerInterface $_logger
@@ -126,6 +134,7 @@ class PaymentMethod extends AbstractMethod
      * @param RemoteAddress $remoteAddress
      * @param AbstractResource|null $resource
      * @param AbstractDb|null $resourceCollection
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param array $data
      */
     public function __construct(
@@ -145,6 +154,7 @@ class PaymentMethod extends AbstractMethod
         Item $taxItem,
         Header $httpHeader,
         RemoteAddress $remoteAddress,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
         AbstractResource $resource = null,
         AbstractDb $resourceCollection = null,
         array $data = []
@@ -171,6 +181,7 @@ class PaymentMethod extends AbstractMethod
         $this->logger = $_logger;
         $this->orderRepository = $orderRepository;
         $this->infoFactory = $infoFactory;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
     }
 
     /**
@@ -260,15 +271,41 @@ class PaymentMethod extends AbstractMethod
     }
 
     /**
-     * @param string $orderId
+     * @param int $orderId
      *
      * @return bool
+     * @throws NoSuchEntityException
      */
-    public function isPendingStatusOrder(string $orderId): bool
+    public function isPendingStatusOrder(int $orderId): bool
     {
-        $status = $this->orderRepository->get($orderId)->getPayment()->getAdditionalInformation()['status'];
+        $this->logger->debug('isPendingStatusOrder: start search order id: '.$orderId);
+        $status = $this->getOrderByIncrementId($orderId)->getPayment()->getAdditionalInformation()['status'];
+        $this->logger->debug('isPendingStatusOrder: finish with status: '. $status);
 
         return Status::ST_PENDING === $status;
+    }
+
+    /**
+     * @param $incrementId
+     * @return false|OrderInterface
+     * @throws NoSuchEntityException
+     */
+    public function getOrderByIncrementId($incrementId)
+    {
+        $searchCriteria = $this->searchCriteriaBuilder->addFilter(
+            OrderInterface::INCREMENT_ID,
+            $incrementId
+        )->create();
+
+        $result = $this->orderRepository->getList($searchCriteria);
+
+        if (empty($result->getItems())) {
+            throw new NoSuchEntityException(__('No such order.'));
+        }
+
+        $orders = $result->getItems();
+
+        return reset($orders);
     }
 
     /**
@@ -279,7 +316,9 @@ class PaymentMethod extends AbstractMethod
      */
     public function processPendingOrder(Order $order, string $requestId): void
     {
+        $this->logger->debug('processPendingOrder with request id: '.$requestId);
         $transactionInfo = $this->gateway()->query($requestId);
+        $this->logger->debug('processPendingOrder with placetopay status: '.$transactionInfo->status()->status());
         $this->settleOrderStatus($transactionInfo, $order);
         $this->logger->debug('Cron job processed order with ID = ' . $order->getRealOrderId());
     }
@@ -586,13 +625,13 @@ class PaymentMethod extends AbstractMethod
 
     /**
      * @param RedirectInformation $information
-     * @param Order               $order
-     * @param Order\Payment       $payment
+     * @param Order $order
+     * @param Order\Payment|null $payment
      *
      * @throws LocalizedException
-     * @throws Exception
+     * @throws \PlacetoPay\Payments\Exception\PlacetoPayException
      */
-    public function settleOrderStatus(RedirectInformation $information, $order, $payment = null)
+    public function settleOrderStatus(RedirectInformation $information, Order $order, Order\Payment $payment = null)
     {
         $status = $information->status();
 
@@ -624,6 +663,7 @@ class PaymentMethod extends AbstractMethod
             $info = $this->getInfoModel();
             $transactions = $information->payment();
             $info->updateStatus($payment, $status, $transactions);
+            $this->logger->debug('settleOrderStatus with status: '. $status->status());
 
             if ($status->isApproved()) {
                 $payment->setIsTransactionPending(false);
