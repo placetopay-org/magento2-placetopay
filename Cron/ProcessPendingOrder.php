@@ -55,11 +55,11 @@ class ProcessPendingOrder
             foreach ($orders as $order) {
                 $requestId = $order->getPayment()->getAdditionalInformation()['request_id'];
 
-                if (! $requestId) {
+                if (!$requestId) {
                     continue;
                 }
 
-                if (! $this->placetopay->isPendingStatusOrder($order->getRealOrderId())) {
+                if (!$this->placetopay->isPendingStatusOrder($order->getRealOrderId())) {
                     continue;
                 }
 
