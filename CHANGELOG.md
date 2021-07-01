@@ -6,9 +6,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Remove get order repository from payment method and replace with search criteria
+
+## [1.8.2] - 2021-06-30
+
 ### Updated
 
 - Remove paypal dependency on Fieldset
+
+## [1.8.1] - 2021-06-17
 
 ### Added
 
@@ -153,7 +161,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - First release
 
-[Unreleased]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.0...HEAD
+[Unreleased]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.2...HEAD
+[1.8.2]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.1...1.8.2
+[1.8.1]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.0...1.8.1
 [1.8.0]: https://github.com/placetopay-org/magento2-placetopay/compare/1.7.7...1.8.0
 [1.7.7]: https://github.com/placetopay-org/magento2-placetopay/compare/1.7.6...1.7.7
 [1.7.6]: https://github.com/placetopay-org/magento2-placetopay/compare/1.7.5...1.7.6
