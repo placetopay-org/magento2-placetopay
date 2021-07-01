@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.8.3] - 2021-07-01
+
 ### Fixed
 
 - Remove get order repository from payment method and replace with search criteria
@@ -161,7 +163,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - First release
 
-[Unreleased]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.2...HEAD
+[Unreleased]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.3...HEAD
+[1.8.3]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.2...1.8.3
 [1.8.2]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.1...1.8.2
 [1.8.1]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.0...1.8.1
 [1.8.0]: https://github.com/placetopay-org/magento2-placetopay/compare/1.7.7...1.8.0
