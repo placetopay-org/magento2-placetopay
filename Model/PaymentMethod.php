@@ -402,7 +402,7 @@ class PaymentMethod extends AbstractMethod
         $reference = $order->getRealOrderId();
         $total = ! is_null($order->getGrandTotal()) ? $order->getGrandTotal() : $order->getTotalDue();
         $subtotal = $order->getSubtotal();
-        $discount = $order->getDiscountAmount() != 0 ? ($order->getDiscountAmount() * -1) : 0;
+        $discount = (string)$order->getDiscountAmount() != 0 ? ($order->getDiscountAmount() * -1) : 0;
         $shipping = $order->getShippingAmount();
         $visibleItems = $order->getAllVisibleItems();
         $expiration = date('c', strtotime($this->getExpirationTimeMinutes() . ' minutes'));
