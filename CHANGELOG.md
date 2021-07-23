@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.8.5] - 2021-07-23
+
 ### Fixed
 
 - Override discount to string
@@ -174,6 +176,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - First release
 
 [Unreleased]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.4...HEAD
+[1.8.5]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.4...1.8.5
 [1.8.4]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.3...1.8.4
 [1.8.3]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.2...1.8.3
 [1.8.2]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.1...1.8.2
