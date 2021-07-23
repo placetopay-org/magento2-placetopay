@@ -6,11 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Override discount to string
+
 ## [1.8.4] - 2021-07-22
 
 ### Fixed
 
-- Set discount value to string.
+- Set discount value to string
 
 ## [1.8.3] - 2021-07-01
 
