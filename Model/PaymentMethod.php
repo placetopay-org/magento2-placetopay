@@ -434,7 +434,7 @@ class PaymentMethod extends AbstractMethod
                         ],
                         [
                             'kind' => 'discount',
-                            'amount' => $discount,
+                            'amount' => (string)$discount,
                         ],
                         [
                             'kind' => 'shipping',
