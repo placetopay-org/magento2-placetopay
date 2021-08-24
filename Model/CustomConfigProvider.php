@@ -101,7 +101,8 @@ class CustomConfigProvider implements ConfigProviderInterface
         } elseif ($this->checkValidUrl($url)) {
             $image = $url;
         } elseif ($this->checkDirectory($url)) {
-            $image = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA).$url;
+            $base = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
+            $image = "${base}${$url}"; // TODO: Remove additional /
         } else {
             $image = 'https://static.placetopay.com/'.$url.'.svg';
         }

@@ -446,9 +446,9 @@ class Data extends BaseData
                 break;
             case Country::CHILE:
                 $endpoints = [
-                    Mode::DEVELOPMENT => 'https://uat-checkout.placetopay.ws/redirection',
-                    Mode::TEST => 'https://uat-checkout.placetopay.ws/redirection',
-                    Mode::PRODUCTION => 'https://checkout-getnet-cl.placetopay.com',
+                    Mode::DEVELOPMENT => 'https://dev.placetopay.com/redirection',
+                    Mode::TEST => 'https://checkout.uat.getnet.cl',
+                    Mode::PRODUCTION => 'https://checkout.getnet.cl',
                 ];
                 break;
             case Country::COLOMBIA:
