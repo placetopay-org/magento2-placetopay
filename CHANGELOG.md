@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Updated
+
+- Changed chile endpoints
+- dnetix/redirection package
+
+### Fixed
+
+- Static url was adding a slash (/) when searching for the image
+
 ## [1.8.5] - 2021-07-23
 
 ### Fixed
