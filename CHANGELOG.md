@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+- Remove translate from gateway request
+
+## [1.8.6] - 2021-07-31
+
 ### Updated
 
 - Changed chile endpoints

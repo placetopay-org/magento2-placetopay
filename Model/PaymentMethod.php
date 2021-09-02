@@ -425,7 +425,7 @@ class PaymentMethod extends AbstractMethod
             'buyer' => $this->parseAddressPerson($order->getBillingAddress()),
             'payment' => [
                 'reference' => $reference,
-                'description' => __('Payment in PlacetoPay No: %1', $order->getId())->render(),
+                'description' => 'Pedido '.$order->getId(),
                 'amount' => [
                     'details' => [
                         [
