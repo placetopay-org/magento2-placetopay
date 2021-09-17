@@ -451,6 +451,13 @@ class Data extends BaseData
                     Mode::PRODUCTION => 'https://checkout.getnet.cl',
                 ];
                 break;
+            case Country::PUERTO_RICO:
+                $endpoints = [
+                    Mode::DEVELOPMENT => 'https://dev.placetopay.com/redirection',
+                    Mode::TEST => 'https://pr-uat-checkout.placetopay.com/',
+                    Mode::PRODUCTION => 'https://checkout.placetopay.com/',
+                ];
+                break;
             case Country::COLOMBIA:
             case Country::COSTA_RICA:
             default:

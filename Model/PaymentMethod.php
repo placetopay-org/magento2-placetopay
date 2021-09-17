@@ -479,6 +479,7 @@ class PaymentMethod extends AbstractMethod
                         $taxes[] = [
                             'kind' => isset($map[$item['code']]) ? $map[$item['code']] : 'valueAddedTax',
                             'amount' => $item['real_amount'],
+                            'base' => $order->getItemById($item['item_id'])->getBasePrice(),
                         ];
                     }
 
@@ -490,6 +491,9 @@ class PaymentMethod extends AbstractMethod
                             isset($mergedTaxes[$elem['kind']]['amount']) ?
                                 number_format((float) $mergedTaxes[$elem['kind']]['amount'] + (float) $elem['amount'], 4, '.', '') :
                                 number_format((float) $elem['amount'], 4, '.', '');
+                        $mergedTaxes[$elem['kind']]['base'] = isset($mergedTaxes[$elem['kind']]['base']) ?
+                            number_format((float) $mergedTaxes[$elem['kind']]['base'] + (float) $elem['base'], 4, '.', '') :
+                            number_format((float) $elem['base'], 4, '.', '');
                     }
 
                     $mergedTaxes = array_values($mergedTaxes);
