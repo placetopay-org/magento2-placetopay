@@ -4,21 +4,15 @@ namespace PlacetoPay\Payments\Model\Adminhtml\Source;
 
 class Country
 {
-    const CHILE = 'CL';
     const COLOMBIA = 'CO';
     const COSTA_RICA = 'CR';
     const ECUADOR = 'EC';
+    const CHILE = 'CL';
+    const PUERTO_RICO = 'PR';
 
-    /**
-     * @return array
-     */
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
         return [
-            [
-                'value' => self::CHILE,
-                'label' => __('Chile'),
-            ],
             [
                 'value' => self::COLOMBIA,
                 'label' => __('Colombia'),
@@ -30,6 +24,14 @@ class Country
             [
                 'value' => self::ECUADOR,
                 'label' => __('Ecuador'),
+            ],
+            [
+                'value' => self::CHILE,
+                'label' => __('Chile'),
+            ],
+            [
+                'value' => self::PUERTO_RICO,
+                'label' => __('Puerto Rico'),
             ],
         ];
     }

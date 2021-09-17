@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- Puerto Rico endpoints
+- Base Taxes to transaction request
+
+## [1.8.7] - 2021-09-02
+
 ### Fixed
 - Remove translate from gateway request
 
@@ -189,7 +195,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - First release
 
-[Unreleased]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.4...HEAD
+[Unreleased]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.7...HEAD
+[1.8.7]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.6...1.8.7
+[1.8.6]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.5...1.8.6
 [1.8.5]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.4...1.8.5
 [1.8.4]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.3...1.8.4
 [1.8.3]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.2...1.8.3
