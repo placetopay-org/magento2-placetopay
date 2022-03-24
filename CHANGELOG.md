@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.8.9] - 2022-03-24
+
+### Changed
+- Ecuador test endpoint
+
 ## [1.8.8] - 2021-09-17
 
 ### Added

@@ -440,7 +440,7 @@ class Data extends BaseData
             case Country::ECUADOR:
                 $endpoints = [
                     Mode::DEVELOPMENT => 'https://dev.placetopay.ec/redirection',
-                    Mode::TEST => 'https://test.placetopay.ec/redirection',
+                    Mode::TEST => 'https://checkout-test.placetopay.ec',
                     Mode::PRODUCTION => 'https://checkout.placetopay.ec',
                 ];
                 break;
