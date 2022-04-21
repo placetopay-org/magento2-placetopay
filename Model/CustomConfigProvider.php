@@ -11,6 +11,7 @@ use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use PlacetoPay\Payments\Helper\Data;
+use PlacetoPay\Payments\Model\Adminhtml\Source\Country;
 
 class CustomConfigProvider implements ConfigProviderInterface
 {
@@ -97,12 +98,22 @@ class CustomConfigProvider implements ConfigProviderInterface
         $url = $this->_scopeConfig->getImageUrl();
 
         if (is_null($url)) {
-            $image = 'https://static.placetopay.com/placetopay-logo.svg';
+            switch ($this->_scopeConfig->getCountryCode()) {
+                case Country::CHILE:
+                    $image = 'https://banco.santander.cl/uploads/000/029/870/0620f532-9fc9-4248-b99e-78bae9f13e1d/original/Logo_WebCheckout_Getnet.svg';
+                    break;
+                case Country::COLOMBIA:
+                case Country::ECUADOR:
+                case Country::PUERTO_RICO:
+                case Country::COSTA_RICA:
+                default:
+                    $image = 'https://static.placetopay.com/placetopay-logo.svg';
+            }
         } elseif ($this->checkValidUrl($url)) {
             $image = $url;
         } elseif ($this->checkDirectory($url)) {
             $base = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
-            $image = "${base}${$url}"; // TODO: Remove additional /
+            $image = "${base}${$url}";
         } else {
             $image = 'https://static.placetopay.com/'.$url.'.svg';
         }

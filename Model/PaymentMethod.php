@@ -185,15 +185,6 @@ class PaymentMethod extends AbstractMethod
     }
 
     /**
-     * @param string $currencyCode
-     * @return bool
-     */
-    public function canUseForCurrency($currencyCode): bool
-    {
-        return Currency::isValidCurrency($currencyCode);
-    }
-
-    /**
      * @param string $paymentAction
      * @param object $stateObject
      * @return PaymentMethod
