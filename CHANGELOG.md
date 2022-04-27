@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.8.10] - 2022-04-27
+
+### Added
+- Default image for chile
+- Translate description and title for payment button
+
+### Updated
+- dnetix/redirection package
+
+### Changed
+- Chile test endpoint
+
 ## [1.8.9] - 2022-03-24
 
 ### Changed
@@ -202,7 +214,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - First release
 
-[Unreleased]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.8...HEAD
+[Unreleased]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.10...HEAD
+[1.8.10]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.9...1.8.10
+[1.8.9]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.8...1.8.9
 [1.8.8]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.7...1.8.8
 [1.8.7]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.6...1.8.7
 [1.8.6]: https://github.com/placetopay-org/magento2-placetopay/compare/1.8.5...1.8.6

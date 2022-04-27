@@ -316,7 +316,6 @@ class PaymentMethod extends AbstractMethod
 
     /**
      * @return PlacetoPay
-     * @throws PlacetoPayException
      */
     public function gateway(): PlacetoPay
     {
