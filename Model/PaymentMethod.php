@@ -323,7 +323,7 @@ class PaymentMethod extends AbstractMethod
         return new PlacetoPay([
             'login' => $this->_config->getLogin(),
             'tranKey' => $this->_config->getTranKey(),
-            'url' => $this->_config->getUri(),
+            'baseUrl' => $this->_config->getUri(),
         ]);
     }
 
