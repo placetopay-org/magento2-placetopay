@@ -46,7 +46,7 @@ class Info
         Order $order)
     {
         $payment->setLastTransId($response->requestId());
-        $payment->setTransactionId($response->requestId);
+        $payment->setTransactionId($response->requestId());
         $payment->setIsTransactionClosed(0);
         $payment->setParentTransactionId($order->getId());
         $payment->setIsTransactionPending(true);

@@ -14,7 +14,7 @@
   ],
   "require": {
     "php": ">=7.3",
-    "dnetix/redirection": "^1.0",
+    "dnetix/redirection": "^2.0",
     "magento/framework": ">=101.0.8 <102 || >=102.0.1",
     "magento/module-vault": "101.*",
     "ext-json": "*"
@@ -39,5 +39,10 @@
     "post-update-cmd": [
       "([ $COMPOSER_DEV_MODE -eq 0 ] || vendor/bin/phpcs --config-set installed_paths ../../magento/magento-coding-standard/)"
     ]
+  },
+  "config": {
+    "allow-plugins": {
+      "magento/composer-dependency-version-audit-plugin": true
+    }
   }
 }

@@ -425,7 +425,7 @@ class Data extends BaseData
     {
         return [
             Mode::DEVELOPMENT => 'https://dev.placetopay.com/redirection',
-            Mode::TEST => 'https://test.placetopay.com/redirection',
+            Mode::TEST => 'https://checkout-test.placetopay.com',
             Mode::PRODUCTION => 'https://checkout.placetopay.com',
         ];
     }
@@ -447,17 +447,11 @@ class Data extends BaseData
             case Country::CHILE:
                 $endpoints = [
                     Mode::DEVELOPMENT => 'https://dev.placetopay.com/redirection',
-                    Mode::TEST => 'https://checkout.uat.getnet.cl',
+                    Mode::TEST => 'https://checkout.test.getnet.cl',
                     Mode::PRODUCTION => 'https://checkout.getnet.cl',
                 ];
                 break;
             case Country::PUERTO_RICO:
-                $endpoints = [
-                    Mode::DEVELOPMENT => 'https://dev.placetopay.com/redirection',
-                    Mode::TEST => 'https://pr-uat-checkout.placetopay.com/',
-                    Mode::PRODUCTION => 'https://checkout.placetopay.com/',
-                ];
-                break;
             case Country::COLOMBIA:
             case Country::COSTA_RICA:
             default:
