@@ -7,7 +7,6 @@ use Dnetix\Redirection\Exceptions\PlacetoPayException;
 use Dnetix\Redirection\Message\RedirectInformation;
 use Dnetix\Redirection\Message\RedirectResponse;
 use Dnetix\Redirection\PlacetoPay;
-use Dnetix\Redirection\Validators\Currency;
 use Exception;
 use Magento\Framework\Api\AttributeValueFactory;
 use Magento\Framework\Api\ExtensionAttributesFactory;
@@ -57,6 +56,7 @@ class PaymentMethod extends AbstractMethod
     protected $_canVoid = true;
     protected $_canFetchTransactionInfo = true;
     protected $_canReviewPayment = true;
+    protected string $version;
 
     /**
      * @var Config
@@ -182,6 +182,7 @@ class PaymentMethod extends AbstractMethod
         $this->orderRepository = $orderRepository;
         $this->infoFactory = $infoFactory;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->version = '1.8.11';
     }
 
     /**
@@ -299,31 +300,37 @@ class PaymentMethod extends AbstractMethod
         return reset($orders);
     }
 
-    /**
-     * @param Order $order
-     * @param string $requestId
-     * @throws LocalizedException
-     * @throws PlacetoPayException
-     */
     public function processPendingOrder(Order $order, string $requestId): void
     {
         $this->logger->debug('processPendingOrder with request id: '.$requestId);
-        $transactionInfo = $this->gateway()->query($requestId);
+        $transactionInfo = $this->gateway(true)->query($requestId);
         $this->logger->debug('processPendingOrder with placetopay status: '.$transactionInfo->status()->status());
         $this->settleOrderStatus($transactionInfo, $order);
         $this->logger->debug('Cron job processed order with ID = ' . $order->getRealOrderId());
     }
 
-    /**
-     * @return PlacetoPay
-     */
-    public function gateway(): PlacetoPay
+    private function getHeaders(): array
     {
-        return new PlacetoPay([
+        $domain = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'];
+
+        return [
+            'User-Agent' => "magento2-module-payments/$this->version - $domain",
+        ];
+    }
+
+    public function gateway(bool $isCallback = false): PlacetoPay
+    {
+        $settings = [
             'login' => $this->_config->getLogin(),
             'tranKey' => $this->_config->getTranKey(),
             'baseUrl' => $this->_config->getUri(),
-        ]);
+        ];
+
+        if ($isCallback) {
+            $settings['headers'] = $this->getHeaders();
+        }
+
+        return new PlacetoPay($settings);
     }
 
     /**

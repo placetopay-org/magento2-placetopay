@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.8.11] - 2022-05-09
+- Add headers to process pending orders
+
 ## [1.8.10] - 2022-04-27
 
 ### Added
