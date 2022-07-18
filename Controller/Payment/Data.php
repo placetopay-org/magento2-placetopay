@@ -15,6 +15,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
+use Dnetix\Redirection\PlacetoPay;
 use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
 use PlacetoPay\Payments\Model\PaymentMethod;
 
@@ -100,6 +101,8 @@ class Data extends Action
      */
     public function execute()
     {
+
+
         $session = $this->_getCheckout();
 
         try {
@@ -119,6 +122,7 @@ class Data extends Action
              */
             $placetopay = $order->getPayment()->getMethodInstance();
             $url = $placetopay->getCheckoutRedirect($order);
+
 
             $order->setStatus('pending');
             $order->setState(Order::STATE_PENDING_PAYMENT);

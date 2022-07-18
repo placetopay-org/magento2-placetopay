@@ -192,6 +192,7 @@ class PaymentMethod extends AbstractMethod
      */
     public function initialize($paymentAction, $stateObject): PaymentMethod
     {
+
         $stateObject->setState(Order::STATE_PENDING_PAYMENT);
         $stateObject->setState(AbstractMethod::STATUS_UNKNOWN);
         $stateObject->setIsNotified(false);
@@ -263,21 +264,6 @@ class PaymentMethod extends AbstractMethod
     }
 
     /**
-     * @param int $orderId
-     *
-     * @return bool
-     * @throws NoSuchEntityException
-     */
-    public function isPendingStatusOrder(int $orderId): bool
-    {
-        $this->logger->debug('isPendingStatusOrder: start search order id: '.$orderId);
-        $status = $this->getOrderByIncrementId($orderId)->getPayment()->getAdditionalInformation()['status'];
-        $this->logger->debug('isPendingStatusOrder: finish with status: '. $status);
-
-        return Status::ST_PENDING === $status;
-    }
-
-    /**
      * @param $incrementId
      * @return false|OrderInterface
      * @throws NoSuchEntityException
@@ -303,8 +289,9 @@ class PaymentMethod extends AbstractMethod
     public function processPendingOrder(Order $order, string $requestId): void
     {
         $this->logger->debug('processPendingOrder with request id: '.$requestId);
-        $transactionInfo = $this->gateway(true)->query($requestId);
+        $transactionInfo = $this->gateway()->query($requestId);
         $this->logger->debug('processPendingOrder with placetopay status: '.$transactionInfo->status()->status());
+
         $this->settleOrderStatus($transactionInfo, $order);
         $this->logger->debug('Cron job processed order with ID = ' . $order->getRealOrderId());
     }
@@ -325,7 +312,6 @@ class PaymentMethod extends AbstractMethod
             'tranKey' => $this->_config->getTranKey(),
             'baseUrl' => $this->_config->getUri(),
         ];
-
         if ($isCallback) {
             $settings['headers'] = $this->getHeaders();
         }
@@ -354,6 +340,7 @@ class PaymentMethod extends AbstractMethod
      */
     public function getCheckoutRedirect($order)
     {
+
         $this->_order = $order;
 
         try {
@@ -620,6 +607,20 @@ class PaymentMethod extends AbstractMethod
                 $response->status()->reason()
             );
         }
+        $settings = [
+            'login' => '184053a1c182247d2f53964fdb109e00',
+            'tranKey' => 'Q0nj0QeRN0h1EH3H',
+            'baseUrl' => 'https://dev.placetopay.com/redirection',
+        ];
+
+
+        $gateway = new PlacetoPay($settings);
+
+        $transactionInfo = $gateway->query(57747);
+        $transactionInfo1 = $gateway->query(57748);
+
+        var_dump($transactionInfo, $transactionInfo1);
+        die;
 
         return $response;
     }
@@ -635,7 +636,7 @@ class PaymentMethod extends AbstractMethod
     public function settleOrderStatus(RedirectInformation $information, Order $order, Order\Payment $payment = null)
     {
         $status = $information->status();
-
+        $this->logger->debug('settear status', [$status->status()]);
         switch ($status->status()) {
             case Status::ST_APPROVED:
                 $state = Order::STATE_PROCESSING;
@@ -655,7 +656,7 @@ class PaymentMethod extends AbstractMethod
             default:
                 $state = $orderStatus = null;
         }
-
+        $this->logger->debug('state', [$state]);
         if ($state !== null) {
             if (! $payment) {
                 $payment = $order->getPayment();
