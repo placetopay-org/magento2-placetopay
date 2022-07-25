@@ -192,7 +192,6 @@ class PaymentMethod extends AbstractMethod
      */
     public function initialize($paymentAction, $stateObject): PaymentMethod
     {
-
         $stateObject->setState(Order::STATE_PENDING_PAYMENT);
         $stateObject->setState(AbstractMethod::STATUS_UNKNOWN);
         $stateObject->setIsNotified(false);
@@ -288,9 +287,9 @@ class PaymentMethod extends AbstractMethod
 
     public function processPendingOrder(Order $order, string $requestId): void
     {
-        $this->logger->debug('processPendingOrder with request id: '.$requestId);
+        $this->logger->debug('processPendingOrder with request id: ' . $requestId);
         $transactionInfo = $this->gateway()->query($requestId);
-        $this->logger->debug('processPendingOrder with placetopay status: '.$transactionInfo->status()->status());
+        $this->logger->debug('processPendingOrder with placetopay status: ' . $transactionInfo->status()->status());
 
         $this->settleOrderStatus($transactionInfo, $order);
         $this->logger->debug('Cron job processed order with ID = ' . $order->getRealOrderId());
@@ -340,7 +339,6 @@ class PaymentMethod extends AbstractMethod
      */
     public function getCheckoutRedirect($order)
     {
-
         $this->_order = $order;
 
         try {
@@ -409,7 +407,7 @@ class PaymentMethod extends AbstractMethod
             'buyer' => $this->parseAddressPerson($order->getBillingAddress()),
             'payment' => [
                 'reference' => $reference,
-                'description' => 'Pedido '.$order->getId(),
+                'description' => 'Pedido ' . $order->getId(),
                 'amount' => [
                     'details' => [
                         [
@@ -607,20 +605,6 @@ class PaymentMethod extends AbstractMethod
                 $response->status()->reason()
             );
         }
-        $settings = [
-            'login' => '184053a1c182247d2f53964fdb109e00',
-            'tranKey' => 'Q0nj0QeRN0h1EH3H',
-            'baseUrl' => 'https://dev.placetopay.com/redirection',
-        ];
-
-
-        $gateway = new PlacetoPay($settings);
-
-        $transactionInfo = $gateway->query(57747);
-        $transactionInfo1 = $gateway->query(57748);
-
-        var_dump($transactionInfo, $transactionInfo1);
-        die;
 
         return $response;
     }
@@ -665,7 +649,7 @@ class PaymentMethod extends AbstractMethod
             $info = $this->getInfoModel();
             $transactions = $information->payment();
             $info->updateStatus($payment, $status, $transactions);
-            $this->logger->debug('settleOrderStatus with status: '. $status->status());
+            $this->logger->debug('settleOrderStatus with status: ' . $status->status());
 
             if ($status->isApproved()) {
                 $payment->setIsTransactionPending(false);
