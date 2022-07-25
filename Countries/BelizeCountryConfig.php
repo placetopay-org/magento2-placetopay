@@ -7,12 +7,12 @@ use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 
 class BelizeCountryConfig extends CountryConfig
 {
-    public function resolve(string $countryCode): bool
+    public static function resolve(string $countryCode): bool
     {
         return Country::BELIZE === $countryCode;
     }
 
-    public function getEndpoints(): array
+    public static function getEndpoints(): array
     {
         return array_merge(parent::getEndpoints(), [
             Mode::PRODUCTION => 'https://abgateway.atlabank.com'

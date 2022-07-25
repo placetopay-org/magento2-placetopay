@@ -426,11 +426,11 @@ class Data extends BaseData
     {
         /** @var CountryConfigInterface $config */
         foreach (Country::COUNTRIES_CONFIG as $config) {
-            if (!$config->resolve($countryCode)) {
+            if (!$config::resolve($countryCode)) {
                 continue;
             }
 
-            return $config->getEndpoints();
+            return $config::getEndpoints();
         }
 
         return [];

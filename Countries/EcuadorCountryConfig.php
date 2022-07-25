@@ -7,12 +7,12 @@ use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 
 class EcuadorCountryConfig implements CountryConfigInterface
 {
-    public function resolve(string $countryCode): bool
+    public static function resolve(string $countryCode): bool
     {
         return Country::ECUADOR === $countryCode;
     }
 
-    public function getEndpoints(): array
+    public static function getEndpoints(): array
     {
         return [
             Mode::DEVELOPMENT => 'https://dev.placetopay.ec/redirection',

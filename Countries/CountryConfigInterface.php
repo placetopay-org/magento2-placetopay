@@ -2,10 +2,8 @@
 
 namespace PlacetoPay\Payments\Countries;
 
-use Magento\Tests\NamingConvention\true\string;
-
 interface CountryConfigInterface
 {
-    public function resolve(string $countryCode): bool;
-    public function getEndpoints(): array;
+    public static function resolve(string $countryCode): bool;
+    public static function getEndpoints(): array;
 }

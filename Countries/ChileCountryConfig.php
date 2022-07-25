@@ -7,12 +7,12 @@ use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 
 class ChileCountryConfig extends CountryConfig
 {
-    public function resolve(string $countryCode): bool
+    public static function resolve(string $countryCode): bool
     {
         return Country::CHILE === $countryCode;
     }
 
-    public function getEndpoints(): array
+    public static function getEndpoints(): array
     {
         return array_merge(parent::getEndpoints(), [
             Mode::TEST => 'https://checkout.test.getnet.cl',
