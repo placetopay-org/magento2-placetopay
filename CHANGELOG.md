@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.8.12] - 2022-07-26
+
+### Added
+- Honduras and Belize endpoints
+
 ## [1.8.11] - 2022-05-09
 
 ### Added
