@@ -23,6 +23,7 @@ use Magento\Sales\Api\TransactionRepositoryInterface;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Sales\Model\OrderFactory;
 use Magento\Store\Model\ScopeInterface;
+use PlacetoPay\Payments\Helper\OrderHelper;
 use PlacetoPay\Payments\Helper\PlacetoPayLogger;
 use PlacetoPay\Payments\Model\PaymentMethod;
 
@@ -159,11 +160,11 @@ class Response extends Action
                 throw new LocalizedException(__('Unknown payment method.'));
             }
 
-            if ($placetopay->isPendingOrder($order)) {
+            if (OrderHelper::isPendingOrder($order)) {
                 $response = $placetopay->resolve($order, $payment);
                 $status = $response->status();
             } else {
-                $status = $placetopay->parseOrderState($order);
+                $status = OrderHelper::parseOrderState($order);
             }
 
             /** @var Transaction $transaction */

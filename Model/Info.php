@@ -43,8 +43,8 @@ class Info
         Payment $payment,
         RedirectResponse $response,
         string $env,
-        Order $order)
-    {
+        Order $order
+    ) {
         $payment->setLastTransId($response->requestId());
         $payment->setTransactionId($response->requestId());
         $payment->setIsTransactionClosed(0);

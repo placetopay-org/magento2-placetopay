@@ -13,9 +13,14 @@ use Magento\Store\Model\ScopeInterface;
 use PlacetoPay\Payments\Logger\Logger;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Country;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
+use PlacetoPay\Payments\Model\Info as InfoFactory;
 
 class Data extends BaseData
 {
+    const CODE = 'placetopay';
+    const EXPIRATION_TIME_MINUTES_DEFAULT = 120;
+    const EXPIRATION_TIME_MINUTES_MIN = 10;
+
     /**
      * @var Logger
      */
@@ -37,13 +42,14 @@ class Data extends BaseData
      * @param Initial $initialConfig
      */
     public function __construct(
-        Logger $logger,
-        Context $context,
+        Logger        $logger,
+        Context       $context,
         LayoutFactory $layoutFactory,
-        Factory $paymentMethodFactory,
-        Emulation $appEmulation,
-        Config $paymentConfig,
-        Initial $initialConfig
+        Factory       $paymentMethodFactory,
+        Emulation     $appEmulation,
+        Config        $paymentConfig,
+        Initial       $initialConfig,
+        InfoFactory   $info
     ) {
         parent::__construct(
             $context,
@@ -53,7 +59,7 @@ class Data extends BaseData
             $paymentConfig,
             $initialConfig
         );
-
+        $this->infoFactory = $info;
         $this->logger = $logger;
 
         $this->mode = $this->scopeConfig->getValue(
@@ -177,7 +183,7 @@ class Data extends BaseData
      */
     public function getFillBuyerInformation(): bool
     {
-        return ! $this->scopeConfig->getValue(
+        return !$this->scopeConfig->getValue(
             'payment/placetopay/fill_buyer_information',
             ScopeInterface::SCOPE_STORE
         );
@@ -322,7 +328,6 @@ class Data extends BaseData
         } elseif (!empty($endpoints[$this->getMode()])) {
             $uri = $endpoints[$this->getMode()];
         }
-
         return $uri;
     }
 
@@ -460,5 +465,36 @@ class Data extends BaseData
         }
 
         return $endpoints;
+    }
+
+    public function cleanText($text)
+    {
+        return preg_replace('/[(),.#!\-]/', '', $text);
+    }
+
+    public function getExpirationTimeMinutes()
+    {
+        $minutes = $this->getExpirationTime();
+
+        return !is_numeric($minutes) || $minutes < self::EXPIRATION_TIME_MINUTES_MIN
+            ? self::EXPIRATION_TIME_MINUTES_DEFAULT
+            : $minutes;
+    }
+
+    /**
+     * @return InfoFactory
+     */
+    public function getInfoModel(): InfoFactory
+    {
+        return $this->infoFactory;
+    }
+
+    public function getHeaders(): array
+    {
+        $domain = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'];
+
+        return [
+            'User-Agent' => "magento2-module-payments/$this->version - $domain",
+        ];
     }
 }
