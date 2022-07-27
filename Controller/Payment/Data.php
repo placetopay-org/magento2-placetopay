@@ -15,7 +15,6 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
-use Dnetix\Redirection\PlacetoPay;
 use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
 use PlacetoPay\Payments\Model\PaymentMethod;
 
@@ -101,8 +100,6 @@ class Data extends Action
      */
     public function execute()
     {
-
-
         $session = $this->_getCheckout();
 
         try {
@@ -112,7 +109,7 @@ class Data extends Action
             $order = $session->getLastRealOrder();
 
             if (! $order->getId()) {
-                $this->logger->debug('Non existent order for reference #'.$order->getId());
+                $this->logger->debug('Non existent order for reference #' . $order->getId());
 
                 throw new LocalizedException(__('No order for processing was found.'));
             }
@@ -122,7 +119,6 @@ class Data extends Action
              */
             $placetopay = $order->getPayment()->getMethodInstance();
             $url = $placetopay->getCheckoutRedirect($order);
-
 
             $order->setStatus('pending');
             $order->setState(Order::STATE_PENDING_PAYMENT);
@@ -137,9 +133,9 @@ class Data extends Action
             $session->restoreQuote();
 
             $this->logger->debug(
-                'Redirect action '.
-                $exception->getMessage().' on '.
-                $exception->getFile().' line '.
+                'Redirect action ' .
+                $exception->getMessage() . ' on ' .
+                $exception->getFile() . ' line ' .
                 $exception->getLine()
             );
 
