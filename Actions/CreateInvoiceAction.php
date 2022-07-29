@@ -5,7 +5,7 @@ namespace PlacetoPay\Payments\Actions;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\Order;
 
-class CreateInvoiceAction
+abstract class CreateInvoiceAction
 {
     /**
      * @throws LocalizedException

@@ -31,10 +31,10 @@ class PlacetoPayPayment
     protected PlacetoPay $gateway;
     protected Order $_order;
 
-    public function __construct(Config $config, LoggerInterface $logger, Resolver $resolver, UrlInterface $url, RemoteAddress $remoteAddress, Header $header, Item $item)
+    public function __construct(Config $config, LoggerInterface $logger, Resolver $resolver, UrlInterface $url, RemoteAddress $remoteAddress, Header $header, Item $item, bool $isCallback = false)
     {
         $this->logger = $logger;
-        $this->config = $config;
+        $this->_config = $config;
         $this->resolver = $resolver;
         $this->url = $url;
         $this->remoteAddress = $remoteAddress;
@@ -47,6 +47,10 @@ class PlacetoPayPayment
             'baseUrl' => $config->getUri(),
         ];
 
+        if ($isCallback) {
+            $settings['headers'] = $this->getHeaders();
+        }
+
         $this->gateway = new PlacetoPay($settings);
     }
 
@@ -58,14 +62,14 @@ class PlacetoPayPayment
         $discount = (string)$order->getDiscountAmount() != 0 ? ($order->getDiscountAmount() * -1) : 0;
         $shipping = $order->getShippingAmount();
         $visibleItems = $order->getAllVisibleItems();
-        $expiration = date('c', strtotime($this->config->getExpirationTimeMinutes() . ' minutes'));
+        $expiration = date('c', strtotime($this->_config->getExpirationTimeMinutes() . ' minutes'));
         $items = [];
 
         /** @var Order\Item $item */
         foreach ($visibleItems as $item) {
             $items[] = [
                 'sku' => $item->getSku(),
-                'name' => $this->config->cleanText($item->getName()),
+                'name' => $this->_config->cleanText($item->getName()),
                 'category' => $item->getProductType(),
                 'qty' => $item->getQtyOrdered(),
                 'price' => $item->getPrice(),
@@ -99,21 +103,21 @@ class PlacetoPayPayment
                 ],
                 'items' => $items,
                 'shipping' => OrderHelper::parseAddressPerson($order->getShippingAddress()),
-                'allowPartial' => $this->config->getAllowPartialPayment(),
+                'allowPartial' => $this->_config->getAllowPartialPayment(),
             ],
             'returnUrl' => $this->url->getUrl('placetopay/payment/response', ['reference' => $reference]),
             'expiration' => $expiration,
             'ipAddress' => $this->remoteAddress->getRemoteAddress(),
             'userAgent' => $this->header->getHttpUserAgent(),
-            'skipResult' => $this->config->getSkipResult(),
-            'noBuyerFill' => $this->config->getFillBuyerInformation(),
+            'skipResult' => $this->_config->getSkipResult(),
+            'noBuyerFill' => $this->_config->getFillBuyerInformation(),
         ];
 
-        if ($this->config->getFillTaxInformation()) {
+        if ($this->_config->getFillTaxInformation()) {
             try {
                 $map = [];
 
-                if ($mapping = $this->config->getTaxRateParsing()) {
+                if ($mapping = $this->_config->getTaxRateParsing()) {
                     foreach (explode('|', $mapping) as $item) {
                         $t = explode(':', $item);
 
@@ -162,7 +166,7 @@ class PlacetoPayPayment
             }
         }
 
-        if ($pm = $this->config->getPaymentMethods()) {
+        if ($pm = $this->_config->getPaymentMethods()) {
             $paymentMethods = [];
 
             foreach (explode(',', $pm) as $paymentMethod) {
@@ -189,9 +193,9 @@ class PlacetoPayPayment
 
             if ($response->isSuccessful()) {
                 $payment = $order->getPayment();
-                $info = $this->config->getInfoModel();
+                $info = $this->_config->getInfoModel();
 
-                $info->loadInformationFromRedirectResponse($payment, $response, $this->config->getMode(), $order);
+                $info->loadInformationFromRedirectResponse($payment, $response, $this->_config->getMode(), $order);
             } else {
                 $this->logger->debug(
                     'Payment error [' .
