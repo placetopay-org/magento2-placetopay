@@ -10,6 +10,7 @@ use Magento\Payment\Model\Config;
 use Magento\Payment\Model\Method\Factory;
 use Magento\Store\Model\App\Emulation;
 use Magento\Store\Model\ScopeInterface;
+use PlacetoPay\Payments\Countries\CountryConfigInterface;
 use PlacetoPay\Payments\Logger\Logger;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Country;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
@@ -394,46 +395,21 @@ class Data extends BaseData
     }
 
     /**
-     * @return string[]
-     */
-    public static function getDefaultEndpoints(): array
-    {
-        return [
-            Mode::DEVELOPMENT => 'https://dev.placetopay.com/redirection',
-            Mode::TEST => 'https://checkout-test.placetopay.com',
-            Mode::PRODUCTION => 'https://checkout.placetopay.com',
-        ];
-    }
-
-    /**
+     * @param $countryCode
      * @return string[]
      */
     public function getEndpointsTo($countryCode): array
     {
-        switch ($countryCode) {
-            case Country::ECUADOR:
-                $endpoints = [
-                    Mode::DEVELOPMENT => 'https://dev.placetopay.ec/redirection',
-                    Mode::TEST => 'https://checkout-test.placetopay.ec',
-                    Mode::PRODUCTION => 'https://checkout.placetopay.ec',
-                ];
-                break;
-            case Country::CHILE:
-                $endpoints = [
-                    Mode::DEVELOPMENT => 'https://dev.placetopay.com/redirection',
-                    Mode::TEST => 'https://checkout.test.getnet.cl',
-                    Mode::PRODUCTION => 'https://checkout.getnet.cl',
-                ];
-                break;
-            case Country::PUERTO_RICO:
-            case Country::COLOMBIA:
-            case Country::COSTA_RICA:
-            default:
-                $endpoints = self::getDefaultEndpoints();
-                break;
+        /** @var CountryConfigInterface $config */
+        foreach (Country::COUNTRIES_CONFIG as $config) {
+            if (!$config::resolve($countryCode)) {
+                continue;
+            }
+
+            return $config::getEndpoints();
         }
 
-        return $endpoints;
+        return [];
     }
 
     public function cleanText($text)
