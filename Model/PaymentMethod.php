@@ -37,7 +37,6 @@ use PlacetoPay\Payments\PlacetoPayService\PlacetoPayPayment;
 class PaymentMethod extends AbstractMethod
 {
     use IsSetStatusOrderTrait;
-
     const CODE = 'placetopay';
 
     protected $_code = self::CODE;
@@ -56,7 +55,7 @@ class PaymentMethod extends AbstractMethod
     /**
      * @var Config
      */
-    protected $config;
+    protected $_config;
 
     /**
      * @var Order
@@ -149,11 +148,11 @@ class PaymentMethod extends AbstractMethod
         UrlInterface $urlInterface,
         Item $taxItem,
         Header $httpHeader,
+        Resolver $resolver,
         RemoteAddress $remoteAddress,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         AbstractResource $resource = null,
         AbstractDb $resourceCollection = null,
-        Resolver $resolver,
         array $data = []
     ) {
         parent::__construct(
@@ -169,7 +168,7 @@ class PaymentMethod extends AbstractMethod
             $data
         );
 
-        $this->config = $config;
+        $this->_config = $config;
         $this->_store = $store;
         $this->_url = $urlInterface;
         $this->remoteAddress = $remoteAddress;
@@ -203,7 +202,7 @@ class PaymentMethod extends AbstractMethod
      */
     public function isActive($storeId = null): bool
     {
-        return $this->config->getActive();
+        return $this->_config->getActive();
     }
 
     /**
@@ -212,9 +211,9 @@ class PaymentMethod extends AbstractMethod
      */
     public function isAvailable(CartInterface $quote = null): bool
     {
-        return !(!$this->config->getTranKey()
-            || !$this->config->getLogin()
-            || !$this->config->getEndpointsTo($this->config->getCountryCode()));
+        return !(!$this->_config->getTranKey()
+            || !$this->_config->getLogin()
+            || !$this->_config->getEndpointsTo($this->_config->getCountryCode()));
     }
 
     /**
