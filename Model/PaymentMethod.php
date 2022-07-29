@@ -26,6 +26,7 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
 use PlacetoPay\Payments\Concerns\IsSetStatusOrderTrait;
+use PlacetoPay\Payments\Constants\PaymentStatus;
 use PlacetoPay\Payments\Helper\Data as Config;
 use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
 use PlacetoPay\Payments\Model\Info as InfoFactory;
@@ -52,55 +53,28 @@ class PaymentMethod extends AbstractMethod
     protected $_canReviewPayment = true;
     protected string $version;
 
-    /**
-     * @var Config
-     */
-    protected $_config;
+    protected Config $_config;
 
-    /**
-     * @var Order
-     */
-    protected $_order;
+    protected Order $_order;
 
-    /**
-     * @var Resolver
-     */
-    protected $_store;
+    protected Resolver $_store;
 
-    /**
-     * @var UrlInterface
-     */
-    protected $_url;
+    protected UrlInterface $_url;
 
-    /**
-     * @var RemoteAddress
-     */
-    protected $remoteAddress;
+    protected RemoteAddress $remoteAddress;
 
-    /**
-     * @var Header
-     */
-    protected $httpHeader;
+    protected Header $httpHeader;
 
-    /**
-     * @var Item
-     */
-    protected $taxItem;
+    protected Item $taxItem;
 
     /**
      * @var LoggerInterface
      */
     protected $logger;
 
-    /**
-     * @var Info
-     */
-    protected $infoFactory;
+    protected Info $infoFactory;
 
-    /**
-     * @var OrderRepositoryInterface
-     */
-    protected $orderRepository;
+    protected OrderRepositoryInterface $orderRepository;
 
     /**
      * @var SearchCriteriaBuilder
@@ -228,7 +202,7 @@ class PaymentMethod extends AbstractMethod
 
     public function processPendingOrderFail(Order $order): void
     {
-        $this->logger->debug('processPendingOrderFail to cancel');
+        $this->logger->debug('processPendingOrderFail to', ['status: ' => PaymentStatus::CANCELED]);
         $this->changeStatusOrderFail($order);
     }
 

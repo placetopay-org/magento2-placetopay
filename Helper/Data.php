@@ -21,15 +21,9 @@ class Data extends BaseData
     const EXPIRATION_TIME_MINUTES_DEFAULT = 120;
     const EXPIRATION_TIME_MINUTES_MIN = 10;
 
-    /**
-     * @var Logger
-     */
-    protected $logger;
+    protected Logger $logger;
 
-    /**
-     * @var string
-     */
-    protected $mode;
+    protected string $mode;
 
     /**
      * Data constructor.
@@ -134,9 +128,6 @@ class Data extends BaseData
         );
     }
 
-    /**
-     * @return bool
-     */
     public function getAllowPendingPayment(): bool
     {
         return $this->scopeConfig->getValue(
@@ -145,9 +136,6 @@ class Data extends BaseData
         );
     }
 
-    /**
-     * @return bool
-     */
     public function getAllowPartialPayment(): bool
     {
         return $this->scopeConfig->getValue(
@@ -156,9 +144,6 @@ class Data extends BaseData
         );
     }
 
-    /**
-     * @return bool
-     */
     public function getHasCifin(): bool
     {
         return $this->scopeConfig->getValue(
@@ -167,9 +152,6 @@ class Data extends BaseData
         );
     }
 
-    /**
-     * @return bool
-     */
     public function getFillTaxInformation(): bool
     {
         return $this->scopeConfig->getValue(
@@ -178,9 +160,6 @@ class Data extends BaseData
         );
     }
 
-    /**
-     * @return bool
-     */
     public function getFillBuyerInformation(): bool
     {
         return !$this->scopeConfig->getValue(
@@ -189,9 +168,6 @@ class Data extends BaseData
         );
     }
 
-    /**
-     * @return bool
-     */
     public function getSkipResult(): bool
     {
         return $this->scopeConfig->getValue(
@@ -255,9 +231,6 @@ class Data extends BaseData
         );
     }
 
-    /**
-     * @return bool
-     */
     public function getActive(): bool
     {
         return $this->scopeConfig->getValue(
@@ -307,9 +280,6 @@ class Data extends BaseData
         );
     }
 
-    /**
-     * @return bool
-     */
     public function isCustomEnvironment(): bool
     {
         return $this->getMode() === Mode::CUSTOM;
@@ -436,7 +406,6 @@ class Data extends BaseData
     }
 
     /**
-     * @param $countryCode
      * @return string[]
      */
     public function getEndpointsTo($countryCode): array
@@ -492,9 +461,11 @@ class Data extends BaseData
     public function getHeaders(): array
     {
         $domain = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'];
+        $userAgent =  "magento2-module-payments/$this->version - $domain";
 
         return [
-            'User-Agent' => "magento2-module-payments/$this->version - $domain",
+            'User-Agent' => $userAgent,
+            'X-Source-Platform' => 'magento',
         ];
     }
 }
