@@ -15,26 +15,22 @@ use PlacetoPay\Payments\Model\PaymentMethod;
  */
 class ProcessPendingOrder
 {
+    protected CollectionFactory $collectionFactory;
 
-    /**
-     * @var CollectionFactory
-     */
-    protected $collectionFactory;
+    protected PaymentMethod $placetopay;
 
-    protected $placetopay;
-
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * ProcessPendingOrder constructor.
      *
      * @param CollectionFactory $collectionFactory
-     * @param PaymentMethod     $placetopay
+     * @param PaymentMethod $placetopay
      */
     public function __construct(
-        LoggerInterface $logger,
+        LoggerInterface   $logger,
         CollectionFactory $collectionFactory,
-        PaymentMethod $placetopay
+        PaymentMethod     $placetopay
     ) {
         $this->logger = $logger;
         $this->collectionFactory = $collectionFactory;
@@ -51,8 +47,8 @@ class ProcessPendingOrder
         $orders = $this->collectionFactory->create()
             ->addAttributeToSelect('*')
             ->addAttributeToFilter('state', ['in' => [
-              Order::STATE_PENDING_PAYMENT,
-              Order::STATE_NEW,
+                Order::STATE_PENDING_PAYMENT,
+                Order::STATE_NEW,
             ]])
             ->addAttributeToFilter('status', ['in' => [
                 PaymentStatus::PENDING_PAYMENT, PaymentStatus::PENDING
@@ -60,19 +56,21 @@ class ProcessPendingOrder
 
         if ($orders) {
             foreach ($orders as $order) {
-                $this->logger->debug('Process order pending' . $order->getRealOrderId());
+                $this->logger->debug('Process order pending id: ' . $order->getRealOrderId());
                 $information = $order->getPayment()->getAdditionalInformation();
-                if (empty($information['request_id'])) {
-                    $this->placetopay->processPendingOrderFail($order);
-                } else {
+                if (!empty($information['request_id'])) {
                     $requestId = $information['request_id'];
                     $statusPayment = $order->getPayment()->getAdditionalInformation()['status'];
                     $this->logger->debug('status ' . $statusPayment);
-                    if (!in_array($statusPayment, [PaymentStatus::APPROVED,PaymentStatus::REJECTED])) {
+                    if (!in_array($statusPayment, [PaymentStatus::APPROVED, PaymentStatus::REJECTED])) {
                         $this->logger->debug('ProcessPendingOrder', ['Request:' => $requestId]);
                         $this->placetopay->processPendingOrder($order, $requestId);
+                        continue;
                     }
                 }
+                $this->logger->debug('The orden with id: ' . $order->getRealOrderId() . ' doesnt have a session (requestid)');
+                $this->logger->debug('The orden be process to cancel, because the payment cant resolve');
+                $this->placetopay->processPendingOrderFail($order);
             }
         }
     }
