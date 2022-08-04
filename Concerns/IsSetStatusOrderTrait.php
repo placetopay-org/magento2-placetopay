@@ -11,14 +11,15 @@ trait IsSetStatusOrderTrait
 {
     public function setStatus(RedirectInformation $information, Order $order, Order\Payment $payment = null): void
     {
+        $this->logger->debug('Consulting status of the redirect information');
         $status = $information->status();
         $this->logger->debug('settear status', [$status->status()]);
 
         $data = OrderHelper::getState($status->status());
 
-        $this->logger->debug('state');
         if ($data['state'] !== null) {
             if (!$payment) {
+                $this->logger->debug('Obtaining the payment of the order');
                 $payment = $order->getPayment();
             }
 
@@ -28,6 +29,7 @@ trait IsSetStatusOrderTrait
             $this->logger->debug('settleOrderStatus with status: ' . $status->status());
 
             if ($status->isApproved()) {
+                $this->logger->debug('The status is approved, create invoice and set status: APPROVED, in the order');
                 $payment->setIsTransactionPending(false);
                 $payment->setIsTransactionApproved(true);
                 $payment->setSkipOrderProcessing(true);
@@ -37,8 +39,11 @@ trait IsSetStatusOrderTrait
             } elseif ($status->isRejected()) {
                 $payment->setIsTransactionDenied(true);
                 $payment->setSkipOrderProcessing(true);
+                $this->logger->debug('The status is rejected, create invoice and set status: REJECTED, in the order');
                 $order->cancel()->save();
             } else {
+                $this->logger->debug('The ', ['state: ' => $data['state']]);
+                $this->logger->debug('Setting in ', ['Order status: ' => $data['orderStatus']]);
                 $order->setState($data['state'])->setStatus($data['orderStatus'])->save();
             }
         }
@@ -49,6 +54,7 @@ trait IsSetStatusOrderTrait
         if (!$payment) {
             $payment = $order->getPayment();
         }
+        $this->logger->debug('Process payment to denied');
         $payment->setIsTransactionDenied(true);
         $payment->setSkipOrderProcessing(true);
         $order->cancel()->save();

@@ -59,6 +59,7 @@ class ProcessPendingOrder
                 $this->logger->debug('Process order pending id: ' . $order->getRealOrderId());
                 $information = $order->getPayment()->getAdditionalInformation();
                 if (!empty($information['request_id'])) {
+                    $this->logger->debug('Process order with session request: ' . $information['request_id']);
                     $requestId = $information['request_id'];
                     $statusPayment = $order->getPayment()->getAdditionalInformation()['status'];
                     $this->logger->debug('status ' . $statusPayment);

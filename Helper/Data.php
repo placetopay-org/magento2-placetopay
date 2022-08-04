@@ -24,18 +24,10 @@ class Data extends BaseData
 
     protected Logger $logger;
 
+    protected string $version;
+
     protected string $mode;
 
-    /**
-     * Data constructor.
-     * @param Logger $logger
-     * @param Context $context
-     * @param LayoutFactory $layoutFactory
-     * @param Factory $paymentMethodFactory
-     * @param Emulation $appEmulation
-     * @param Config $paymentConfig
-     * @param Initial $initialConfig
-     */
     public function __construct(
         Logger        $logger,
         Context       $context,
@@ -56,6 +48,7 @@ class Data extends BaseData
         );
         $this->infoFactory = $info;
         $this->logger = $logger;
+        $this->version = '1.8.11';
 
         $this->mode = $this->scopeConfig->getValue(
             'payment/placetopay/placetopay_mode',
@@ -436,11 +429,10 @@ class Data extends BaseData
 
     public function getHeaders(): array
     {
-        $domain = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'];
-        $userAgent =  "magento2-module-payments/$this->version - $domain";
+        $domain = $_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? 'localhost');
 
         return [
-            'User-Agent' => $userAgent,
+            'User-Agent' => "magento2-module-payments/{$this->version} (origin:$domain; vr:" . $this->version . ')',
             'X-Source-Platform' => 'magento',
         ];
     }

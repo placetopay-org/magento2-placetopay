@@ -31,7 +31,7 @@ class PlacetoPayPayment
     protected PlacetoPay $gateway;
     protected Order $_order;
 
-    public function __construct(Config $config, LoggerInterface $logger, Resolver $resolver, UrlInterface $url, RemoteAddress $remoteAddress, Header $header, Item $item, bool $isCallback = false)
+    public function __construct(Config $config, LoggerInterface $logger, Resolver $resolver, UrlInterface $url, RemoteAddress $remoteAddress, Header $header, Item $item)
     {
         $this->logger = $logger;
         $this->_config = $config;
@@ -45,11 +45,8 @@ class PlacetoPayPayment
             'login' => $config->getLogin(),
             'tranKey' => $config->getTranKey(),
             'baseUrl' => $config->getUri(),
+            'headers' => $config->getHeaders()
         ];
-
-        if ($isCallback) {
-            $settings['headers'] = $this->getHeaders();
-        }
 
         $this->gateway = new PlacetoPay($settings);
     }
@@ -241,6 +238,8 @@ class PlacetoPayPayment
         $response = $this->gateway->query($info['request_id']);
 
         if ($response->isSuccessful()) {
+            $this->logger->debug('The response to resolve the payments is successful');
+            $this->logger->debug('Processing to resolve the payment');
             $this->setStatus($response, $order, $payment);
         } else {
             $this->logger->debug(
