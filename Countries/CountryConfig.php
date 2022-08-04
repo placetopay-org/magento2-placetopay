@@ -4,7 +4,7 @@ namespace PlacetoPay\Payments\Countries;
 
 use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 
-class CountryConfig implements CountryConfigInterface
+abstract class CountryConfig implements CountryConfigInterface
 {
     public static function resolve(string $countryCode): bool
     {

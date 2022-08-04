@@ -2,7 +2,7 @@
 
 namespace PlacetoPay\Payments\Constants;
 
-class PaymentStatus
+abstract class PaymentStatus
 {
     public const PENDING_PAYMENT = 'pending_payment';
     public const PENDING = 'pending';

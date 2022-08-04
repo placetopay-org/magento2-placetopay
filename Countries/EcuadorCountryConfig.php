@@ -5,7 +5,7 @@ namespace PlacetoPay\Payments\Countries;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Country;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 
-class EcuadorCountryConfig implements CountryConfigInterface
+abstract class EcuadorCountryConfig implements CountryConfigInterface
 {
     public static function resolve(string $countryCode): bool
     {

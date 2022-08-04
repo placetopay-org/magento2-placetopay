@@ -6,7 +6,7 @@ use Dnetix\Redirection\Entities\Status;
 use Magento\Sales\Api\Data\OrderAddressInterface;
 use Magento\Sales\Model\Order;
 
-class OrderHelper
+abstract class OrderHelper
 {
     public static function getState($status): array
     {
