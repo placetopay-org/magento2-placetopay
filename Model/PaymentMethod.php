@@ -82,30 +82,7 @@ class PaymentMethod extends AbstractMethod
     protected $searchCriteriaBuilder;
     protected PlacetoPayPayment $placetoPayPayment;
 
-    /**
-     * PaymentMethod constructor.
-     *
-     * @param LoggerInterface $_logger
-     * @param InfoFactory $infoFactory
-     * @param Config $config
-     * @param Context $context
-     * @param Registry $registry
-     * @param ExtensionAttributesFactory $extensionFactory
-     * @param AttributeValueFactory $customAttributeFactory
-     * @param Data $paymentData
-     * @param ScopeConfigInterface $scopeConfig
-     * @param Logger $logger
-     * @param OrderRepositoryInterface $orderRepository
-     * @param Resolver $store
-     * @param UrlInterface $urlInterface
-     * @param Item $taxItem
-     * @param Header $httpHeader
-     * @param RemoteAddress $remoteAddress
-     * @param AbstractResource|null $resource
-     * @param AbstractDb|null $resourceCollection
-     * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param array $data
-     */
+
     public function __construct(
         LoggerInterface $_logger,
         InfoFactory $infoFactory,

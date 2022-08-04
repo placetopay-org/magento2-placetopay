@@ -23,47 +23,21 @@ use PlacetoPay\Payments\Model\PaymentMethod;
  */
 class Data extends Action
 {
-    /**
-     * @var Session
-     */
-    protected $checkoutSession;
+    protected Session $checkoutSession;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
+    protected LoggerInterface $logger;
 
     /**
      * @var ManagerInterface
      */
     protected $messageManager;
 
-    /**
-     * @var JsonFactory
-     */
-    protected $jsonFactory;
+    protected JsonFactory $jsonFactory;
 
-    /**
-     * @var ResultFactory
-     */
-    protected $resultRedirect;
+    protected ResultFactory $resultRedirect;
 
-    /**
-     * @var OrderRepositoryInterface
-     */
-    protected $orderRepository;
+    protected OrderRepositoryInterface $orderRepository;
 
-    /**
-     * Data constructor.
-     *
-     * @param Context                  $context
-     * @param Session                  $checkoutSession
-     * @param LoggerInterface          $logger
-     * @param ManagerInterface         $messageManager
-     * @param JsonFactory              $jsonFactory
-     * @param ResultFactory            $result
-     * @param OrderRepositoryInterface $orderRepository
-     */
     public function __construct(
         Context $context,
         Session $checkoutSession,
@@ -83,12 +57,7 @@ class Data extends Action
         $this->orderRepository = $orderRepository;
     }
 
-    /**
-     * Get singleton of Checkout Session Model.
-     *
-     * @return Session
-     */
-    protected function _getCheckout()
+    protected function _getCheckout(): Session
     {
         return $this->checkoutSession;
     }

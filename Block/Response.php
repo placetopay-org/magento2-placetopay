@@ -10,10 +10,7 @@ use Magento\Framework\View\Element\Template;
  */
 class Response extends Template
 {
-    /**
-     * @return string
-     */
-    public function getMessage()
+    public function getMessage(): string
     {
         return __('An error has occurred while checking the payment status');
     }

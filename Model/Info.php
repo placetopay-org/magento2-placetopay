@@ -12,30 +12,16 @@ use Magento\Sales\Model\Order\Payment\Transaction as TransactionModel;
 use Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface;
 use PlacetoPay\Payments\Exception\PlacetoPayException;
 
-/**
- * Class Info.
- */
 class Info
 {
-    /**
-     * @var BuilderInterface
-     */
-    protected $transactionBuilder;
+    protected BuilderInterface $transactionBuilder;
 
-    /**
-     * Info constructor.
-     * @param BuilderInterface $transactionBuilder
-     */
     public function __construct(BuilderInterface $transactionBuilder)
     {
         $this->transactionBuilder = $transactionBuilder;
     }
 
     /**
-     * @param Payment $payment
-     * @param RedirectResponse $response
-     * @param string $env
-     * @param Order $order
      * @throws LocalizedException
      * @throws PlacetoPayException
      */
@@ -78,9 +64,6 @@ class Info
     }
 
     /**
-     * @param Payment $payment
-     * @param Status $status
-     * @param array|null $transactions
      * @throws LocalizedException
      * @throws PlacetoPayException
      */
@@ -119,8 +102,6 @@ class Info
     }
 
     /**
-     * @param Payment $payment
-     * @param array $data
      * @throws LocalizedException
      * @throws PlacetoPayException
      */

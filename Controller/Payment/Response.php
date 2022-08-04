@@ -32,86 +32,35 @@ use PlacetoPay\Payments\Model\PaymentMethod;
  */
 class Response extends Action
 {
-    /**
-     * @var PlacetoPayLogger
-     */
-    protected $_logger;
+    protected PlacetoPayLogger $_logger;
 
-    /**
-     * @var Session
-     */
-    protected $checkoutSession;
+    protected Session $checkoutSession;
 
-    /**
-     * @var OrderFactory
-     */
-    protected $salesOrderFactory;
+    protected OrderFactory $salesOrderFactory;
 
     /**
      * @var ManagerInterface
      */
     protected $messageManager;
 
-    /**
-     * @var Http
-     */
-    protected $request;
+    protected Http $request;
 
-    /**
-     * @var ScopeConfigInterface
-     */
-    protected $scopeConfig;
+    protected ScopeConfigInterface $scopeConfig;
 
-    /**
-     * @var QuoteFactory
-     */
-    protected $quoteQuoteFactory;
+    protected QuoteFactory $quoteQuoteFactory;
 
-    /**
-     * @var CustomerSession
-     */
-    protected $customerSession;
+    protected CustomerSession $customerSession;
 
-    /**
-     * @var EventManager
-     */
-    protected $eventManager;
+    protected EventManager $eventManager;
 
-    /**
-     * @var Session
-     */
-    protected $_checkoutSession;
+    protected Session $_checkoutSession;
 
-    /**
-     * @var PaymentHelper
-     */
-    protected $_paymentHelper;
+    protected PaymentHelper $_paymentHelper;
 
-    /**
-     * @var TransactionRepositoryInterface
-     */
-    protected $_transactionRepository;
+    protected TransactionRepositoryInterface $_transactionRepository;
 
-    /**
-     * @var PageFactory
-     */
-    protected $_pageFactory;
+    protected PageFactory $_pageFactory;
 
-    /**
-     * Response constructor.
-     * @param Context $context
-     * @param Session $checkoutSession
-     * @param OrderFactory $salesOrderFactory
-     * @param ManagerInterface $messageManager
-     * @param PlacetoPayLogger $logger
-     * @param Http $request
-     * @param ScopeConfigInterface $scopeConfig
-     * @param QuoteFactory $quoteQuoteFactory
-     * @param CustomerSession $customerSession
-     * @param EventManager $eventManager
-     * @param TransactionRepositoryInterface $transactionRepository
-     * @param PageFactory $pageFactory
-     */
     public function __construct(
         Context $context,
         Session $checkoutSession,
