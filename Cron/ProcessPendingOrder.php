@@ -6,6 +6,8 @@ use Dnetix\Redirection\Exceptions\PlacetoPayException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
+use PlacetoPay\Payments\Constants\PaymentStatus;
+use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
 use PlacetoPay\Payments\Model\PaymentMethod;
 
 /**
@@ -13,23 +15,24 @@ use PlacetoPay\Payments\Model\PaymentMethod;
  */
 class ProcessPendingOrder
 {
-    /**
-     * @var CollectionFactory
-     */
-    protected $collectionFactory;
+    protected CollectionFactory $collectionFactory;
 
-    protected $placetopay;
+    protected PaymentMethod $placetopay;
+
+    private LoggerInterface $logger;
 
     /**
      * ProcessPendingOrder constructor.
      *
      * @param CollectionFactory $collectionFactory
-     * @param PaymentMethod     $placetopay
+     * @param PaymentMethod $placetopay
      */
     public function __construct(
+        LoggerInterface   $logger,
         CollectionFactory $collectionFactory,
-        PaymentMethod $placetopay
+        PaymentMethod     $placetopay
     ) {
+        $this->logger = $logger;
         $this->collectionFactory = $collectionFactory;
         $this->placetopay = $placetopay;
     }
@@ -38,7 +41,7 @@ class ProcessPendingOrder
      * @throws PlacetoPayException
      * @throws LocalizedException
      */
-    public function execute()
+    public function execute(): void
     {
         /** @var Order $orders */
         $orders = $this->collectionFactory->create()
@@ -48,22 +51,27 @@ class ProcessPendingOrder
                 Order::STATE_NEW,
             ]])
             ->addAttributeToFilter('status', ['in' => [
-                'pending_payment',
-            ]]);
+                PaymentStatus::PENDING_PAYMENT, PaymentStatus::PENDING
+            ]])->addAttributeToSort('entity_id');
 
         if ($orders) {
             foreach ($orders as $order) {
-                $requestId = $order->getPayment()->getAdditionalInformation()['request_id'];
-
-                if (!$requestId) {
-                    continue;
+                $this->logger->debug('Process order pending id: ' . $order->getRealOrderId());
+                $information = $order->getPayment()->getAdditionalInformation();
+                if (!empty($information['request_id'])) {
+                    $this->logger->debug('Process order with session request: ' . $information['request_id']);
+                    $requestId = $information['request_id'];
+                    $statusPayment = $order->getPayment()->getAdditionalInformation()['status'];
+                    $this->logger->debug('status ' . $statusPayment);
+                    if (!in_array($statusPayment, [PaymentStatus::APPROVED, PaymentStatus::REJECTED])) {
+                        $this->logger->debug('ProcessPendingOrder', ['Request:' => $requestId]);
+                        $this->placetopay->processPendingOrder($order, $requestId);
+                        continue;
+                    }
                 }
-
-                if (!$this->placetopay->isPendingStatusOrder($order->getRealOrderId())) {
-                    continue;
-                }
-
-                $this->placetopay->processPendingOrder($order, $requestId);
+                $this->logger->debug('The orden with id: ' . $order->getRealOrderId() . ' doesnt have a session (requestid)');
+                $this->logger->debug('The orden be process to cancel, because the payment cant resolve');
+                $this->placetopay->processPendingOrderFail($order);
             }
         }
     }

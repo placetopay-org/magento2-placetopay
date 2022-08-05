@@ -17,39 +17,16 @@ class CustomConfigProvider implements ConfigProviderInterface
 {
     const CODE = PaymentMethod::CODE;
 
-    /**
-     * @var Data
-     */
-    protected $_scopeConfig;
+    protected Data $_scopeConfig;
 
-    /**
-     * @var Repository
-     */
-    protected $_assetRepo;
+    protected Repository $_assetRepo;
 
-    /**
-     * @var CustomerSession
-     */
-    protected $customerSession;
+    protected CustomerSession $customerSession;
 
-    /**
-     * @var CollectionFactory
-     */
-    protected $collectionFactory;
+    protected CollectionFactory $collectionFactory;
 
-    /**
-     * @var StoreManagerInterface
-     */
-    protected $storeManager;
+    protected StoreManagerInterface $storeManager;
 
-    /**
-     * CustomConfigProvider constructor.
-     * @param Data $scopeConfig
-     * @param Repository $assetRepo
-     * @param StoreManagerInterface $storeManager
-     * @param CustomerSession $customerSession
-     * @param CollectionFactory $collectionFactory
-     */
     public function __construct(
         Data $scopeConfig,
         Repository $assetRepo,
@@ -90,7 +67,6 @@ class CustomConfigProvider implements ConfigProviderInterface
     }
 
     /**
-     * @return string
      * @throws NoSuchEntityException
      */
     protected function getImage(): string
@@ -115,7 +91,7 @@ class CustomConfigProvider implements ConfigProviderInterface
             $base = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
             $image = "${base}${$url}";
         } else {
-            $image = 'https://static.placetopay.com/'.$url.'.svg';
+            $image = 'https://static.placetopay.com/' . $url . '.svg';
         }
 
         return $image;
@@ -172,7 +148,6 @@ class CustomConfigProvider implements ConfigProviderInterface
     }
 
     /**
-     * @return string
      * @throws NoSuchEntityException
      */
     public function getUrl(): string
@@ -180,9 +155,6 @@ class CustomConfigProvider implements ConfigProviderInterface
         return $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_WEB, true);
     }
 
-    /**
-     * @return array
-     */
     public function getPaymentMethods(): array
     {
         $paymentMethods = [];

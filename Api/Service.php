@@ -8,52 +8,25 @@ use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Framework\Webapi\Rest\Request;
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Model\Order;
 use Magento\Sales\Model\OrderRepository;
 use PlacetoPay\Payments\Helper\PlacetoPayLogger;
 use PlacetoPay\Payments\Model\PaymentMethod;
-use Magento\Framework\Webapi\Rest\Request;
-use Magento\Sales\Model\Order;
 
-/**
- * Class Service.
- */
 class Service implements ServiceInterface
 {
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected Request $request;
 
-    /**
-     * @var PlacetoPayLogger
-     */
-    protected $logger;
+    protected PlacetoPayLogger $logger;
 
-    /**
-     * @var EventManager
-     */
-    protected $manager;
+    protected EventManager $manager;
 
-    /**
-     * @var Json
-     */
-    protected $json;
+    protected Json $json;
 
-    /**
-     * @var OrderRepository
-     */
-    protected $orderRepository;
+    protected OrderRepository $orderRepository;
 
-    /**
-     * Service constructor.
-     *
-     * @param Request $request
-     * @param PlacetoPayLogger $logger
-     * @param EventManager $manager
-     * @param Json $json
-     * @param OrderRepository $orderRepository
-     */
     public function __construct(
         Request $request,
         PlacetoPayLogger $logger,
@@ -68,11 +41,6 @@ class Service implements ServiceInterface
         $this->request = $request;
     }
 
-    /**
-     * Endpoint for the notification of PlacetoPay.
-     *
-     * @return array
-     */
     public function notify(): array
     {
         $data = $this->getRequestData($this->request->getContent());
@@ -115,15 +83,13 @@ class Service implements ServiceInterface
 
             return [$response];
         } catch (Exception $ex) {
-            $this->logger->log($this, 'error', __FUNCTION__.' message', [$ex->getMessage()]);
+            $this->logger->log($this, 'error', __FUNCTION__ . ' message', [$ex->getMessage()]);
 
             return [$ex->getMessage()];
         }
     }
 
     /**
-     * @param int $id
-     * @return OrderInterface
      * @throws InputException
      * @throws NoSuchEntityException
      */
@@ -132,19 +98,11 @@ class Service implements ServiceInterface
         return $this->orderRepository->get($id);
     }
 
-    /**
-     * @param array $data
-     * @return bool
-     */
     private function isValidRequest(array $data): bool
     {
         return $data && !empty($data['reference']) && !empty($data['signature']) && !empty($data['requestId']);
     }
 
-    /**
-     * @param string $data
-     * @return array
-     */
     private function getRequestData(string $data): array
     {
         return $this->json->unserialize($data);

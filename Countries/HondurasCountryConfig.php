@@ -5,7 +5,7 @@ namespace PlacetoPay\Payments\Countries;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Country;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 
-class HondurasCountryConfig extends CountryConfig
+abstract class HondurasCountryConfig extends CountryConfig
 {
     public static function resolve(string $countryCode): bool
     {

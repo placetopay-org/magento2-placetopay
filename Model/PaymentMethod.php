@@ -2,10 +2,7 @@
 
 namespace PlacetoPay\Payments\Model;
 
-use Dnetix\Redirection\Entities\Status;
-use Dnetix\Redirection\Exceptions\PlacetoPayException;
 use Dnetix\Redirection\Message\RedirectInformation;
-use Dnetix\Redirection\Message\RedirectResponse;
 use Dnetix\Redirection\PlacetoPay;
 use Exception;
 use Magento\Framework\Api\AttributeValueFactory;
@@ -13,8 +10,6 @@ use Magento\Framework\Api\ExtensionAttributesFactory;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Data\Collection\AbstractDb;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\HTTP\Header;
 use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
 use Magento\Framework\Locale\Resolver;
@@ -27,23 +22,23 @@ use Magento\Payment\Helper\Data;
 use Magento\Payment\Model\Method\AbstractMethod;
 use Magento\Payment\Model\Method\Logger;
 use Magento\Quote\Api\Data\CartInterface;
-use Magento\Sales\Api\Data\OrderAddressInterface;
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
+use PlacetoPay\Payments\Concerns\IsSetStatusOrderTrait;
+use PlacetoPay\Payments\Constants\PaymentStatus;
 use PlacetoPay\Payments\Helper\Data as Config;
 use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
 use PlacetoPay\Payments\Model\Info as InfoFactory;
+use PlacetoPay\Payments\PlacetoPayService\PlacetoPayPayment;
 
 /**
  * Class PlaceToPay.
  */
 class PaymentMethod extends AbstractMethod
 {
+    use IsSetStatusOrderTrait;
     const CODE = 'placetopay';
-    const EXPIRATION_TIME_MINUTES_DEFAULT = 120;
-    const EXPIRATION_TIME_MINUTES_MIN = 10;
 
     protected $_code = self::CODE;
     protected $_isGateway = true;
@@ -58,85 +53,36 @@ class PaymentMethod extends AbstractMethod
     protected $_canReviewPayment = true;
     protected string $version;
 
-    /**
-     * @var Config
-     */
-    protected $_config;
+    protected Config $_config;
 
-    /**
-     * @var Order
-     */
-    protected $_order;
+    protected Order $_order;
 
-    /**
-     * @var Resolver
-     */
-    protected $_store;
+    protected Resolver $_store;
 
-    /**
-     * @var UrlInterface
-     */
-    protected $_url;
+    protected UrlInterface $_url;
 
-    /**
-     * @var RemoteAddress
-     */
-    protected $remoteAddress;
+    protected RemoteAddress $remoteAddress;
 
-    /**
-     * @var Header
-     */
-    protected $httpHeader;
+    protected Header $httpHeader;
 
-    /**
-     * @var Item
-     */
-    protected $taxItem;
+    protected Item $taxItem;
 
     /**
      * @var LoggerInterface
      */
     protected $logger;
 
-    /**
-     * @var Info
-     */
-    protected $infoFactory;
+    protected Info $infoFactory;
 
-    /**
-     * @var OrderRepositoryInterface
-     */
-    protected $orderRepository;
+    protected OrderRepositoryInterface $orderRepository;
 
     /**
      * @var SearchCriteriaBuilder
      */
     protected $searchCriteriaBuilder;
+    protected PlacetoPayPayment $placetoPayPayment;
 
-    /**
-     * PaymentMethod constructor.
-     *
-     * @param LoggerInterface $_logger
-     * @param InfoFactory $infoFactory
-     * @param Config $config
-     * @param Context $context
-     * @param Registry $registry
-     * @param ExtensionAttributesFactory $extensionFactory
-     * @param AttributeValueFactory $customAttributeFactory
-     * @param Data $paymentData
-     * @param ScopeConfigInterface $scopeConfig
-     * @param Logger $logger
-     * @param OrderRepositoryInterface $orderRepository
-     * @param Resolver $store
-     * @param UrlInterface $urlInterface
-     * @param Item $taxItem
-     * @param Header $httpHeader
-     * @param RemoteAddress $remoteAddress
-     * @param AbstractResource|null $resource
-     * @param AbstractDb|null $resourceCollection
-     * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param array $data
-     */
+
     public function __construct(
         LoggerInterface $_logger,
         InfoFactory $infoFactory,
@@ -153,6 +99,7 @@ class PaymentMethod extends AbstractMethod
         UrlInterface $urlInterface,
         Item $taxItem,
         Header $httpHeader,
+        Resolver $resolver,
         RemoteAddress $remoteAddress,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         AbstractResource $resource = null,
@@ -183,6 +130,7 @@ class PaymentMethod extends AbstractMethod
         $this->infoFactory = $infoFactory;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->version = '1.8.11';
+        $this->placetoPayPayment = new PlacetoPayPayment($config, $_logger, $resolver, $urlInterface, $remoteAddress, $httpHeader, $taxItem);
     }
 
     /**
@@ -197,14 +145,6 @@ class PaymentMethod extends AbstractMethod
         $stateObject->setIsNotified(false);
 
         return $this;
-    }
-
-    /**
-     * @return InfoFactory
-     */
-    public function getInfoModel(): InfoFactory
-    {
-        return $this->infoFactory;
     }
 
     /**
@@ -237,459 +177,38 @@ class PaymentMethod extends AbstractMethod
         return __($value);
     }
 
-    /**
-     * @param Order $order
-     * @return Status
-     */
-    public function parseOrderState(Order $order): Status
+    public function processPendingOrderFail(Order $order): void
     {
-        switch ($order->getStatus()) {
-            case Order::STATE_PROCESSING:
-                $status = Status::ST_APPROVED;
-                break;
-            case Order::STATE_CANCELED:
-                $status = Status::ST_REJECTED;
-                break;
-            case Order::STATE_NEW:
-                $status = Status::ST_PENDING;
-                break;
-            default:
-                $status = Status::ST_PENDING;
-        }
-
-        return new Status([
-            'status' => $status,
-        ]);
-    }
-
-    /**
-     * @param int $orderId
-     *
-     * @return bool
-     * @throws NoSuchEntityException
-     */
-    public function isPendingStatusOrder(int $orderId): bool
-    {
-        $this->logger->debug('isPendingStatusOrder: start search order id: '.$orderId);
-        $status = $this->getOrderByIncrementId($orderId)->getPayment()->getAdditionalInformation()['status'];
-        $this->logger->debug('isPendingStatusOrder: finish with status: '. $status);
-
-        return Status::ST_PENDING === $status;
-    }
-
-    /**
-     * @param $incrementId
-     * @return false|OrderInterface
-     * @throws NoSuchEntityException
-     */
-    public function getOrderByIncrementId($incrementId)
-    {
-        $searchCriteria = $this->searchCriteriaBuilder->addFilter(
-            OrderInterface::INCREMENT_ID,
-            $incrementId
-        )->create();
-
-        $result = $this->orderRepository->getList($searchCriteria);
-
-        if (empty($result->getItems())) {
-            throw new NoSuchEntityException(__('No such order.'));
-        }
-
-        $orders = $result->getItems();
-
-        return reset($orders);
+        $this->logger->debug('processPendingOrderFail to', ['status: ' => PaymentStatus::CANCELED]);
+        $this->changeStatusOrderFail($order);
     }
 
     public function processPendingOrder(Order $order, string $requestId): void
     {
-        $this->logger->debug('processPendingOrder with request id: '.$requestId);
-        $transactionInfo = $this->gateway(true)->query($requestId);
-        $this->logger->debug('processPendingOrder with placetopay status: '.$transactionInfo->status()->status());
-        $this->settleOrderStatus($transactionInfo, $order);
+        $this->logger->debug('processPendingOrder with request id: ' . $requestId);
+        $transactionInfo = $this->placetoPayPayment->consultTransactionInfo($requestId);
+        $this->logger->debug('processPendingOrder with placetopay status: ' . $transactionInfo->status()->status());
+
+        $this->setStatus($transactionInfo, $order);
         $this->logger->debug('Cron job processed order with ID = ' . $order->getRealOrderId());
     }
 
-    private function getHeaders(): array
+    public function gateway(): PlacetoPay
     {
-        $domain = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'];
-
-        return [
-            'User-Agent' => "magento2-module-payments/$this->version - $domain",
-        ];
-    }
-
-    public function gateway(bool $isCallback = false): PlacetoPay
-    {
-        $settings = [
-            'login' => $this->_config->getLogin(),
-            'tranKey' => $this->_config->getTranKey(),
-            'baseUrl' => $this->_config->getUri(),
-        ];
-
-        if ($isCallback) {
-            $settings['headers'] = $this->getHeaders();
-        }
-
-        return new PlacetoPay($settings);
+        return $this->placetoPayPayment->gateway();
     }
 
     /**
-     * @param Order $order
-     *
-     * @return RedirectResponse
-     * @throws PlacetoPayException
-     */
-    public function getPaymentRedirect($order)
-    {
-        $data = $this->getRedirectRequestDataFromOrder($order);
-
-        return $this->gateway()->request($data);
-    }
-
-    /**
-     * @param Order $order
-     *
      * @return string|null
      * @throws Exception
      */
-    public function getCheckoutRedirect($order)
+    public function getCheckoutRedirect(Order $order)
     {
-        $this->_order = $order;
-
-        try {
-            $response = $this->getPaymentRedirect($order);
-
-            if ($response->isSuccessful()) {
-                $payment = $order->getPayment();
-                $info = $this->getInfoModel();
-
-                $info->loadInformationFromRedirectResponse($payment, $response, $this->_config->getMode(), $order);
-            } else {
-                $this->_logger->debug(
-                    'Payment error [' .
-                    $order->getRealOrderId() . '] ' .
-                    $response->status()->message() . ' - ' .
-                    $response->status()->reason() . ' ' .
-                    $response->status()->status()
-                );
-
-                throw new LocalizedException(__($response->status()->message()));
-            }
-
-            return $response->processUrl();
-        } catch (Exception $ex) {
-            $this->_logger->debug(
-                'Payment error [' .
-                $order->getRealOrderId() . '] ' .
-                $ex->getMessage() . ' on ' . $ex->getFile() . ' line ' .
-                $ex->getLine() . ' - ' . get_class($ex)
-            );
-
-            throw new Exception($ex->getMessage());
-        }
+        return $this->placetoPayPayment->getCheckoutRedirect($order);
     }
 
-    /**
-     * @param Order $order
-     *
-     * @return array
-     */
-    public function getRedirectRequestDataFromOrder($order)
+    public function resolve(Order $order, Order\Payment $payment = null): RedirectInformation
     {
-        $reference = $order->getRealOrderId();
-        $total = ! is_null($order->getGrandTotal()) ? $order->getGrandTotal() : $order->getTotalDue();
-        $subtotal = $order->getSubtotal();
-        $discount = (string)$order->getDiscountAmount() != 0 ? ($order->getDiscountAmount() * -1) : 0;
-        $shipping = $order->getShippingAmount();
-        $visibleItems = $order->getAllVisibleItems();
-        $expiration = date('c', strtotime($this->getExpirationTimeMinutes() . ' minutes'));
-        $items = [];
-
-        /** @var Order\Item $item */
-        foreach ($visibleItems as $item) {
-            $items[] = [
-                'sku' => $item->getSku(),
-                'name' => $this->cleanText($item->getName()),
-                'category' => $item->getProductType(),
-                'qty' => $item->getQtyOrdered(),
-                'price' => $item->getPrice(),
-                'tax' => $item->getTaxAmount(),
-            ];
-        }
-
-        $data = [
-            'locale' => $this->_store->getLocale(),
-            'buyer' => $this->parseAddressPerson($order->getBillingAddress()),
-            'payment' => [
-                'reference' => $reference,
-                'description' => 'Pedido '.$order->getId(),
-                'amount' => [
-                    'details' => [
-                        [
-                            'kind' => 'subtotal',
-                            'amount' => $subtotal,
-                        ],
-                        [
-                            'kind' => 'discount',
-                            'amount' => (string)$discount,
-                        ],
-                        [
-                            'kind' => 'shipping',
-                            'amount' => $shipping,
-                        ],
-                    ],
-                    'currency' => $order->getOrderCurrencyCode(),
-                    'total' => $total,
-                ],
-                'items' => $items,
-                'shipping' => $this->parseAddressPerson($order->getShippingAddress()),
-                'allowPartial' => $this->_config->getAllowPartialPayment(),
-            ],
-            'returnUrl' => $this->_url->getUrl('placetopay/payment/response', ['reference' => $reference]),
-            'expiration' => $expiration,
-            'ipAddress' => $this->remoteAddress->getRemoteAddress(),
-            'userAgent' => $this->httpHeader->getHttpUserAgent(),
-            'skipResult' => $this->_config->getSkipResult(),
-            'noBuyerFill' => $this->_config->getFillBuyerInformation(),
-        ];
-
-        if ($this->_config->getFillTaxInformation()) {
-            try {
-                $map = [];
-
-                if ($mapping = $this->_config->getTaxRateParsing()) {
-                    foreach (explode('|', $mapping) as $item) {
-                        $t = explode(':', $item);
-
-                        if (is_array($t) && count($t) == 2) {
-                            $map[$t[0]] = $t[1];
-                        }
-                    }
-                }
-
-                $taxInformation = $this->taxItem->getTaxItemsByOrderId($order->getId());
-
-                if (is_array($taxInformation) && count($taxInformation) > 0) {
-                    $taxes = [];
-
-                    foreach ($taxInformation as $item) {
-                        $taxes[] = [
-                            'kind' => isset($map[$item['code']]) ? $map[$item['code']] : 'valueAddedTax',
-                            'amount' => $item['real_amount'],
-                            'base' => $order->getItemById($item['item_id'])->getBasePrice(),
-                        ];
-                    }
-
-                    $mergedTaxes = [];
-
-                    foreach ($taxes as $elem) {
-                        $mergedTaxes[$elem['kind']]['kind'] = $elem['kind'];
-                        $mergedTaxes[$elem['kind']]['amount'] =
-                            isset($mergedTaxes[$elem['kind']]['amount']) ?
-                                number_format((float) $mergedTaxes[$elem['kind']]['amount'] + (float) $elem['amount'], 4, '.', '') :
-                                number_format((float) $elem['amount'], 4, '.', '');
-                        $mergedTaxes[$elem['kind']]['base'] = isset($mergedTaxes[$elem['kind']]['base']) ?
-                            number_format((float) $mergedTaxes[$elem['kind']]['base'] + (float) $elem['base'], 4, '.', '') :
-                            number_format((float) $elem['base'], 4, '.', '');
-                    }
-
-                    $mergedTaxes = array_values($mergedTaxes);
-
-                    $data['payment']['amount']['taxes'] = $mergedTaxes;
-                }
-            } catch (Exception $ex) {
-                $this->_logger->debug(
-                    'Error calculating taxes: [' .
-                    $order->getRealOrderId() .
-                    '] ' . serialize($this->taxItem->getTaxItemsByOrderId($order->getId()))
-                );
-            }
-        }
-
-        if ($pm = $this->_config->getPaymentMethods()) {
-            $paymentMethods = [];
-
-            foreach (explode(',', $pm) as $paymentMethod) {
-                $paymentMethods[] = $paymentMethod;
-            }
-
-            $data['paymentMethod'] = implode(',', $paymentMethods);
-        }
-
-        return $data;
-    }
-
-    /**
-     * @param OrderAddressInterface $address
-     *
-     * @return array
-     */
-    public function parseAddressPerson($address)
-    {
-        if ($address) {
-            return [
-                'name' => $address->getFirstname(),
-                'surname' => $address->getLastname(),
-                'email' => $address->getEmail(),
-                'mobile' => $address->getTelephone(),
-                'address' => [
-                    'country' => $address->getCountryId(),
-                    'state' => $address->getRegion(),
-                    'city' => $address->getCity(),
-                    'street' => implode(' ', $address->getStreet()),
-                    //'phone' => $address->getTelephone(),
-                    'postalCode' => $address->getPostcode(),
-                ],
-            ];
-        }
-
-        return [];
-    }
-
-    /**
-     * @return int
-     */
-    public function getExpirationTimeMinutes()
-    {
-        $minutes = $this->_config->getExpirationTime();
-
-        return ! is_numeric($minutes) || $minutes < self::EXPIRATION_TIME_MINUTES_MIN
-            ? self::EXPIRATION_TIME_MINUTES_DEFAULT
-            : $minutes;
-    }
-
-    /**
-     * @param Order $order
-     *
-     * @return bool
-     */
-    public function isPendingOrder($order)
-    {
-        return $order->getStatus() == 'pending' || $order->getStatus() == 'pending_payment';
-    }
-
-    /**
-     * @param Order $order
-     *
-     * @throws LocalizedException
-     */
-    public function _createInvoice($order)
-    {
-        if (! $order->canInvoice()) {
-            return;
-        }
-
-        $invoice = $order->prepareInvoice();
-        $invoice->register()->capture();
-        $order->addRelatedObject($invoice);
-    }
-
-    /**
-     * @param Order         $order
-     * @param Order\Payment $payment
-     *
-     * @return RedirectInformation
-     * @throws LocalizedException
-     * @throws PlacetoPayException
-     */
-    public function resolve($order, $payment = null)
-    {
-        if (! $payment) {
-            $payment = $order->getPayment();
-        }
-
-        $info = $payment->getAdditionalInformation();
-
-        if (! $info || ! isset($info['request_id'])) {
-            $this->_logger->debug(
-                'No additional information for order: ' .
-                $order->getRealOrderId()
-            );
-
-            throw new LocalizedException(__('No additional information for order: %1', $order->getRealOrderId()));
-        }
-
-        $response = $this->gateway()->query($info['request_id']);
-
-        if ($response->isSuccessful()) {
-            $this->settleOrderStatus($response, $order, $payment);
-        } else {
-            $this->_logger->debug(
-                'Non successful: ' .
-                $response->status()->message() . ' ' .
-                $response->status()->reason()
-            );
-        }
-
-        return $response;
-    }
-
-    /**
-     * @param RedirectInformation $information
-     * @param Order $order
-     * @param Order\Payment|null $payment
-     *
-     * @throws LocalizedException
-     * @throws \PlacetoPay\Payments\Exception\PlacetoPayException
-     */
-    public function settleOrderStatus(RedirectInformation $information, Order $order, Order\Payment $payment = null)
-    {
-        $status = $information->status();
-
-        switch ($status->status()) {
-            case Status::ST_APPROVED:
-                $state = Order::STATE_PROCESSING;
-                $orderStatus = Order::STATE_PROCESSING;
-
-                break;
-            case Status::ST_REJECTED:
-                $state = Order::STATE_CANCELED;
-                $orderStatus = Order::STATE_CANCELED;
-
-                break;
-            case Status::ST_PENDING:
-                $state = Order::STATE_NEW;
-                $orderStatus = Order::STATE_PENDING_PAYMENT;
-
-                break;
-            default:
-                $state = $orderStatus = null;
-        }
-
-        if ($state !== null) {
-            if (! $payment) {
-                $payment = $order->getPayment();
-            }
-
-            $info = $this->getInfoModel();
-            $transactions = $information->payment();
-            $info->updateStatus($payment, $status, $transactions);
-            $this->logger->debug('settleOrderStatus with status: '. $status->status());
-
-            if ($status->isApproved()) {
-                $payment->setIsTransactionPending(false);
-                $payment->setIsTransactionApproved(true);
-                $payment->setSkipOrderProcessing(true);
-                $this->_createInvoice($order);
-                $order->setEmailSent(true);
-                $order->setState($state)->setStatus($orderStatus)->save();
-            } elseif ($status->isRejected()) {
-                $payment->setIsTransactionDenied(true);
-                $payment->setSkipOrderProcessing(true);
-                $order->cancel()->save();
-            } else {
-                $order->setState($state)->setStatus($orderStatus)->save();
-            }
-        }
-    }
-
-    /**
-     * @param $text
-     *
-     * @return string|string[]|null
-     */
-    public function cleanText($text)
-    {
-        return preg_replace('/[(),.#!\-]/', '', $text);
+        return $this->placetoPayPayment->resolve($order, $payment);
     }
 }
