@@ -4,6 +4,7 @@ namespace PlacetoPay\Payments\Helper;
 
 use Magento\Framework\App\Config\Initial;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\View\LayoutFactory;
 use Magento\Payment\Helper\Data as BaseData;
 use Magento\Payment\Model\Config;
@@ -429,10 +430,14 @@ class Data extends BaseData
 
     public function getHeaders(): array
     {
+        $objectManager = ObjectManager::getInstance();
+        $productMetadata = $objectManager->get('Magento\Framework\App\ProductMetadataInterface');
+        $version = $productMetadata->getVersion();
+
         $domain = $_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? 'localhost');
 
         return [
-            'User-Agent' => "magento2-module-payments/{$this->version} (origin:$domain; vr:" . $this->version . ')',
+            'User-Agent' => "magento2-module-payments/{$this->version} (origin:$domain; vr:" . $version . ')',
             'X-Source-Platform' => 'magento',
         ];
     }
