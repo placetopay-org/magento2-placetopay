@@ -10,7 +10,7 @@
 ?>
 <?php $_orders = $block->getOrders(); ?>
 <?= $block->getChildHtml('info') ?>
-<?php if ($_orders && count($_orders)) : ?>
+<?php if ($_orders && count($_orders)): ?>
     <div class="table-wrapper orders-history">
         <table class="data table table-order-items history" id="my-orders-table">
             <caption class="table-caption"><?= $block->escapeHtml(__('Orders')) ?></caption>
@@ -27,18 +27,18 @@
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($_orders as $_order) : ?>
+            <?php foreach ($_orders as $_order): ?>
                 <?php $info = $_order->getPayment()->getAdditionalInformation(); ?>
                 <tr>
                     <td data-th="<?= $block->escapeHtml(__('Order #')) ?>" class="col id"><?= $block->escapeHtml($_order->getRealOrderId()) ?></td>
-                    <?php if (isset($info['authorization'])) : ?>
+                    <?php if (isset($info['authorization'])): ?>
                         <td data-th="<?= $block->escapeHtml(__('Authorization/CU')) ?>" class="col id"><?= $block->escapeHtml($info['authorization']) ?></td>
-                    <?php else : ?>
+                    <?php else: ?>
                         <td data-th="<?= $block->escapeHtml(__('Authorization/CU')) ?>" class="col id"></td>
                     <?php endif ?>
                     <td data-th="<?= $block->escapeHtml(__('Date')) ?>" class="col date"><?= /* @noEscape */ $block->formatDate($_order->getCreatedAt()) ?></td>
                     <?php $extra = $block->getChildBlock('extra.container'); ?>
-                    <?php if ($extra) : ?>
+                    <?php if ($extra): ?>
                         <?php $extra->setOrder($_order); ?>
                         <?= $extra->getChildHtml() ?>
                     <?php endif; ?>
@@ -49,14 +49,14 @@
                         <a href="<?= $block->escapeUrl($block->getViewUrl($_order)) ?>" class="action view">
                             <span><?= $block->escapeHtml(__('View Order')) ?></span>
                         </a>
-                        <?php if ($this->helper(\Magento\Sales\Helper\Reorder::class)->canReorder($_order->getEntityId())) : ?>
+                        <?php if ($this->helper(\Magento\Sales\Helper\Reorder::class)->canReorder($_order->getEntityId())): ?>
                             <a href="#" data-post='<?= /* @noEscape */
                             $this->helper(\Magento\Framework\Data\Helper\PostHelper::class)
                                 ->getPostData($block->getReorderUrl($_order))
                             ?>' class="action order">
                                 <span><?= $block->escapeHtml(__('Reorder')) ?></span>
                             </a>
-                            <?php if (isset($info['process_url'])) : ?>
+                            <?php if (isset($info['process_url'])): ?>
                                 <a href="<?php echo $info['process_url'] ?>" class="link-view" target="_blank"><?php echo $block->escapeHtml(__('Payment Detail')) ?></a>
                             <?php endif ?>
                         <?php endif ?>
@@ -66,9 +66,9 @@
             </tbody>
         </table>
     </div>
-    <?php if ($block->getPagerHtml()) : ?>
+    <?php if ($block->getPagerHtml()): ?>
         <div class="order-products-toolbar toolbar bottom"><?= $block->getPagerHtml() ?></div>
     <?php endif ?>
-<?php else : ?>
+<?php else: ?>
     <div class="message info empty"><span><?= $block->escapeHtml(__('You have placed no orders.')) ?></span></div>
 <?php endif ?>
