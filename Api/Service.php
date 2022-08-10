@@ -63,7 +63,7 @@ class Service implements ServiceInterface
 
             if ($notification->isValidNotification()) {
                 $information = $placetopay->gateway()->query($notification->requestId());
-                $placetopay->settleOrderStatus($information, $order);
+                $placetopay->setStatus($information, $order);
 
                 if ($information->isApproved()) {
                     $this->manager->dispatch('placetopay_api_success', [
