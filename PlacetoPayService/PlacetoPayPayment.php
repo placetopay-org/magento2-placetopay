@@ -13,6 +13,8 @@ use Magento\Framework\UrlInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
 use PlacetoPay\Payments\Concerns\IsSetStatusOrderTrait;
+use PlacetoPay\Payments\Constants\PaymentStatus;
+use PlacetoPay\Payments\Exception\PlacetoPayException;
 use PlacetoPay\Payments\Helper\Data as Config;
 use PlacetoPay\Payments\Helper\OrderHelper;
 use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
@@ -206,15 +208,15 @@ class PlacetoPayPayment
             }
 
             return $response->processUrl();
-        } catch (Exception $ex) {
-            $this->logger->debug(
+        } catch (\Throwable $ex) {
+            $this->logger->error(
                 'Payment error [' .
                 $order->getRealOrderId() . '] ' .
                 $ex->getMessage() . ' on ' . $ex->getFile() . ' line ' .
                 $ex->getLine() . ' - ' . get_class($ex)
             );
-
-            throw new Exception($ex->getMessage());
+            $this->logger->error('The order ' . $order->getRealOrderId() . ' has a problem to create the payment');
+            throw new PlacetoPayException(__('Something went wrong with your request. Please try again later.'));
         }
     }
 
@@ -238,12 +240,11 @@ class PlacetoPayPayment
         $response = $this->gateway->query($info['request_id']);
 
         if ($response->isSuccessful()) {
-            $this->logger->debug('The response to resolve the payments is successful');
-            $this->logger->debug('Processing to resolve the payment');
+            $this->logger->info('The payment ' . $response->requestId() . ' was ' . PaymentStatus::SUCCESSFUL . ' processing to resolve the payment');
             $this->setStatus($response, $order, $payment);
         } else {
-            $this->logger->debug(
-                'Non successful: ' .
+            $this->logger->info(
+                'The payment: ' . $response->requestId() . ' was ' . PaymentStatus::FAILED .
                 $response->status()->message() . ' ' .
                 $response->status()->reason()
             );
