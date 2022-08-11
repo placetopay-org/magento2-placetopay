@@ -82,7 +82,6 @@ class PaymentMethod extends AbstractMethod
     protected $searchCriteriaBuilder;
     protected PlacetoPayPayment $placetoPayPayment;
 
-
     public function __construct(
         LoggerInterface $_logger,
         InfoFactory $infoFactory,
@@ -179,18 +178,18 @@ class PaymentMethod extends AbstractMethod
 
     public function processPendingOrderFail(Order $order): void
     {
-        $this->logger->debug('processPendingOrderFail to', ['status: ' => PaymentStatus::CANCELED]);
+        $this->logger->info('processPendingOrderFail to', ['status: ' => PaymentStatus::CANCELED]);
         $this->changeStatusOrderFail($order);
+        $this->logger->info('Cron job processed order with ID = ' . $order->getRealOrderId());
     }
 
     public function processPendingOrder(Order $order, string $requestId): void
     {
-        $this->logger->debug('processPendingOrder with request id: ' . $requestId);
         $transactionInfo = $this->placetoPayPayment->consultTransactionInfo($requestId);
-        $this->logger->debug('processPendingOrder with placetopay status: ' . $transactionInfo->status()->status());
+        $this->logger->info('processPendingOrder with placetopay status: ' . $transactionInfo->status()->status());
 
         $this->setStatus($transactionInfo, $order);
-        $this->logger->debug('Cron job processed order with ID = ' . $order->getRealOrderId());
+        $this->logger->info('Cron job processed order with ID = ' . $order->getRealOrderId());
     }
 
     public function gateway(): PlacetoPay

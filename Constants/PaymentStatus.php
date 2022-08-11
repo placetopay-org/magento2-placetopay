@@ -10,4 +10,6 @@ abstract class PaymentStatus
     public const PROCESSING = 'processing';
     public const APPROVED = 'APPROVED';
     public const REJECTED = 'REJECTED';
+    public const SUCCESSFUL = 'SUCCESSFUl';
+    public const FAILED = 'FAILED';
 }

@@ -64,13 +64,12 @@ class ProcessPendingOrder
                     $statusPayment = $order->getPayment()->getAdditionalInformation()['status'];
                     $this->logger->debug('status ' . $statusPayment);
                     if (!in_array($statusPayment, [PaymentStatus::APPROVED, PaymentStatus::REJECTED])) {
-                        $this->logger->debug('ProcessPendingOrder', ['Request:' => $requestId]);
+                        $this->logger->info('ProcessPendingOrder', ['Request:' => $requestId]);
                         $this->placetopay->processPendingOrder($order, $requestId);
                         continue;
                     }
                 }
-                $this->logger->debug('The orden with id: ' . $order->getRealOrderId() . ' doesnt have a session (requestid)');
-                $this->logger->debug('The orden be process to cancel, because the payment cant resolve');
+                $this->logger->warning('The payment for the order ' . $order->getRealOrderId() . ' doesnt has a request');
                 $this->placetopay->processPendingOrderFail($order);
             }
         }
