@@ -127,3 +127,4 @@
 "Payment Button Image","Payment Button Image"
 "It can be a URL, an image name (provide the image to the placetopay team as svg format for this to work) or a local path (save the image to the pub/media folder).","It can be a URL, an image name (provide the image to the placetopay team as svg format for this to work) or a local path (save the image to the pub/media folder)."
 "heading","heading"
+"Something went wrong with your request. Please try again later.","Something went wrong with your request. Please try again later."
