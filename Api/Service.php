@@ -72,7 +72,7 @@ class Service implements ServiceInterface
                 }
                 if ($information->lastApprovedTransaction()->refunded()) {
                     $response = [
-                        'message' => ('The payment refunded'),
+                        'message' => 'The payment refunded',
                     ];
                 } else {
                     $response = [

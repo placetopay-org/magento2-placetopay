@@ -143,7 +143,7 @@ class Response extends Action
                             SetOrderInfoSession::withQouteId($session, $order);
                         }
 
-                        $this->messageManager->addErrorMessage(__('The payment process has been refunded.'));
+                        $this->messageManager->addErrorMessage(__('The payment has been refunded.'));
 
                         $pathRedirect = PathPagesRedirect::FAILURE;
                     } else {
