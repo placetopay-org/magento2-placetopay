@@ -32,8 +32,15 @@
                 <?php endif ?>
                 <ul class="order-details">
                     <li>
+
                         <p><?= __('Order status:') ?></p>
-                        <p><?= $block->escapeHtml(__($information['status'])) ?></p>
+
+                        <?php if ($information['refunded'] == 'true'): ?>
+                             <p><?= __('Refunded Payment')?></p>
+                        <?php else: ?>
+                            <p><?= $block->escapeHtml(__($information['status'])) ?></p>
+                        <?php endif ?>
+
                     </li>
                     <li>
                         <p><?= __('Order Number:') ?></p>

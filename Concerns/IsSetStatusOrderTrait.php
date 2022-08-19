@@ -28,14 +28,22 @@ trait IsSetStatusOrderTrait
             $info->updateStatus($payment, $status, $transactions);
 
             if ($status->isApproved()) {
-                $this->logger->info('The order ' . $order->getRealOrderId() .
-                    ' with status ' . $order->getStatus() . ' pass to state ' . PaymentStatus::APPROVED);
-                $payment->setIsTransactionPending(false);
-                $payment->setIsTransactionApproved(true);
-                $payment->setSkipOrderProcessing(true);
-                CreateInvoiceAction::execute($order);
-                $order->setEmailSent(true);
-                $order->setState($data['state'])->setStatus($data['orderStatus'])->save();
+                if ($information->lastApprovedTransaction()->refunded()) {
+                    $payment->setIsTransactionDenied(true);
+                    $payment->setSkipOrderProcessing(true);
+                    $this->logger->warning('Setting order status of the order: ' . PaymentStatus::REFUNDED);
+                    $order->setState(PaymentStatus::REFUNDED)->setStatus(PaymentStatus::REFUNDED_PAYMENT)->save();
+                } else {
+                    $this->logger->info('The order ' . $order->getRealOrderId() .
+                        ' with status ' . $order->getStatus() . ' pass to state ' . PaymentStatus::APPROVED);
+                    $payment->setIsTransactionPending(false);
+                    $payment->setIsTransactionApproved(true);
+                    $payment->setSkipOrderProcessing(true);
+                    CreateInvoiceAction::execute($order);
+                    $order->setEmailSent(true);
+                    $order->setState($data['state'])->setStatus($data['orderStatus'])->save();
+
+                }
             } elseif ($status->isRejected()) {
                 $payment->setIsTransactionDenied(true);
                 $payment->setSkipOrderProcessing(true);
