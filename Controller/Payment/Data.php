@@ -23,20 +23,35 @@ use PlacetoPay\Payments\Model\PaymentMethod;
  */
 class Data extends Action
 {
-    protected Session $checkoutSession;
+    /**
+     * @var Session
+     */
+    protected $checkoutSession;
 
-    protected LoggerInterface $logger;
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * @var ManagerInterface
      */
     protected $messageManager;
 
-    protected JsonFactory $jsonFactory;
+    /**
+     * @var JsonFactory
+     */
+    protected $jsonFactory;
 
-    protected ResultFactory $resultRedirect;
+    /**
+     * @var ResultFactory
+     */
+    protected $resultRedirect;
 
-    protected OrderRepositoryInterface $orderRepository;
+    /**
+     * @var OrderRepositoryInterface
+     */
+    protected $orderRepository;
 
     public function __construct(
         Context $context,

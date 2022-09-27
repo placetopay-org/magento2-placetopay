@@ -15,11 +15,20 @@ use PlacetoPay\Payments\Model\PaymentMethod;
  */
 class ProcessPendingOrder
 {
-    protected CollectionFactory $collectionFactory;
+    /**
+     * @var CollectionFactory
+     */
+    protected $collectionFactory;
 
-    protected PaymentMethod $placetopay;
+    /**
+     * @var PaymentMethod
+     */
+    protected $placetopay;
 
-    private LoggerInterface $logger;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * ProcessPendingOrder constructor.

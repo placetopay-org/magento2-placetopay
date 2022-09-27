@@ -23,11 +23,20 @@ class Data extends BaseData
     const EXPIRATION_TIME_MINUTES_DEFAULT = 120;
     const EXPIRATION_TIME_MINUTES_MIN = 10;
 
-    protected Logger $logger;
+    /**
+     * @var Logger
+     */
+    protected $logger;
 
-    protected string $version;
+    /**
+     * @var string
+     */
+    protected $version;
 
-    protected string $mode;
+    /**
+     * @var string|mixed
+     */
+    protected $mode;
 
     public function __construct(
         Logger        $logger,

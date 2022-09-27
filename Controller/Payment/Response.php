@@ -32,34 +32,70 @@ use PlacetoPay\Payments\Model\PaymentMethod;
  */
 class Response extends Action
 {
-    protected PlacetoPayLogger $_logger;
+    /**
+     * @var PlacetoPayLogger
+     */
+    protected $_logger;
 
-    protected Session $checkoutSession;
+    /**
+     * @var Session
+     */
+    protected $checkoutSession;
 
-    protected OrderFactory $salesOrderFactory;
+    /**
+     * @var OrderFactory
+     */
+    protected $salesOrderFactory;
 
     /**
      * @var ManagerInterface
      */
     protected $messageManager;
 
-    protected Http $request;
+    /**
+     * @var Http
+     */
+    protected $request;
 
-    protected ScopeConfigInterface $scopeConfig;
+    /**
+     * @var ScopeConfigInterface
+     */
+    protected $scopeConfig;
 
-    protected QuoteFactory $quoteQuoteFactory;
+    /**
+     * @var QuoteFactory
+     */
+    protected $quoteQuoteFactory;
 
-    protected CustomerSession $customerSession;
+    /**
+     * @var CustomerSession
+     */
+    protected $customerSession;
 
-    protected EventManager $eventManager;
+    /**
+     * @var EventManager
+     */
+    protected $eventManager;
 
-    protected Session $_checkoutSession;
+    /**
+     * @var Session
+     */
+    protected $_checkoutSession;
 
-    protected PaymentHelper $_paymentHelper;
+    /**
+     * @var PaymentHelper
+     */
+    protected $_paymentHelper;
 
-    protected TransactionRepositoryInterface $_transactionRepository;
+    /**
+     * @var TransactionRepositoryInterface
+     */
+    protected $_transactionRepository;
 
-    protected PageFactory $_pageFactory;
+    /**
+     * @var PageFactory
+     */
+    protected $_pageFactory;
 
     public function __construct(
         Context $context,

@@ -17,15 +17,30 @@ class CustomConfigProvider implements ConfigProviderInterface
 {
     const CODE = PaymentMethod::CODE;
 
-    protected Data $_scopeConfig;
+    /**
+     * @var Data
+     */
+    protected $_scopeConfig;
 
-    protected Repository $_assetRepo;
+    /**
+     * @var Repository
+     */
+    protected $_assetRepo;
 
-    protected CustomerSession $customerSession;
+    /**
+     * @var CustomerSession
+     */
+    protected $customerSession;
 
-    protected CollectionFactory $collectionFactory;
+    /**
+     * @var CollectionFactory
+     */
+    protected $collectionFactory;
 
-    protected StoreManagerInterface $storeManager;
+    /**
+     * @var StoreManagerInterface
+     */
+    protected $storeManager;
 
     public function __construct(
         Data $scopeConfig,
