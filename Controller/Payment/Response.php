@@ -138,7 +138,7 @@ class Response extends Action
                         ->setLastRealOrderId($order->getIncrementId())
                         ->setLastOrderStatus($order->getStatus());
 
-                    $this->messageManager->addSuccessMessage(__('Thanks, transaction approved by Placetopay.'));
+                    $this->messageManager->addSuccessMessage(sprintf(__('Thanks, transaction approved by %s.'), $placetopay->getNameOfStore()));
                 } elseif ($status->isRejected()) {
                     $this->setPaymentDenied($payment, $transaction);
 
@@ -167,7 +167,7 @@ class Response extends Action
                 }
             } else {
                 if ($status->isApproved()) {
-                    $this->messageManager->addSuccessMessage(__('Thanks, transaction approved by Placetopay.'));
+                    $this->messageManager->addSuccessMessage(sprintf(__('Thanks, transaction approved by ½s.'), $placetopay->getNameOfStore()));
                     $this->setPaymentApproved($payment, $transaction);
                 } elseif ($status->isRejected()) {
                     $this->messageManager->addErrorMessage(__('The payment process has been declined.'));

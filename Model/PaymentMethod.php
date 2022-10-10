@@ -210,4 +210,9 @@ class PaymentMethod extends AbstractMethod
     {
         return $this->placetoPayPayment->resolve($order, $payment);
     }
+
+    public function getNameOfStore()
+    {
+        return $this->_config->getTitle();
+    }
 }
