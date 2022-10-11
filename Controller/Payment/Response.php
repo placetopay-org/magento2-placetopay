@@ -152,7 +152,7 @@ class Response extends Action
                         SetOrderInfoSession::withQouteId($session, $order);
                         $session->setLastSuccessQuoteId($order->getQuoteId());
 
-                        $this->messageManager->addSuccessMessage(__('Thanks, transaction approved by Placetopay.'));
+                        $this->messageManager->addSuccessMessage(sprintf(__('Thanks, transaction approved by %s.'), $placetopay->getNameOfStore()));
                     }
                 } elseif ($status->isRejected()) {
                     $this->setPaymentDenied($payment, $transaction);
@@ -181,7 +181,7 @@ class Response extends Action
                         $this->messageManager->addErrorMessage(__('The payment process has been refunded.'));
                         $this->setPaymentDenied($payment, $transaction);
                     } else {
-                        $this->messageManager->addSuccessMessage(__('Thanks, transaction approved by Placetopay.'));
+                        $this->messageManager->addSuccessMessage(sprintf(__('Thanks, transaction approved by ½s.'), $placetopay->getNameOfStore()));
                         $this->setPaymentApproved($payment, $transaction);
                     }
                 } elseif ($status->isRejected()) {

@@ -237,7 +237,7 @@ class Data extends BaseData
     /**
      * @return string|null
      */
-    public function getTile(): ?string
+    public function getTitle(): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/title',
