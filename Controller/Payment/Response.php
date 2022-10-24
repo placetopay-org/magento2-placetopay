@@ -2,6 +2,7 @@
 
 namespace PlacetoPay\Payments\Controller\Payment;
 
+use Dnetix\Redirection\Entities\Status;
 use Exception;
 use Magento\Checkout\Model\Session;
 use Magento\Customer\Model\Session as CustomerSession;
@@ -20,6 +21,7 @@ use Magento\Framework\View\Result\PageFactory;
 use Magento\Payment\Helper\Data as PaymentHelper;
 use Magento\Quote\Model\QuoteFactory;
 use Magento\Sales\Api\TransactionRepositoryInterface;
+use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Sales\Model\OrderFactory;
 use Magento\Store\Model\ScopeInterface;
@@ -129,9 +131,13 @@ class Response extends Action
                 ScopeInterface::SCOPE_STORE,
                 $order->getStore()
             );
-
             if (strcmp($path, 'magento_default') === 0) {
-                if ($status->isApproved()) {
+                if ($status->status() == Order::STATE_COMPLETE) {
+                    $this->messageManager->addSuccessMessage(sprintf(__('Thanks, transaction approved by %s.'), $placetopay->getNameOfStore()));
+                } elseif ($status->status() == Status::ST_REFUNDED) {
+                    $this->messageManager->addErrorMessage(__('The payment has been refunded.'));
+                    $pathRedirect = PathPagesRedirect::FAILURE;
+                } elseif ($status->isApproved()) {
                     if ($response->lastApprovedTransaction()->refunded()) {
                         $this->setPaymentDenied($payment, $transaction);
 
