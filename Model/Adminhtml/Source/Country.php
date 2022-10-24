@@ -10,13 +10,13 @@ use PlacetoPay\Payments\Countries\HondurasCountryConfig;
 
 class Country
 {
-    const COLOMBIA = 'CO';
-    const COSTA_RICA = 'CR';
-    const ECUADOR = 'EC';
-    const CHILE = 'CL';
-    const PUERTO_RICO = 'PR';
-    const HONDURAS = 'HN';
-    const BELIZE = 'BZ';
+    public const COLOMBIA = 'CO';
+    public const COSTA_RICA = 'CR';
+    public const ECUADOR = 'EC';
+    public const CHILE = 'CL';
+    public const PUERTO_RICO = 'PR';
+    public const HONDURAS = 'HN';
+    public const BELIZE = 'BZ';
 
     public const COUNTRIES_CONFIG = [
         EcuadorCountryConfig::class,

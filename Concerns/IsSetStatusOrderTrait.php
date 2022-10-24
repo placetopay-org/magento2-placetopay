@@ -42,7 +42,6 @@ trait IsSetStatusOrderTrait
                     CreateInvoiceAction::execute($order);
                     $order->setEmailSent(true);
                     $order->setState($data['state'])->setStatus($data['orderStatus'])->save();
-
                 }
             } elseif ($status->isRejected()) {
                 $payment->setIsTransactionDenied(true);

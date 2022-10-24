@@ -4,10 +4,10 @@ namespace PlacetoPay\Payments\Model\Adminhtml\Source;
 
 class Mode
 {
-    const DEVELOPMENT = 'development';
-    const TEST = 'test';
-    const PRODUCTION = 'production';
-    const CUSTOM = 'custom';
+    public const DEVELOPMENT = 'development';
+    public const TEST = 'test';
+    public const PRODUCTION = 'production';
+    public const CUSTOM = 'custom';
 
     /**
      * @return array
