@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix resolve refunded payment and return view
+
 ### Added
 - Honduras and Belize endpoints
 
