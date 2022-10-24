@@ -5,6 +5,7 @@ namespace PlacetoPay\Payments\Helper;
 use Dnetix\Redirection\Entities\Status;
 use Magento\Sales\Api\Data\OrderAddressInterface;
 use Magento\Sales\Model\Order;
+use PlacetoPay\Payments\Constants\PaymentStatus;
 
 abstract class OrderHelper
 {
@@ -42,6 +43,12 @@ abstract class OrderHelper
     public static function parseOrderState(Order $order): Status
     {
         switch ($order->getStatus()) {
+            case Order::STATE_COMPLETE:
+                $status = Order::STATE_COMPLETE;
+                break;
+            case PaymentStatus::REFUNDED_PAYMENT:
+                $status = Status::ST_REFUNDED;
+                break;
             case Order::STATE_PROCESSING:
                 $status = Status::ST_APPROVED;
                 break;
