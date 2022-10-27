@@ -23,15 +23,50 @@ class PlacetoPayPayment
 {
     use IsSetStatusOrderTrait;
 
-    private LoggerInterface $logger;
-    private Resolver $resolver;
-    private Config $config;
-    private UrlInterface $url;
-    private RemoteAddress $remoteAddress;
-    private Header $header;
-    private Item $item;
-    protected PlacetoPay $gateway;
-    protected Order $_order;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var Resolver
+     */
+    private $resolver;
+
+    /**
+     * @var Config
+     */
+    private $config;
+
+    /**
+     * @var UrlInterface
+     */
+    private $url;
+
+    /**
+     * @var RemoteAddress
+     */
+    private $remoteAddress;
+
+    /**
+     * @var Header
+     */
+    private $header;
+
+    /**
+     * @var Item
+     */
+    private $item;
+
+    /**
+     * @var PlacetoPay
+     */
+    protected $gateway;
+
+    /**
+     * @var Order
+     */
+    protected $_order;
 
     public function __construct(Config $config, LoggerInterface $logger, Resolver $resolver, UrlInterface $url, RemoteAddress $remoteAddress, Header $header, Item $item)
     {
