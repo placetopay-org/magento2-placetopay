@@ -11,9 +11,15 @@ use PlacetoPay\Payments\Helper\Data;
  */
 class OrderIdentityPlugin
 {
-    protected Session $session;
+    /**
+     * @var Session
+     */
+    protected $session;
 
-    protected Data $config;
+    /**
+     * @var Data
+     */
+    protected $config;
 
     public function __construct(
         Session $session,

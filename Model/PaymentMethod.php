@@ -51,36 +51,72 @@ class PaymentMethod extends AbstractMethod
     protected $_canVoid = true;
     protected $_canFetchTransactionInfo = true;
     protected $_canReviewPayment = true;
-    protected string $version;
 
-    protected Config $_config;
+    /**
+     * @var string
+     */
+    protected $version;
 
-    protected Order $_order;
+    /**
+     * @var Config
+     */
+    protected  $_config;
 
-    protected Resolver $_store;
+    /**
+     * @var order
+     */
 
-    protected UrlInterface $_url;
+    protected $_order;
 
-    protected RemoteAddress $remoteAddress;
+    /**
+     * @var Resolver
+     */
+    protected $_store;
 
-    protected Header $httpHeader;
+    /**
+     * @var UrlInterface
+     */
+    protected $_url;
 
-    protected Item $taxItem;
+    /**
+     * @var RemoteAddress
+     */
+    protected $remoteAddress;
+
+    /**
+     * @var Header
+     */
+    protected $httpHeader;
+
+    /**
+     * @var Item
+     */
+    protected $taxItem;
 
     /**
      * @var LoggerInterface
      */
     protected $logger;
 
-    protected Info $infoFactory;
+    /**
+     * @var Info
+     */
+    protected $infoFactory;
 
-    protected OrderRepositoryInterface $orderRepository;
+    /**
+     * @var OrderRepositoryInterface
+     */
+    protected $orderRepository;
 
     /**
      * @var SearchCriteriaBuilder
      */
     protected $searchCriteriaBuilder;
-    protected PlacetoPayPayment $placetoPayPayment;
+
+    /**
+     * @var PlacetoPayPayment
+     */
+    protected $placetoPayPayment;
 
     public function __construct(
         LoggerInterface $_logger,

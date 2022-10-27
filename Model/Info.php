@@ -14,7 +14,10 @@ use PlacetoPay\Payments\Exception\PlacetoPayException;
 
 class Info
 {
-    protected BuilderInterface $transactionBuilder;
+    /**
+     * @var BuilderInterface
+     */
+    protected $transactionBuilder;
 
     public function __construct(BuilderInterface $transactionBuilder)
     {

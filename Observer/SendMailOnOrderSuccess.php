@@ -14,13 +14,25 @@ use PlacetoPay\Payments\Helper\Data;
  */
 class SendMailOnOrderSuccess implements ObserverInterface
 {
-    protected Data $config;
+    /**
+     * @var Data
+     */
+    protected $config;
 
-    protected OrderFactory $order;
+    /**
+     * @var OrderFactory
+     */
+    protected $order;
 
-    protected OrderSender $orderSender;
+    /**
+     * @var OrderSender
+     */
+    protected $orderSender;
 
-    protected Session $session;
+    /**
+     * @var Session
+     */
+    protected $session;
 
     /**
      * SendMailOnOrderSuccess constructor.

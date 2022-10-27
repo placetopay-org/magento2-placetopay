@@ -17,15 +17,30 @@ use PlacetoPay\Payments\Model\PaymentMethod;
 
 class Service implements ServiceInterface
 {
-    protected Request $request;
+    /**
+     * @var Request
+     */
+    protected $request;
 
-    protected PlacetoPayLogger $logger;
+    /**
+     * @var PlacetoPayLogger
+     */
+    protected $logger;
 
-    protected EventManager $manager;
+    /**
+     * @var EventManager
+     */
+    protected $manager;
 
-    protected Json $json;
+    /**
+     * @var Json
+     */
+    protected $json;
 
-    protected OrderRepository $orderRepository;
+    /**
+     * @var OrderRepository
+     */
+    protected $orderRepository;
 
     public function __construct(
         Request $request,

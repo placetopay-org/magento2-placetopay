@@ -7,9 +7,15 @@ use PlacetoPay\Payments\Logger\Logger;
 
 class PlacetoPayLogger
 {
-    protected Logger $_logger;
+    /**
+     * @var Logger
+     */
+    protected $_logger;
 
-    protected Json $_json;
+    /**
+     * @var Json
+     */
+    protected $_json;
 
     public function __construct(Logger $logger, Json $json)
     {
