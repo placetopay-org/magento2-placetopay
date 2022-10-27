@@ -13,5 +13,5 @@ abstract class PaymentStatus
     public const SUCCESSFUL = 'SUCCESSFUl';
     public const FAILED = 'FAILED';
     public const REFUNDED_PAYMENT = 'refunded_payment';
-    public const REFUNDED = 'Refunded Payment';
+    public const REFUNDED = 'Refunded';
 }

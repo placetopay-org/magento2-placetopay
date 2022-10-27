@@ -31,7 +31,8 @@ trait IsSetStatusOrderTrait
                 if ($information->lastApprovedTransaction()->refunded()) {
                     $payment->setIsTransactionDenied(true);
                     $payment->setSkipOrderProcessing(true);
-                    $this->logger->warning('Setting order status of the order: ' . PaymentStatus::REFUNDED);
+                    $this->logger->warning('The order ' . $order->getRealOrderId() .
+                        ' with status ' . $order->getStatus() . ' the order will go to state ' . PaymentStatus::REFUNDED);
                     $order->setState(PaymentStatus::REFUNDED)->setStatus(PaymentStatus::REFUNDED_PAYMENT)->save();
                 } else {
                     $this->logger->info('The order ' . $order->getRealOrderId() .
