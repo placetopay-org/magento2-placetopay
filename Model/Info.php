@@ -97,7 +97,7 @@ class Info
             'status_message' => $status->message(),
             'status_date' => $status->date(),
             'authorization' => $lastTransaction ? $lastTransaction->authorization() : null,
-            'refunded' => $lastTransaction ? $lastTransaction->refunded() : null,
+            'refunded' => $lastTransaction ? $lastTransaction->refunded() : false,
             'transactions' => $parsedTransactions,
         ]);
     }

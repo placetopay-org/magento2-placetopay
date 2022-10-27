@@ -35,7 +35,7 @@
 
                         <p><?= __('Order status:') ?></p>
 
-                        <?php if ($information['refunded'] == 'true'): ?>
+                        <?php if ($information['refunded']): ?>
                              <p><?= __('Refunded payment')?></p>
                         <?php else: ?>
                             <p><?= $block->escapeHtml(__($information['status'])) ?></p>
