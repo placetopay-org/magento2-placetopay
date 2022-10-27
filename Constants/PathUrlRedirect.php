@@ -2,7 +2,7 @@
 
 namespace PlacetoPay\Payments\Constants;
 
-abstract class PathPagesRedirect
+abstract class PathUrlRedirect
 {
     public const FAILURE = 'placetopay/onepage/failure';
     public const SUCCESSFUL = 'placetopay/onepage/success';

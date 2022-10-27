@@ -26,7 +26,7 @@ use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Sales\Model\OrderFactory;
 use Magento\Store\Model\ScopeInterface;
 use PlacetoPay\Payments\Actions\SetOrderInfoSession;
-use PlacetoPay\Payments\Constants\PathPagesRedirect;
+use PlacetoPay\Payments\Constants\PathUrlRedirect;
 use PlacetoPay\Payments\Helper\OrderHelper;
 use PlacetoPay\Payments\Helper\PlacetoPayLogger;
 use PlacetoPay\Payments\Model\PaymentMethod;
@@ -101,7 +101,7 @@ class Response extends Action
         $reference = $this->request->getParam('reference');
         $order = $this->salesOrderFactory->create()->loadByIncrementId($reference);
         $session = $this->checkoutSession;
-        $pathRedirect = PathPagesRedirect::SUCCESSFUL;
+        $pathRedirect = PathUrlRedirect::SUCCESSFUL;
 
         try {
             $payment = $order->getPayment();
@@ -136,7 +136,7 @@ class Response extends Action
                     $this->messageManager->addSuccessMessage(sprintf(__('Thanks, transaction approved by %s.'), $placetopay->getNameOfStore()));
                 } elseif ($status->status() == Status::ST_REFUNDED) {
                     $this->messageManager->addErrorMessage(__('The payment has been refunded.'));
-                    $pathRedirect = PathPagesRedirect::FAILURE;
+                    $pathRedirect = PathUrlRedirect::FAILURE;
                 } elseif ($status->isApproved()) {
                     if ($response->lastApprovedTransaction()->refunded()) {
                         $this->setPaymentDenied($payment, $transaction);
@@ -151,7 +151,7 @@ class Response extends Action
 
                         $this->messageManager->addErrorMessage(__('The payment has been refunded.'));
 
-                        $pathRedirect = PathPagesRedirect::FAILURE;
+                        $pathRedirect = PathUrlRedirect::FAILURE;
                     } else {
                         $this->setPaymentApproved($payment, $transaction);
 
@@ -173,13 +173,13 @@ class Response extends Action
 
                     $this->messageManager->addErrorMessage(__('The payment process has been declined.'));
 
-                    $pathRedirect = PathPagesRedirect::FAILURE;
+                    $pathRedirect = PathUrlRedirect::FAILURE;
                 } else {
                     SetOrderInfoSession::withQouteId($session, $order, false);
 
                     $this->messageManager->addWarningMessage(__('Transaction pending, please wait a moment while it automatically resolves.'));
 
-                    $pathRedirect = PathPagesRedirect::PENDING;
+                    $pathRedirect = PathUrlRedirect::PENDING;
                 }
             } else {
                 if ($status->isApproved()) {
