@@ -85,10 +85,15 @@ class Service implements ServiceInterface
                         'order_ids' => [$order->getRealOrderId()],
                     ]);
                 }
-
-                $response = [
-                    'message' => sprintf('Transaction with status: %s', $information->status()->status()),
-                ];
+                if ($information->lastApprovedTransaction()->refunded()) {
+                    $response = [
+                        'message' => 'The payment refunded',
+                    ];
+                } else {
+                    $response = [
+                        'message' => sprintf('Transaction with status: %s', $information->status()->status()),
+                    ];
+                }
             } else {
                 $response = [
                     'signature' => $notification->makeSignature(),

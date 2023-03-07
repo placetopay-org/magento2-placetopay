@@ -7,7 +7,10 @@
     "AFL-3.0"
   ],
   "repositories": [
-    {
+	  {
+	    "type": "vcs",
+            "url": "https://github.com/alejociro/redirection"
+	  }, {
       "type": "composer",
       "url": "https://repo.magento.com/"
     }
@@ -15,7 +18,7 @@
   "require": {
     "php": ">=7.3",
     "ext-json": "*",
-    "dnetix/redirection": "^2.0"
+    "dnetix/redirection": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "~6.5.0",

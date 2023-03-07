@@ -2,6 +2,7 @@
 
 namespace PlacetoPay\Payments\Controller\Payment;
 
+use Dnetix\Redirection\Entities\Status;
 use Exception;
 use Magento\Checkout\Model\Session;
 use Magento\Customer\Model\Session as CustomerSession;
@@ -20,9 +21,12 @@ use Magento\Framework\View\Result\PageFactory;
 use Magento\Payment\Helper\Data as PaymentHelper;
 use Magento\Quote\Model\QuoteFactory;
 use Magento\Sales\Api\TransactionRepositoryInterface;
+use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Sales\Model\OrderFactory;
 use Magento\Store\Model\ScopeInterface;
+use PlacetoPay\Payments\Actions\SetOrderInfoSession;
+use PlacetoPay\Payments\Constants\PathUrlRedirect;
 use PlacetoPay\Payments\Helper\OrderHelper;
 use PlacetoPay\Payments\Helper\PlacetoPayLogger;
 use PlacetoPay\Payments\Model\PaymentMethod;
@@ -133,7 +137,7 @@ class Response extends Action
         $reference = $this->request->getParam('reference');
         $order = $this->salesOrderFactory->create()->loadByIncrementId($reference);
         $session = $this->checkoutSession;
-        $pathRedirect = 'placetopay/onepage/success';
+        $pathRedirect = PathUrlRedirect::SUCCESSFUL;
 
         try {
             $payment = $order->getPayment();
@@ -163,18 +167,35 @@ class Response extends Action
                 ScopeInterface::SCOPE_STORE,
                 $order->getStore()
             );
-
             if (strcmp($path, 'magento_default') === 0) {
-                if ($status->isApproved()) {
-                    $this->setPaymentApproved($payment, $transaction);
-
-                    $session->setLastQuoteId($order->getQuoteId())
-                        ->setLastSuccessQuoteId($order->getQuoteId())
-                        ->setLastOrderId($order->getId())
-                        ->setLastRealOrderId($order->getIncrementId())
-                        ->setLastOrderStatus($order->getStatus());
-
+                if ($status->status() == Order::STATE_COMPLETE) {
                     $this->messageManager->addSuccessMessage(sprintf(__('Thanks, transaction approved by %s.'), $placetopay->getNameOfStore()));
+                } elseif ($status->status() == Status::ST_REFUNDED) {
+                    $this->messageManager->addErrorMessage(__('The payment has been refunded.'));
+                    $pathRedirect = PathUrlRedirect::FAILURE;
+                } elseif ($status->isApproved()) {
+                    if ($response->lastApprovedTransaction()->refunded()) {
+                        $this->setPaymentDenied($payment, $transaction);
+
+                        $quote = $this->quoteQuoteFactory->create()->load($order->getQuoteId());
+
+                        if ($quote->getId()) {
+                            $quote->setIsActive(true)->save();
+
+                            SetOrderInfoSession::withQouteId($session, $order);
+                        }
+
+                        $this->messageManager->addErrorMessage(__('The payment has been refunded.'));
+
+                        $pathRedirect = PathUrlRedirect::FAILURE;
+                    } else {
+                        $this->setPaymentApproved($payment, $transaction);
+
+                        SetOrderInfoSession::withQouteId($session, $order);
+                        $session->setLastSuccessQuoteId($order->getQuoteId());
+
+                        $this->messageManager->addSuccessMessage(sprintf(__('Thanks, transaction approved by %s.'), $placetopay->getNameOfStore()));
+                    }
                 } elseif ($status->isRejected()) {
                     $this->setPaymentDenied($payment, $transaction);
 
@@ -183,28 +204,28 @@ class Response extends Action
                     if ($quote->getId()) {
                         $quote->setIsActive(true)->save();
 
-                        $session->setLastQuoteId($order->getQuoteId())
-                            ->setLastOrderId($order->getId())
-                            ->setLastRealOrderId($order->getIncrementId())
-                            ->setLastOrderStatus($order->getStatus());
+                        SetOrderInfoSession::withQouteId($session, $order);
                     }
 
                     $this->messageManager->addErrorMessage(__('The payment process has been declined.'));
 
-                    $pathRedirect = 'placetopay/onepage/failure';
+                    $pathRedirect = PathUrlRedirect::FAILURE;
                 } else {
-                    $session->setLastOrderId($order->getId())
-                        ->setLastRealOrderId($order->getIncrementId())
-                        ->setLastOrderStatus($order->getStatus());
+                    SetOrderInfoSession::withQouteId($session, $order, false);
 
                     $this->messageManager->addWarningMessage(__('Transaction pending, please wait a moment while it automatically resolves.'));
 
-                    $pathRedirect = 'placetopay/onepage/pending';
+                    $pathRedirect = PathUrlRedirect::PENDING;
                 }
             } else {
                 if ($status->isApproved()) {
-                    $this->messageManager->addSuccessMessage(sprintf(__('Thanks, transaction approved by ½s.'), $placetopay->getNameOfStore()));
-                    $this->setPaymentApproved($payment, $transaction);
+                    if ($response->lastApprovedTransaction()->refunded()) {
+                        $this->messageManager->addErrorMessage(__('The payment process has been refunded.'));
+                        $this->setPaymentDenied($payment, $transaction);
+                    } else {
+                        $this->messageManager->addSuccessMessage(sprintf(__('Thanks, transaction approved by ½s.'), $placetopay->getNameOfStore()));
+                        $this->setPaymentApproved($payment, $transaction);
+                    }
                 } elseif ($status->isRejected()) {
                     $this->messageManager->addErrorMessage(__('The payment process has been declined.'));
                     $this->setPaymentDenied($payment, $transaction);

@@ -38,7 +38,7 @@ use PlacetoPay\Payments\PlacetoPayService\PlacetoPayPayment;
 class PaymentMethod extends AbstractMethod
 {
     use IsSetStatusOrderTrait;
-    const CODE = 'placetopay';
+    public const CODE = 'placetopay';
 
     protected $_code = self::CODE;
     protected $_isGateway = true;

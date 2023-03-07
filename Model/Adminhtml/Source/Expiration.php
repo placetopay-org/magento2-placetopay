@@ -4,7 +4,7 @@ namespace PlacetoPay\Payments\Model\Adminhtml\Source;
 
 class Expiration
 {
-    const EXPIRATION_TIME_MINUTES_LIMIT = 40320;
+    public const EXPIRATION_TIME_MINUTES_LIMIT = 40320;
 
     /**
      * @return array

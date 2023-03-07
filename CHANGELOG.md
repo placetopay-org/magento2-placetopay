@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Downgrade php version to support php 7.2 to 7.4
 
+### Fixed
+
+- Fix resolve refunded payment and return view
+
 ### Added
 - Honduras and Belize endpoints
 

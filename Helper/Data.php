@@ -19,9 +19,9 @@ use PlacetoPay\Payments\Model\Info as InfoFactory;
 
 class Data extends BaseData
 {
-    const CODE = 'placetopay';
-    const EXPIRATION_TIME_MINUTES_DEFAULT = 120;
-    const EXPIRATION_TIME_MINUTES_MIN = 10;
+    public const CODE = 'placetopay';
+    public const EXPIRATION_TIME_MINUTES_DEFAULT = 120;
+    public const EXPIRATION_TIME_MINUTES_MIN = 10;
 
     /**
      * @var Logger

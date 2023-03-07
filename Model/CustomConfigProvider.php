@@ -15,7 +15,7 @@ use PlacetoPay\Payments\Model\Adminhtml\Source\Country;
 
 class CustomConfigProvider implements ConfigProviderInterface
 {
-    const CODE = PaymentMethod::CODE;
+    public const CODE = PaymentMethod::CODE;
 
     /**
      * @var Data
