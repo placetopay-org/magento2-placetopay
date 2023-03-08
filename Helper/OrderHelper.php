@@ -3,6 +3,7 @@
 namespace PlacetoPay\Payments\Helper;
 
 use Dnetix\Redirection\Entities\Status;
+use Dnetix\Redirection\Message\RedirectInformation;
 use Magento\Sales\Api\Data\OrderAddressInterface;
 use Magento\Sales\Model\Order;
 use PlacetoPay\Payments\Constants\PaymentStatus;
@@ -98,5 +99,18 @@ abstract class OrderHelper
     public static function isPendingOrder(Order $order): bool
     {
         return $order->getStatus() == 'pending' || $order->getStatus() == 'pending_payment';
+    }
+
+    public static function getPaymentStatus(RedirectInformation $information): Status
+    {
+        $status = $information->status();
+
+        if ($information->isApproved() && $information->lastApprovedTransaction()->refunded()) {
+            return new Status([
+                'status' => Status::ST_REFUNDED,
+            ]);
+        }
+
+        return $status;
     }
 }
