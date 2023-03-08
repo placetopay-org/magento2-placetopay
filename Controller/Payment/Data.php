@@ -53,17 +53,6 @@ class Data extends Action
      */
     protected $orderRepository;
 
-    /**
-     * Data constructor.
-     *
-     * @param Context                  $context
-     * @param Session                  $checkoutSession
-     * @param LoggerInterface          $logger
-     * @param ManagerInterface         $messageManager
-     * @param JsonFactory              $jsonFactory
-     * @param ResultFactory            $result
-     * @param OrderRepositoryInterface $orderRepository
-     */
     public function __construct(
         Context $context,
         Session $checkoutSession,
@@ -83,12 +72,7 @@ class Data extends Action
         $this->orderRepository = $orderRepository;
     }
 
-    /**
-     * Get singleton of Checkout Session Model.
-     *
-     * @return Session
-     */
-    protected function _getCheckout()
+    protected function _getCheckout(): Session
     {
         return $this->checkoutSession;
     }
@@ -109,7 +93,7 @@ class Data extends Action
             $order = $session->getLastRealOrder();
 
             if (! $order->getId()) {
-                $this->logger->debug('Non existent order for reference #'.$order->getId());
+                $this->logger->debug('Non existent order for reference #' . $order->getId());
 
                 throw new LocalizedException(__('No order for processing was found.'));
             }
@@ -133,9 +117,9 @@ class Data extends Action
             $session->restoreQuote();
 
             $this->logger->debug(
-                'Redirect action '.
-                $exception->getMessage().' on '.
-                $exception->getFile().' line '.
+                'Redirect action ' .
+                $exception->getMessage() . ' on ' .
+                $exception->getFile() . ' line ' .
                 $exception->getLine()
             );
 

@@ -12,9 +12,6 @@ use Magento\Sales\Model\Order\Payment\Transaction as TransactionModel;
 use Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface;
 use PlacetoPay\Payments\Exception\PlacetoPayException;
 
-/**
- * Class Info.
- */
 class Info
 {
     /**
@@ -22,20 +19,12 @@ class Info
      */
     protected $transactionBuilder;
 
-    /**
-     * Info constructor.
-     * @param BuilderInterface $transactionBuilder
-     */
     public function __construct(BuilderInterface $transactionBuilder)
     {
         $this->transactionBuilder = $transactionBuilder;
     }
 
     /**
-     * @param Payment $payment
-     * @param RedirectResponse $response
-     * @param string $env
-     * @param Order $order
      * @throws LocalizedException
      * @throws PlacetoPayException
      */
@@ -43,8 +32,8 @@ class Info
         Payment $payment,
         RedirectResponse $response,
         string $env,
-        Order $order)
-    {
+        Order $order
+    ) {
         $payment->setLastTransId($response->requestId());
         $payment->setTransactionId($response->requestId());
         $payment->setIsTransactionClosed(0);
@@ -78,9 +67,6 @@ class Info
     }
 
     /**
-     * @param Payment $payment
-     * @param Status $status
-     * @param array|null $transactions
      * @throws LocalizedException
      * @throws PlacetoPayException
      */
@@ -114,13 +100,12 @@ class Info
             'status_message' => $status->message(),
             'status_date' => $status->date(),
             'authorization' => $lastTransaction ? $lastTransaction->authorization() : null,
+            'refunded' => $lastTransaction ? $lastTransaction->refunded() : false,
             'transactions' => $parsedTransactions,
         ]);
     }
 
     /**
-     * @param Payment $payment
-     * @param array $data
      * @throws LocalizedException
      * @throws PlacetoPayException
      */

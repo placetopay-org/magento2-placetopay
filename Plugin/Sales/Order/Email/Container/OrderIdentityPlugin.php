@@ -2,41 +2,34 @@
 
 namespace PlacetoPay\Payments\Plugin\Sales\Order\Email\Container;
 
+use Magento\Checkout\Model\Session;
+use Magento\Sales\Model\Order\Email\Container\OrderIdentity;
+use PlacetoPay\Payments\Helper\Data;
+
 /**
  * Class OrderIdentityPlugin.
  */
 class OrderIdentityPlugin
 {
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var Session
      */
     protected $session;
 
     /**
-     * @var \PlacetoPay\Payments\Helper\Data
+     * @var Data
      */
     protected $config;
 
-    /**
-     * OrderIdentityPlugin constructor.
-     *
-     * @param \Magento\Checkout\Model\Session $session
-     * @param \PlacetoPay\Payments\Helper\Data $config
-     */
     public function __construct(
-        \Magento\Checkout\Model\Session $session,
-        \PlacetoPay\Payments\Helper\Data $config
+        Session $session,
+        Data $config
     ) {
         $this->session = $session;
         $this->config = $config;
     }
 
-    /**
-     * @param \Magento\Sales\Model\Order\Email\Container\OrderIdentity $subject
-     * @param callable $proceed
-     * @return bool
-     */
-    public function aroundIsEnabled(\Magento\Sales\Model\Order\Email\Container\OrderIdentity $subject, callable $proceed)
+    public function aroundIsEnabled(OrderIdentity $subject, callable $proceed): bool
     {
         $canProceed = $proceed();
         $emailSuccess = $this->config->getEmailSuccessOption();

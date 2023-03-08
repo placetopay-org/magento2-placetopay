@@ -13,23 +13,23 @@
     <?= $block->getAdditionalInfoHtml() ?>
 
     <div class="placetopay-checkout-onepage">
-        <?php if ($order) : ?>
-            <?php if ($order->getStatus() == 'failed') : ?>
+        <?php if ($order): ?>
+            <?php if ($order->getStatus() == 'failed'): ?>
                 <p><?= $block->escapeHtml(__('Unfortunately your order cannot be processed as the originating bank/merchant has declined your transaction. Please attempt your purchase again.')) ?></p>
 
-                <?php if(isset($information['authorization'])) : ?>
+                <?php if (isset($information['authorization'])): ?>
                     <li>
                         <p><?= __('Authorization/CUS:') ?></p>
                         <p><?= $block->escapeHtml($information['authorization']) ?></p>
                     </li>
                 <?php endif ?>
-            <?php else : ?>
-                <?php if (isset($information['process_url'])) : ?>
+            <?php else: ?>
+                <?php if (isset($information['process_url'])): ?>
                     <p>
                         <?= $block->escapeHtml(
-                            __('For more information about the status of your order: <a href="%1" target="_blank">view order detail in Placetopay</a>', $information['process_url']),
-                            ['a']
-                        ) ?>
+    __('For more information about the status of your order: <a href="%1" target="_blank">view order detail</a>', $information['process_url']),
+    ['a']
+) ?>
                     </p>
                 <?php endif ?>
                 <ul class="order-details">
@@ -49,7 +49,7 @@
                         <p><?= __('Payment method:') ?></p>
                         <p><?= $block->escapeHtml($payment->getMethodInstance()->getTitle()) ?></p>
                     </li>
-                    <?php if(isset($information['authorization'])) : ?>
+                    <?php if (isset($information['authorization'])): ?>
                         <li>
                             <p><?= __('Authorization/CUS:') ?></p>
                             <p><?= $block->escapeHtml($information['authorization']) ?></p>
@@ -57,7 +57,7 @@
                     <?php endif ?>
                 </ul>
             <?php endif ?>
-        <?php else : ?>
+        <?php else: ?>
         <?php endif ?>
     </div>
 </div>

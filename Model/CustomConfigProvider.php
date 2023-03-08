@@ -15,7 +15,7 @@ use PlacetoPay\Payments\Model\Adminhtml\Source\Country;
 
 class CustomConfigProvider implements ConfigProviderInterface
 {
-    const CODE = PaymentMethod::CODE;
+    public const CODE = PaymentMethod::CODE;
 
     /**
      * @var Data
@@ -42,14 +42,6 @@ class CustomConfigProvider implements ConfigProviderInterface
      */
     protected $storeManager;
 
-    /**
-     * CustomConfigProvider constructor.
-     * @param Data $scopeConfig
-     * @param Repository $assetRepo
-     * @param StoreManagerInterface $storeManager
-     * @param CustomerSession $customerSession
-     * @param CollectionFactory $collectionFactory
-     */
     public function __construct(
         Data $scopeConfig,
         Repository $assetRepo,
@@ -90,7 +82,6 @@ class CustomConfigProvider implements ConfigProviderInterface
     }
 
     /**
-     * @return string
      * @throws NoSuchEntityException
      */
     protected function getImage(): string
@@ -115,7 +106,7 @@ class CustomConfigProvider implements ConfigProviderInterface
             $base = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
             $image = "${base}${$url}";
         } else {
-            $image = 'https://static.placetopay.com/'.$url.'.svg';
+            $image = 'https://static.placetopay.com/' . $url . '.svg';
         }
 
         return $image;
@@ -172,7 +163,6 @@ class CustomConfigProvider implements ConfigProviderInterface
     }
 
     /**
-     * @return string
      * @throws NoSuchEntityException
      */
     public function getUrl(): string
@@ -180,9 +170,6 @@ class CustomConfigProvider implements ConfigProviderInterface
         return $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_WEB, true);
     }
 
-    /**
-     * @return array
-     */
     public function getPaymentMethods(): array
     {
         $paymentMethods = [];

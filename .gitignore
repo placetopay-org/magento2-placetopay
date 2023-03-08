@@ -2,4 +2,6 @@
 /.idea
 /.vagrant
 /.scannerwork
+.env
+composer.lock
 */*/auth.json

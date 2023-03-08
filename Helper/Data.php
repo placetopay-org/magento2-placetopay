@@ -4,6 +4,7 @@ namespace PlacetoPay\Payments\Helper;
 
 use Magento\Framework\App\Config\Initial;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\View\LayoutFactory;
 use Magento\Payment\Helper\Data as BaseData;
 use Magento\Payment\Model\Config;
@@ -14,9 +15,14 @@ use PlacetoPay\Payments\Countries\CountryConfigInterface;
 use PlacetoPay\Payments\Logger\Logger;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Country;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
+use PlacetoPay\Payments\Model\Info as InfoFactory;
 
 class Data extends BaseData
 {
+    public const CODE = 'placetopay';
+    public const EXPIRATION_TIME_MINUTES_DEFAULT = 120;
+    public const EXPIRATION_TIME_MINUTES_MIN = 10;
+
     /**
      * @var Logger
      */
@@ -25,26 +31,22 @@ class Data extends BaseData
     /**
      * @var string
      */
-    protected $mode;
+    protected $version;
 
     /**
-     * Data constructor.
-     * @param Logger $logger
-     * @param Context $context
-     * @param LayoutFactory $layoutFactory
-     * @param Factory $paymentMethodFactory
-     * @param Emulation $appEmulation
-     * @param Config $paymentConfig
-     * @param Initial $initialConfig
+     * @var string|mixed
      */
+    protected $mode;
+
     public function __construct(
-        Logger $logger,
-        Context $context,
+        Logger        $logger,
+        Context       $context,
         LayoutFactory $layoutFactory,
-        Factory $paymentMethodFactory,
-        Emulation $appEmulation,
-        Config $paymentConfig,
-        Initial $initialConfig
+        Factory       $paymentMethodFactory,
+        Emulation     $appEmulation,
+        Config        $paymentConfig,
+        Initial       $initialConfig,
+        InfoFactory   $info
     ) {
         parent::__construct(
             $context,
@@ -54,8 +56,9 @@ class Data extends BaseData
             $paymentConfig,
             $initialConfig
         );
-
+        $this->infoFactory = $info;
         $this->logger = $logger;
+        $this->version = '1.8.11';
 
         $this->mode = $this->scopeConfig->getValue(
             'payment/placetopay/placetopay_mode',
@@ -129,9 +132,6 @@ class Data extends BaseData
         );
     }
 
-    /**
-     * @return bool
-     */
     public function getAllowPendingPayment(): bool
     {
         return $this->scopeConfig->getValue(
@@ -140,9 +140,6 @@ class Data extends BaseData
         );
     }
 
-    /**
-     * @return bool
-     */
     public function getAllowPartialPayment(): bool
     {
         return $this->scopeConfig->getValue(
@@ -151,9 +148,6 @@ class Data extends BaseData
         );
     }
 
-    /**
-     * @return bool
-     */
     public function getHasCifin(): bool
     {
         return $this->scopeConfig->getValue(
@@ -162,9 +156,6 @@ class Data extends BaseData
         );
     }
 
-    /**
-     * @return bool
-     */
     public function getFillTaxInformation(): bool
     {
         return $this->scopeConfig->getValue(
@@ -173,20 +164,14 @@ class Data extends BaseData
         );
     }
 
-    /**
-     * @return bool
-     */
     public function getFillBuyerInformation(): bool
     {
-        return ! $this->scopeConfig->getValue(
+        return !$this->scopeConfig->getValue(
             'payment/placetopay/fill_buyer_information',
             ScopeInterface::SCOPE_STORE
         );
     }
 
-    /**
-     * @return bool
-     */
     public function getSkipResult(): bool
     {
         return $this->scopeConfig->getValue(
@@ -250,9 +235,6 @@ class Data extends BaseData
         );
     }
 
-    /**
-     * @return bool
-     */
     public function getActive(): bool
     {
         return $this->scopeConfig->getValue(
@@ -264,7 +246,7 @@ class Data extends BaseData
     /**
      * @return string|null
      */
-    public function getTile(): ?string
+    public function getTitle(): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/title',
@@ -302,9 +284,6 @@ class Data extends BaseData
         );
     }
 
-    /**
-     * @return bool
-     */
     public function isCustomEnvironment(): bool
     {
         return $this->getMode() === Mode::CUSTOM;
@@ -434,5 +413,41 @@ class Data extends BaseData
         }
 
         return [];
+    }
+
+    public function cleanText($text)
+    {
+        return preg_replace('/[(),.#!\-]/', '', $text);
+    }
+
+    public function getExpirationTimeMinutes()
+    {
+        $minutes = $this->getExpirationTime();
+
+        return !is_numeric($minutes) || $minutes < self::EXPIRATION_TIME_MINUTES_MIN
+            ? self::EXPIRATION_TIME_MINUTES_DEFAULT
+            : $minutes;
+    }
+
+    /**
+     * @return InfoFactory
+     */
+    public function getInfoModel(): InfoFactory
+    {
+        return $this->infoFactory;
+    }
+
+    public function getHeaders(): array
+    {
+        $objectManager = ObjectManager::getInstance();
+        $productMetadata = $objectManager->get('Magento\Framework\App\ProductMetadataInterface');
+        $version = $productMetadata->getVersion();
+
+        $domain = $_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? 'localhost');
+
+        return [
+            'User-Agent' => "magento2-module-payments/{$this->version} (origin:$domain; vr:" . $version . ')',
+            'X-Source-Platform' => 'magento',
+        ];
     }
 }

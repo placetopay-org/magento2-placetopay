@@ -2,8 +2,12 @@
 
 namespace PlacetoPay\Payments\Observer;
 
+use Magento\Checkout\Model\Session;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Sales\Model\Order\Email\Sender\OrderSender;
+use Magento\Sales\Model\OrderFactory;
+use PlacetoPay\Payments\Helper\Data;
 
 /**
  * Class SendMailOnOrderSuccess.
@@ -11,22 +15,22 @@ use Magento\Framework\Event\ObserverInterface;
 class SendMailOnOrderSuccess implements ObserverInterface
 {
     /**
-     * @var \PlacetoPay\Payments\Helper\Data
+     * @var Data
      */
     protected $config;
 
     /**
-     * @var \Magento\Sales\Model\OrderFactory
+     * @var OrderFactory
      */
     protected $order;
 
     /**
-     * @var \Magento\Sales\Model\Order\Email\Sender\OrderSender
+     * @var OrderSender
      */
     protected $orderSender;
 
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var Session
      */
     protected $session;
 
