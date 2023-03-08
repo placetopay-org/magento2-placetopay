@@ -7,10 +7,11 @@
     "AFL-3.0"
   ],
   "repositories": [
-	  {
-	    "type": "vcs",
-            "url": "https://github.com/alejociro/redirection"
-	  }, {
+    {
+      "type": "vcs",
+      "url": "https://github.com/alejociro/redirection"
+    },
+    {
       "type": "composer",
       "url": "https://repo.magento.com/"
     }
