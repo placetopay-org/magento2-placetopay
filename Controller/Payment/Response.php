@@ -169,12 +169,14 @@ class Response extends Action
             );
             if (strcmp($path, 'magento_default') === 0) {
                 if ($status->status() == Order::STATE_COMPLETE) {
-                    $this->messageManager->addSuccessMessage(sprintf(__('Thanks, transaction approved by %s.'), $placetopay->getNameOfStore()));
+                    $this->messageManager->addSuccessMessage(
+                        sprintf(__('Thanks, transaction approved by %s.'), $placetopay->getNameOfStore())
+                    );
                 } elseif ($status->status() == Status::ST_REFUNDED) {
                     $this->messageManager->addErrorMessage(__('The payment has been refunded.'));
                     $pathRedirect = PathUrlRedirect::FAILURE;
                 } elseif ($status->isApproved()) {
-                    if ($response->lastApprovedTransaction()->refunded()) {
+                    if (isset($response) && $response->lastApprovedTransaction()->refunded()) {
                         $this->setPaymentDenied($payment, $transaction);
 
                         $quote = $this->quoteQuoteFactory->create()->load($order->getQuoteId());
@@ -194,7 +196,9 @@ class Response extends Action
                         SetOrderInfoSession::withQouteId($session, $order);
                         $session->setLastSuccessQuoteId($order->getQuoteId());
 
-                        $this->messageManager->addSuccessMessage(sprintf(__('Thanks, transaction approved by %s.'), $placetopay->getNameOfStore()));
+                        $this->messageManager->addSuccessMessage(
+                            sprintf(__('Thanks, transaction approved by %s.'), $placetopay->getNameOfStore())
+                        );
                     }
                 } elseif ($status->isRejected()) {
                     $this->setPaymentDenied($payment, $transaction);
@@ -213,24 +217,30 @@ class Response extends Action
                 } else {
                     SetOrderInfoSession::withQouteId($session, $order, false);
 
-                    $this->messageManager->addWarningMessage(__('Transaction pending, please wait a moment while it automatically resolves.'));
+                    $this->messageManager->addWarningMessage(
+                        __('Transaction pending, please wait a moment while it automatically resolves.')
+                    );
 
                     $pathRedirect = PathUrlRedirect::PENDING;
                 }
             } else {
                 if ($status->isApproved()) {
-                    if ($response->lastApprovedTransaction()->refunded()) {
+                    if (isset($response) && $response->lastApprovedTransaction()->refunded()) {
                         $this->messageManager->addErrorMessage(__('The payment process has been refunded.'));
                         $this->setPaymentDenied($payment, $transaction);
                     } else {
-                        $this->messageManager->addSuccessMessage(sprintf(__('Thanks, transaction approved by ½s.'), $placetopay->getNameOfStore()));
+                        $this->messageManager->addSuccessMessage(
+                            sprintf(__('Thanks, transaction approved by ½s.'), $placetopay->getNameOfStore())
+                        );
                         $this->setPaymentApproved($payment, $transaction);
                     }
                 } elseif ($status->isRejected()) {
                     $this->messageManager->addErrorMessage(__('The payment process has been declined.'));
                     $this->setPaymentDenied($payment, $transaction);
                 } else {
-                    $this->messageManager->addWarningMessage(__('Transaction pending, please wait a moment while it automatically resolves.'));
+                    $this->messageManager->addWarningMessage(
+                        __('Transaction pending, please wait a moment while it automatically resolves.')
+                    );
                 }
 
                 if ($this->customerSession->isLoggedIn()) {
