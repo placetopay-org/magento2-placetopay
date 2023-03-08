@@ -98,7 +98,7 @@ abstract class OrderHelper
 
     public static function isPendingOrder(Order $order): bool
     {
-        return $order->getStatus() == 'pending' || $order->getStatus() == 'pending_payment';
+        return in_array($order->getStatus(), ['pending', 'pending_payment'], true);
     }
 
     public static function getPaymentStatus(RedirectInformation $information): Status
