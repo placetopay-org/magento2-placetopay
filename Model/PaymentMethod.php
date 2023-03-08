@@ -60,7 +60,7 @@ class PaymentMethod extends AbstractMethod
     /**
      * @var Config
      */
-    protected  $_config;
+    protected $_config;
 
     /**
      * @var order
