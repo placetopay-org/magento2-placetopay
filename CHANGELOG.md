@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.9.1] - 2023-03-17
+
+### Added
+- Add UY endopoints
+- Add PA country option (CO endpoints)
+
+### Updated
+- Update dependency version
+
 ## [1.9.0] - 2023-03-07
 
 ### Changed

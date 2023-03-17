@@ -7,6 +7,7 @@ use PlacetoPay\Payments\Countries\ChileCountryConfig;
 use PlacetoPay\Payments\Countries\CountryConfig;
 use PlacetoPay\Payments\Countries\EcuadorCountryConfig;
 use PlacetoPay\Payments\Countries\HondurasCountryConfig;
+use PlacetoPay\Payments\Countries\UruguayCountryConfig;
 
 class Country
 {
@@ -18,11 +19,16 @@ class Country
     public const HONDURAS = 'HN';
     public const BELIZE = 'BZ';
 
+    public const PANAMA = 'PA';
+
+    public const URUGUAY = 'UY';
+
     public const COUNTRIES_CONFIG = [
         EcuadorCountryConfig::class,
         ChileCountryConfig::class,
         HondurasCountryConfig::class,
         BelizeCountryConfig::class,
+        UruguayCountryConfig::class,
         CountryConfig::class
     ];
 
@@ -56,6 +62,14 @@ class Country
             [
                 'value' => self::BELIZE,
                 'label' => __('Belize')
+            ],
+            [
+                'value' => self::PANAMA,
+                'label' => __('Panama')
+            ],
+            [
+                'value' => self::URUGUAY,
+                'label' => __('Uruguay')
             ]
         ];
     }
