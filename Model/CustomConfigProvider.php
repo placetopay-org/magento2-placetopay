@@ -93,10 +93,6 @@ class CustomConfigProvider implements ConfigProviderInterface
                 case Country::CHILE:
                     $image = 'https://banco.santander.cl/uploads/000/029/870/0620f532-9fc9-4248-b99e-78bae9f13e1d/original/Logo_WebCheckout_Getnet.svg';
                     break;
-                case Country::COLOMBIA:
-                case Country::ECUADOR:
-                case Country::PUERTO_RICO:
-                case Country::COSTA_RICA:
                 default:
                     $image = 'https://static.placetopay.com/placetopay-logo.svg';
             }
