@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Resolve base price of shipping taxes
+
 ## [1.9.1] - 2023-03-17
 
 ### Added
