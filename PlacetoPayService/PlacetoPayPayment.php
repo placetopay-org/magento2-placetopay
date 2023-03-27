@@ -167,21 +167,22 @@ class PlacetoPayPayment
                     $taxes = [];
 
                     foreach ($taxInformation as $item) {
-                        if ($item['taxable_item_type'] == 'shipping') {
+                        if ($item['taxable_item_type'] === 'shipping') {
                             $taxes[] = [
                                 'kind' => isset($map[$item['code']]) ? $map[$item['code']] : 'valueAddedTax',
                                 'amount' => $item['real_amount'],
                                 'base' => (string)(($item['real_amount'] * 100) / $item['tax_percent']),
                             ];
-                        } else {
-                            $taxes[] = [
-                                'kind' => isset($map[$item['code']]) ? $map[$item['code']] : 'valueAddedTax',
-                                'amount' => $item['real_amount'],
-                                'base' => $order->getItemById($item['item_id'])->getBasePrice(),
-                            ];
+                            continue;
                         }
+
+                        $taxes[] = [
+                            'kind' => isset($map[$item['code']]) ? $map[$item['code']] : 'valueAddedTax',
+                            'amount' => $item['real_amount'],
+                            'base' => $order->getItemById($item['item_id'])->getBasePrice(),
+                        ];
                     }
-                    
+
                     $mergedTaxes = [];
 
                     foreach ($taxes as $elem) {
