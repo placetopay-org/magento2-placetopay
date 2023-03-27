@@ -181,6 +181,7 @@ class PlacetoPayPayment
                             ];
                         }
                     }
+                    
                     $mergedTaxes = [];
 
                     foreach ($taxes as $elem) {
