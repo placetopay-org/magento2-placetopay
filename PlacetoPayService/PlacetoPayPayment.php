@@ -91,7 +91,7 @@ class PlacetoPayPayment
     private function getRedirectRequestData(Order $order): array
     {
         $reference = $order->getRealOrderId();
-        $total = ! is_null($order->getGrandTotal()) ? $order->getGrandTotal() : $order->getTotalDue();
+        $total = !is_null($order->getGrandTotal()) ? $order->getGrandTotal() : $order->getTotalDue();
         $subtotal = $order->getSubtotal();
         $discount = (string)$order->getDiscountAmount() != 0 ? ($order->getDiscountAmount() * -1) : 0;
         $shipping = $order->getShippingAmount();
@@ -167,13 +167,20 @@ class PlacetoPayPayment
                     $taxes = [];
 
                     foreach ($taxInformation as $item) {
-                        $taxes[] = [
-                            'kind' => isset($map[$item['code']]) ? $map[$item['code']] : 'valueAddedTax',
-                            'amount' => $item['real_amount'],
-                            'base' => $order->getItemById($item['item_id'])->getBasePrice(),
-                        ];
+                        if ($item['taxable_item_type'] == 'shipping') {
+                            $taxes[] = [
+                                'kind' => isset($map[$item['code']]) ? $map[$item['code']] : 'valueAddedTax',
+                                'amount' => $item['real_amount'],
+                                'base' => (string)(($item['real_amount'] * 100) / $item['tax_percent']),
+                            ];
+                        } else {
+                            $taxes[] = [
+                                'kind' => isset($map[$item['code']]) ? $map[$item['code']] : 'valueAddedTax',
+                                'amount' => $item['real_amount'],
+                                'base' => $order->getItemById($item['item_id'])->getBasePrice(),
+                            ];
+                        }
                     }
-
                     $mergedTaxes = [];
 
                     foreach ($taxes as $elem) {
