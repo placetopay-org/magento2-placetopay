@@ -58,7 +58,7 @@ class Data extends BaseData
         );
         $this->infoFactory = $info;
         $this->logger = $logger;
-        $this->version = '1.8.11';
+        $this->version = '1.9.2';
 
         $this->mode = $this->scopeConfig->getValue(
             'payment/placetopay/placetopay_mode',
