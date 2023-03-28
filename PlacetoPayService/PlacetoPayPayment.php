@@ -167,19 +167,13 @@ class PlacetoPayPayment
                     $taxes = [];
 
                     foreach ($taxInformation as $item) {
-                        if ($item['taxable_item_type'] === 'shipping') {
-                            $taxes[] = [
-                                'kind' => isset($map[$item['code']]) ? $map[$item['code']] : 'valueAddedTax',
-                                'amount' => $item['real_amount'],
-                                'base' => (string)(($item['real_amount'] * 100) / $item['tax_percent']),
-                            ];
-                            continue;
-                        }
+                        $base = isset($item['item_id']) ? $order->getItemById($item['item_id'])->getBasePrice() :
+                            ($item['real_amount'] * 100) / $item['tax_percent'];
 
                         $taxes[] = [
                             'kind' => isset($map[$item['code']]) ? $map[$item['code']] : 'valueAddedTax',
                             'amount' => $item['real_amount'],
-                            'base' => $order->getItemById($item['item_id'])->getBasePrice(),
+                            'base' => $base
                         ];
                     }
 
