@@ -61,10 +61,6 @@ class ProcessPendingOrder
                 Order::STATE_PENDING_PAYMENT,
                 Order::STATE_NEW,
             ]])
-            ->addAttributeToFilter('state', ['in' => [
-                Order::STATE_PENDING_PAYMENT,
-                Order::STATE_NEW,
-            ]])
             ->addAttributeToFilter('status', ['in' => [
                 PaymentStatus::PENDING_PAYMENT, PaymentStatus::PENDING
             ]])->addAttributeToSort('entity_id');

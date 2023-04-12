@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Cron job resolve only placetopay payments
+- 
+- Cron job resolve only related payments
 
 ## [1.9.2] - 2023-03-28
 
