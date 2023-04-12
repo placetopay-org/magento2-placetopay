@@ -54,7 +54,9 @@ class ProcessPendingOrder
     {
         /** @var Order $orders */
         $orders = $this->collectionFactory->create()
+            ->join(['sales_order_payment' => 'sales_order_payment'], 'main_table.entity_id = sales_order_payment.parent_id')
             ->addAttributeToSelect('*')
+            ->addAttributeToFilter('sales_order_payment.method', ['eq' => PaymentMethod::CODE])
             ->addAttributeToFilter('state', ['in' => [
                 Order::STATE_PENDING_PAYMENT,
                 Order::STATE_NEW,
