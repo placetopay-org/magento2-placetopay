@@ -6,10 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.9.3] - 2023-04-12
+
 ### Fixed
 
-- 
-- Cron job resolve only related payments
+- Cron job resolve only payments payed using this plugin
 
 ## [1.9.2] - 2023-03-28
 
