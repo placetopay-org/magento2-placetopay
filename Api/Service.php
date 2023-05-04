@@ -4,6 +4,7 @@ namespace PlacetoPay\Payments\Api;
 
 use Dnetix\Redirection\Exceptions\PlacetoPayException;
 use Exception;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -38,6 +39,11 @@ class Service implements ServiceInterface
     protected $json;
 
     /**
+     * @var ResourceConnection
+     */
+    protected $_resource;
+
+    /**
      * @var OrderRepository
      */
     protected $orderRepository;
@@ -47,13 +53,15 @@ class Service implements ServiceInterface
         PlacetoPayLogger $logger,
         EventManager $manager,
         Json $json,
-        OrderRepository $orderRepository
+        OrderRepository $orderRepository,
+        ResourceConnection $resource
     ) {
         $this->logger = $logger;
         $this->manager = $manager;
         $this->json = $json;
         $this->orderRepository = $orderRepository;
         $this->request = $request;
+        $this->_resource = $resource;
     }
 
     public function notify(): array
@@ -65,8 +73,13 @@ class Service implements ServiceInterface
                 throw new PlacetoPayException('Wrong or empty notification data.');
             }
 
-            /** @var Order $order */
-            $order = $this->getOrderById($data['reference']);
+            $connection = $this->_resource->getConnection();
+            $tableName = $this->_resource->getTableName('sales_order_payment');
+            $select = $connection->select()->from($tableName)
+                       ->where("JSON_EXTRACT(additional_information, '$.request_id') = ?", strval($data['requestId']));
+            $result = $connection->fetchRow($select);
+
+            $order = $this->getOrderById($result['parent_id']);
 
             /** @var Order\Payment $payment */
             $payment = $order->getPayment();
