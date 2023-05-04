@@ -79,6 +79,10 @@ class Service implements ServiceInterface
                        ->where("JSON_EXTRACT(additional_information, '$.request_id') = ?", strval($data['requestId']));
             $result = $connection->fetchRow($select);
 
+            if (!$result) {
+                return ['There is no order associated to the request id: ' . $data['requestId']];
+            }
+
             /** @var Order $order */
             $order = $this->getOrderById($result['parent_id']);
 
@@ -98,6 +102,9 @@ class Service implements ServiceInterface
                     $this->manager->dispatch('placetopay_api_success', [
                         'order_ids' => [$order->getRealOrderId()],
                     ]);
+                    $response = [
+                        'message' => sprintf('Transaction with status: %s', $information->status()->status()),
+                    ];
                 } else {
                     if ($information->lastApprovedTransaction() && $information->lastApprovedTransaction()->refunded()) {
                         $response = [
