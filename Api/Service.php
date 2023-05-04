@@ -79,6 +79,7 @@ class Service implements ServiceInterface
                        ->where("JSON_EXTRACT(additional_information, '$.request_id') = ?", strval($data['requestId']));
             $result = $connection->fetchRow($select);
 
+            /** @var Order $order */
             $order = $this->getOrderById($result['parent_id']);
 
             /** @var Order\Payment $payment */
@@ -97,15 +98,16 @@ class Service implements ServiceInterface
                     $this->manager->dispatch('placetopay_api_success', [
                         'order_ids' => [$order->getRealOrderId()],
                     ]);
-                }
-                if ($information->lastApprovedTransaction()->refunded()) {
-                    $response = [
-                        'message' => 'The payment refunded',
-                    ];
                 } else {
-                    $response = [
-                        'message' => sprintf('Transaction with status: %s', $information->status()->status()),
-                    ];
+                    if ($information->lastApprovedTransaction() && $information->lastApprovedTransaction()->refunded()) {
+                        $response = [
+                            'message' => 'The payment refunded',
+                        ];
+                    } else {
+                        $response = [
+                            'message' => sprintf('Transaction with status: %s', $information->status()->status()),
+                        ];
+                    }
                 }
             } else {
                 $response = [
@@ -114,7 +116,7 @@ class Service implements ServiceInterface
                 ];
             }
 
-            return [$response];
+            return $response;
         } catch (Exception $ex) {
             $this->logger->log($this, 'error', __FUNCTION__ . ' message', [$ex->getMessage()]);
 
