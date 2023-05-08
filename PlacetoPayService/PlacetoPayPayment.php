@@ -237,7 +237,7 @@ class PlacetoPayPayment
         ];
 
         if ($this->config->getFillTaxInformation()) {
-            $data['payment']['amount']['taxes'] = $this->getPaymentTaxes($item, $order, $data);
+            $data['payment']['amount']['taxes'] = $this->getPaymentTaxes($order);
         }
 
         if ($paymentMethods = $this->config->getPaymentMethods()) {
@@ -247,7 +247,7 @@ class PlacetoPayPayment
         return $data;
     }
 
-    private function getPaymentTaxes(Item $item, Order $order): array
+    private function getPaymentTaxes(Order $order): array
     {
         $mergedTaxes = [];
 
