@@ -145,7 +145,7 @@ class Response extends Action
             /** @var PaymentMethod $placetopay */
             $placetopay = $payment->getMethodInstance();
 
-            if (strcmp($placetopay->getCode(), 'placetopay') !== 0) {
+            if (strcmp($placetopay->getCode(), PaymentMethod::CODE) !== 0) {
                 throw new LocalizedException(__('Unknown payment method.'));
             }
 
@@ -218,7 +218,7 @@ class Response extends Action
             } else {
                 if ($status->isApproved()) {
                     $this->messageManager->addSuccessMessage(
-                        sprintf(__('Thanks, transaction approved by ½s.'), $placetopay->getNameOfStore())
+                        sprintf(__('Thanks, transaction approved by %s.'), $placetopay->getNameOfStore())
                     );
                     $this->setPaymentApproved($payment, $transaction);
                 } elseif ($status->isRejected()) {

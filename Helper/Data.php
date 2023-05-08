@@ -298,10 +298,13 @@ class Data extends BaseData
         $endpoints = $this->getEndpointsTo($this->getCountryCode());
 
         if ($this->isCustomEnvironment()) {
-            $uri = $this->getCustomConnectionUrl();
-        } elseif (!empty($endpoints[$this->getMode()])) {
-            $uri = $endpoints[$this->getMode()];
+            return $this->getCustomConnectionUrl();
         }
+
+        if (!empty($endpoints[$this->getMode()])) {
+            return $endpoints[$this->getMode()];
+        }
+
         return $uri;
     }
 

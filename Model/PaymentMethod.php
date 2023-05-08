@@ -168,23 +168,21 @@ class PaymentMethod extends AbstractMethod
         $this->placetoPayPayment = new PlacetoPayPayment($config, $_logger, $resolver, $urlInterface, $remoteAddress, $httpHeader, $taxItem);
     }
 
-    /**
-     * @param string $paymentAction
-     * @param object $stateObject
-     * @return PaymentMethod
-     */
-    public function initialize($paymentAction, $stateObject): PaymentMethod
-    {
-        $stateObject->setState(Order::STATE_PENDING_PAYMENT);
-        $stateObject->setState(AbstractMethod::STATUS_UNKNOWN);
-        $stateObject->setIsNotified(false);
-
-        return $this;
+        $this->placetoPayPayment = new PlacetoPayPayment(
+            $config,
+            $_logger,
+            $resolver,
+            $urlInterface,
+            $remoteAddress,
+            $httpHeader,
+            $taxItem
+        );
     }
 
     /**
      * @param null $storeId
      * @return bool
+     * @see vendor/magento/module-payment/Model/MethodInterface.php
      */
     public function isActive($storeId = null): bool
     {
@@ -194,6 +192,7 @@ class PaymentMethod extends AbstractMethod
     /**
      * @param CartInterface|null $quote
      * @return bool
+     * @see vendor/magento/module-payment/Model/MethodInterface.php
      */
     public function isAvailable(CartInterface $quote = null): bool
     {
