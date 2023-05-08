@@ -5,3 +5,4 @@
 .env
 composer.lock
 */*/auth.json
+.php-cs-fixer.cache
