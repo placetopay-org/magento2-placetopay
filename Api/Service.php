@@ -4,7 +4,6 @@ namespace PlacetoPay\Payments\Api;
 
 use Dnetix\Redirection\Exceptions\PlacetoPayException;
 use Exception;
-use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -13,6 +12,7 @@ use Magento\Framework\Webapi\Rest\Request;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\OrderRepository;
+use Magento\Sales\Model\ResourceModel\Order\Payment\CollectionFactory;
 use PlacetoPay\Payments\Helper\PlacetoPayLogger;
 use PlacetoPay\Payments\Model\PaymentMethod;
 
@@ -39,9 +39,9 @@ class Service implements ServiceInterface
     protected $json;
 
     /**
-     * @var ResourceConnection
+     * @var CollectionFactory
      */
-    protected $_resource;
+    protected $paymentCollectionFactory;
 
     /**
      * @var OrderRepository
@@ -54,14 +54,14 @@ class Service implements ServiceInterface
         EventManager $manager,
         Json $json,
         OrderRepository $orderRepository,
-        ResourceConnection $resource
+        CollectionFactory $paymentCollectionFactory
     ) {
         $this->logger = $logger;
         $this->manager = $manager;
         $this->json = $json;
         $this->orderRepository = $orderRepository;
         $this->request = $request;
-        $this->_resource = $resource;
+        $this->paymentCollectionFactory = $paymentCollectionFactory;
     }
 
     public function notify(): array
@@ -73,18 +73,17 @@ class Service implements ServiceInterface
                 throw new PlacetoPayException('Wrong or empty notification data.');
             }
 
-            $connection = $this->_resource->getConnection();
-            $tableName = $this->_resource->getTableName('sales_order_payment');
-            $select = $connection->select()->from($tableName)
-                       ->where("JSON_EXTRACT(additional_information, '$.request_id') = ?", strval($data['requestId']));
-            $result = $connection->fetchRow($select);
+            $orderId = $this->paymentCollectionFactory->create()
+                        ->addFieldToFilter('last_trans_id', $data['requestId'])
+                        ->getFirstItem()
+                        ->getParentId();
 
-            if (!$result) {
+            if (!$orderId) {
                 return ['There is no order associated to the request id: ' . $data['requestId']];
             }
 
             /** @var Order $order */
-            $order = $this->getOrderById($result['parent_id']);
+            $order = $this->getOrderById($orderId);
 
             /** @var Order\Payment $payment */
             $payment = $order->getPayment();
