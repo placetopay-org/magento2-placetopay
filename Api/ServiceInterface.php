@@ -7,8 +7,5 @@ namespace PlacetoPay\Payments\Api;
  */
 interface ServiceInterface
 {
-    /**
-     * @return mixed
-     */
-    public function notify();
+    public function notify(): array;
 }
