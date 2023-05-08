@@ -29,6 +29,7 @@ use PlacetoPay\Payments\Concerns\IsSetStatusOrderTrait;
 use PlacetoPay\Payments\Constants\PaymentStatus;
 use PlacetoPay\Payments\Helper\Data as Config;
 use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
+use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 use PlacetoPay\Payments\Model\Info as InfoFactory;
 use PlacetoPay\Payments\PlacetoPayService\PlacetoPayPayment;
 
@@ -60,7 +61,7 @@ class PaymentMethod extends AbstractMethod
     /**
      * @var Config
      */
-    protected $_config;
+    protected $config;
 
     /**
      * @var order
@@ -154,7 +155,7 @@ class PaymentMethod extends AbstractMethod
             $data
         );
 
-        $this->_config = $config;
+        $this->config = $config;
         $this->_store = $store;
         $this->_url = $urlInterface;
         $this->remoteAddress = $remoteAddress;
@@ -186,7 +187,7 @@ class PaymentMethod extends AbstractMethod
      */
     public function isActive($storeId = null): bool
     {
-        return $this->_config->getActive();
+        return $this->config->getActive();
     }
 
     /**
@@ -196,9 +197,24 @@ class PaymentMethod extends AbstractMethod
      */
     public function isAvailable(CartInterface $quote = null): bool
     {
-        return !(!$this->_config->getTranKey()
-            || !$this->_config->getLogin()
-            || !$this->_config->getEndpointsTo($this->_config->getCountryCode()));
+        return !(!$this->config->getTranKey()
+            || !$this->config->getLogin()
+            || !$this->config->getEndpointsTo($this->config->getCountryCode()));
+    }
+
+    /**
+     * @param string $paymentAction
+     * @param \Magento\Framework\DataObject $stateObject
+     * @return PaymentMethod
+     * @see vendor/magento/module-payment/Model/MethodInterface.php
+     */
+    public function initialize($paymentAction, $stateObject): PaymentMethod
+    {
+        $stateObject->setStatus('new');
+        $stateObject->setState(Order::STATE_PENDING_PAYMENT);
+        $stateObject->setIsNotified(false);
+
+        return $this;
     }
 
     /**
