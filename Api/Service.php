@@ -4,6 +4,7 @@ namespace PlacetoPay\Payments\Api;
 
 use Dnetix\Redirection\Exceptions\PlacetoPayException;
 use Exception;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -38,6 +39,11 @@ class Service implements ServiceInterface
     protected $json;
 
     /**
+     * @var ResourceConnection
+     */
+    protected $resource;
+
+    /**
      * @var OrderRepository
      */
     protected $orderRepository;
@@ -47,13 +53,15 @@ class Service implements ServiceInterface
         PlacetoPayLogger $logger,
         EventManager $manager,
         Json $json,
-        OrderRepository $orderRepository
+        OrderRepository $orderRepository,
+        ResourceConnection $resource
     ) {
         $this->logger = $logger;
         $this->manager = $manager;
         $this->json = $json;
         $this->orderRepository = $orderRepository;
         $this->request = $request;
+        $this->resource = $resource;
     }
 
     public function notify(): array
@@ -65,8 +73,21 @@ class Service implements ServiceInterface
                 throw new PlacetoPayException('Wrong or empty notification data.');
             }
 
+            $tableName = $this->resource->getTableName('sales_order_payment');
+
+            $orderId = $this->resource->getConnection()->query(
+                "SELECT parent_id FROM $tableName WHERE method = ? AND last_trans_id = ?",
+                [PaymentMethod::CODE, (string)$data['requestId']]
+            )->fetchColumn();
+
+            if (!$orderId) {
+                return [
+                    'message' => 'There is no order associated to the request id: ' . $data['requestId'],
+                ];
+            }
+
             /** @var Order $order */
-            $order = $this->getOrderById($data['reference']);
+            $order = $this->getOrderById($orderId);
 
             /** @var Order\Payment $payment */
             $payment = $order->getPayment();
@@ -76,16 +97,31 @@ class Service implements ServiceInterface
 
             $notification = $placetopay->gateway()->readNotification($data);
 
-            if ($notification->isValidNotification()) {
-                $information = $placetopay->gateway()->query($notification->requestId());
-                $placetopay->setStatus($information, $order);
+            if (!$notification->isValidNotification()) {
+                return $placetopay->inDebugMode()
+                    ? [
+                        'signature' => $notification->makeSignature(),
+                        'message' => 'Replace this signature with the one on the request body for testing.',
+                    ]
+                    : [
+                        'message' => 'Invalid notification for order #' . $order->getId(),
+                    ];
+            }
 
-                if ($information->isApproved()) {
-                    $this->manager->dispatch('placetopay_api_success', [
-                        'order_ids' => [$order->getRealOrderId()],
-                    ]);
-                }
-                if ($information->lastApprovedTransaction()->refunded()) {
+            $information = $placetopay->gateway()->query($notification->requestId());
+
+            $placetopay->setStatus($information, $order);
+
+            if ($information->isApproved()) {
+                $this->manager->dispatch('placetopay_api_success', [
+                    'order_ids' => [$order->getRealOrderId()],
+                ]);
+
+                $response = [
+                    'message' => sprintf('Transaction with status: %s', $information->status()->status()),
+                ];
+            } else {
+                if ($information->lastApprovedTransaction() && $information->lastApprovedTransaction()->refunded()) {
                     $response = [
                         'message' => 'The payment refunded',
                     ];
@@ -94,19 +130,16 @@ class Service implements ServiceInterface
                         'message' => sprintf('Transaction with status: %s', $information->status()->status()),
                     ];
                 }
-            } else {
-                $response = [
-                    'signature' => $notification->makeSignature(),
-                    'message' => 'Replace this signature with the one on the request body for testing.'
-                ];
             }
-
-            return [$response];
         } catch (Exception $ex) {
             $this->logger->log($this, 'error', __FUNCTION__ . ' message', [$ex->getMessage()]);
 
-            return [$ex->getMessage()];
+            $response = [
+                'message' => $ex->getMessage(),
+            ];
         }
+
+        return $response;
     }
 
     /**
@@ -120,7 +153,10 @@ class Service implements ServiceInterface
 
     private function isValidRequest(array $data): bool
     {
-        return $data && !empty($data['reference']) && !empty($data['signature']) && !empty($data['requestId']);
+        return $data
+            && !empty($data['reference'])
+            && !empty($data['signature'])
+            && !empty($data['requestId']);
     }
 
     private function getRequestData(string $data): array

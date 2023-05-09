@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.9.4] - 2023-05-08
+
+### Updated
+
+- Notification resolve payments with plugin information
+
 ## [1.9.3] - 2023-04-12
 
 ### Fixed

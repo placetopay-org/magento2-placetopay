@@ -29,6 +29,7 @@ use PlacetoPay\Payments\Concerns\IsSetStatusOrderTrait;
 use PlacetoPay\Payments\Constants\PaymentStatus;
 use PlacetoPay\Payments\Helper\Data as Config;
 use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
+use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 use PlacetoPay\Payments\Model\Info as InfoFactory;
 use PlacetoPay\Payments\PlacetoPayService\PlacetoPayPayment;
 
@@ -60,7 +61,7 @@ class PaymentMethod extends AbstractMethod
     /**
      * @var Config
      */
-    protected $_config;
+    protected $config;
 
     /**
      * @var order
@@ -154,7 +155,7 @@ class PaymentMethod extends AbstractMethod
             $data
         );
 
-        $this->_config = $config;
+        $this->config = $config;
         $this->_store = $store;
         $this->_url = $urlInterface;
         $this->remoteAddress = $remoteAddress;
@@ -164,42 +165,54 @@ class PaymentMethod extends AbstractMethod
         $this->orderRepository = $orderRepository;
         $this->infoFactory = $infoFactory;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->version = '1.9.2';
-        $this->placetoPayPayment = new PlacetoPayPayment($config, $_logger, $resolver, $urlInterface, $remoteAddress, $httpHeader, $taxItem);
-    }
+        $this->version = '1.9.4';
 
-    /**
-     * @param string $paymentAction
-     * @param object $stateObject
-     * @return PaymentMethod
-     */
-    public function initialize($paymentAction, $stateObject): PaymentMethod
-    {
-        $stateObject->setState(Order::STATE_PENDING_PAYMENT);
-        $stateObject->setState(AbstractMethod::STATUS_UNKNOWN);
-        $stateObject->setIsNotified(false);
-
-        return $this;
+        $this->placetoPayPayment = new PlacetoPayPayment(
+            $config,
+            $_logger,
+            $resolver,
+            $urlInterface,
+            $remoteAddress,
+            $httpHeader,
+            $taxItem
+        );
     }
 
     /**
      * @param null $storeId
      * @return bool
+     * @see vendor/magento/module-payment/Model/MethodInterface.php
      */
     public function isActive($storeId = null): bool
     {
-        return $this->_config->getActive();
+        return $this->config->getActive();
     }
 
     /**
      * @param CartInterface|null $quote
      * @return bool
+     * @see vendor/magento/module-payment/Model/MethodInterface.php
      */
     public function isAvailable(CartInterface $quote = null): bool
     {
-        return !(!$this->_config->getTranKey()
-            || !$this->_config->getLogin()
-            || !$this->_config->getEndpointsTo($this->_config->getCountryCode()));
+        return !(!$this->config->getTranKey()
+            || !$this->config->getLogin()
+            || !$this->config->getEndpointsTo($this->config->getCountryCode()));
+    }
+
+    /**
+     * @param string $paymentAction
+     * @param \Magento\Framework\DataObject $stateObject
+     * @return PaymentMethod
+     * @see vendor/magento/module-payment/Model/MethodInterface.php
+     */
+    public function initialize($paymentAction, $stateObject): PaymentMethod
+    {
+        $stateObject->setStatus('new');
+        $stateObject->setState(Order::STATE_PENDING_PAYMENT);
+        $stateObject->setIsNotified(false);
+
+        return $this;
     }
 
     /**
@@ -247,8 +260,13 @@ class PaymentMethod extends AbstractMethod
         return $this->placetoPayPayment->resolve($order, $payment);
     }
 
-    public function getNameOfStore()
+    public function getNameOfStore(): string
     {
-        return $this->_config->getTitle();
+        return $this->config->getTitle();
+    }
+
+    public function inDebugMode(): bool
+    {
+        return in_array($this->config->getMode(), [Mode::DEVELOPMENT, Mode::CUSTOM], true);
     }
 }
