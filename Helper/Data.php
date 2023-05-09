@@ -58,7 +58,7 @@ class Data extends BaseData
         );
         $this->infoFactory = $info;
         $this->logger = $logger;
-        $this->version = '1.9.2';
+        $this->version = '1.9.4';
 
         $this->mode = $this->scopeConfig->getValue(
             'payment/placetopay/placetopay_mode',
@@ -298,10 +298,13 @@ class Data extends BaseData
         $endpoints = $this->getEndpointsTo($this->getCountryCode());
 
         if ($this->isCustomEnvironment()) {
-            $uri = $this->getCustomConnectionUrl();
-        } elseif (!empty($endpoints[$this->getMode()])) {
-            $uri = $endpoints[$this->getMode()];
+            return $this->getCustomConnectionUrl();
         }
+
+        if (!empty($endpoints[$this->getMode()])) {
+            return $endpoints[$this->getMode()];
+        }
+
         return $uri;
     }
 

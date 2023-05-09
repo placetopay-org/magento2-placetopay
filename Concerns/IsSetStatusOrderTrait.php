@@ -12,7 +12,7 @@ trait IsSetStatusOrderTrait
 {
     public function setStatus(RedirectInformation $information, Order $order, Order\Payment $payment = null): void
     {
-        $this->logger->Info('The status of the payment with requestId ' . $information->requestId() .
+        $this->logger->info('The status of the payment with requestId ' . $information->requestId() .
             ' for the order ' . $order->getRealOrderId() . ' is ', [$information->status()->status()]);
         $status = $information->status();
 
@@ -23,7 +23,7 @@ trait IsSetStatusOrderTrait
                 $payment = $order->getPayment();
             }
 
-            $info = $this->_config->getInfoModel();
+            $info = $this->config->getInfoModel();
             $transactions = $information->payment();
             $info->updateStatus($payment, $status, $transactions);
 
