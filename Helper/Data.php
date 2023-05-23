@@ -38,6 +38,11 @@ class Data extends BaseData
      */
     protected $mode;
 
+    /**
+     * @param InfoFactory
+     */
+    protected $infoFactory;
+
     public function __construct(
         Logger        $logger,
         Context       $context,
@@ -46,7 +51,7 @@ class Data extends BaseData
         Emulation     $appEmulation,
         Config        $paymentConfig,
         Initial       $initialConfig,
-        InfoFactory   $info
+        InfoFactory   $infoFactory
     ) {
         parent::__construct(
             $context,
@@ -56,7 +61,7 @@ class Data extends BaseData
             $paymentConfig,
             $initialConfig
         );
-        $this->infoFactory = $info;
+        $this->infoFactory = $infoFactory;
         $this->logger = $logger;
         $this->version = '1.9.4';
 
