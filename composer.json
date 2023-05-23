@@ -14,8 +14,7 @@
   ],
   "require": {
     "php": ">=7.2",
-    "ext-json": "*",
-    "alejociro/redirection": "^1.0.11"
+    "ext-json": "*"
   },
   "require-dev": {
     "magento/magento-coding-standard": "*",
