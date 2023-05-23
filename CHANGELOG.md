@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.9.5] - 2023-05-23
+
+### Updated
+
+- Update syntax to support PHP 8.2 (from PHP 7.2+ for now)
+    * It requires enable in Magento: composer require alejociro/redirection
+
 ## [1.9.4] - 2023-05-08
 
 ### Updated
