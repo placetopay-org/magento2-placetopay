@@ -56,13 +56,6 @@
             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
             <config_path>payment/placetopay/skip_result</config_path>
         </field>
-        <field id="payment_methods" translate="label comment" type="multiselect" sortOrder="90" showInDefault="1"
-               showInWebsite="1" showInStore="1">
-            <label>Payment Methods Enabled</label>
-            <comment><![CDATA[Payment methods available, empty means all of them.]]></comment>
-            <source_model>PlacetoPay\Payments\Model\Adminhtml\Source\Franchises</source_model>
-            <config_path>payment/placetopay/payment_methods</config_path>
-        </field>
         <field id="minimum_amount" translate="label comment" type="text" sortOrder="100" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>Minimum Amount</label>

@@ -188,17 +188,6 @@ class Data extends BaseData
     /**
      * @return string|null
      */
-    public function getPaymentMethods(): ?string
-    {
-        return $this->scopeConfig->getValue(
-            'payment/placetopay/payment_methods',
-            ScopeInterface::SCOPE_STORE
-        );
-    }
-
-    /**
-     * @return string|null
-     */
     public function getMinimumAmount(): ?string
     {
         return $this->scopeConfig->getValue(
