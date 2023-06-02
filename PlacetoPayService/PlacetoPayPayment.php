@@ -240,10 +240,6 @@ class PlacetoPayPayment
             $data['payment']['amount']['taxes'] = $this->getPaymentTaxes($order);
         }
 
-        if ($paymentMethods = $this->config->getPaymentMethods()) {
-            $data['paymentMethod'] = $paymentMethods;
-        }
-
         return $data;
     }
 

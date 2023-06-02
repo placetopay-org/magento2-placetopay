@@ -75,7 +75,7 @@ class CustomConfigProvider implements ConfigProviderInterface
                     'minimum' => $this->_scopeConfig->getMinimumAmount(),
                     'maximum' => $this->_scopeConfig->getMaximumAmount(),
                     'url' => $this->getUrl(),
-                    'paymentMethods' => $this->getPaymentMethods(),
+                    'paymentMethods' => [],
                 ],
             ],
         ];
@@ -164,18 +164,5 @@ class CustomConfigProvider implements ConfigProviderInterface
     public function getUrl(): string
     {
         return $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_WEB, true);
-    }
-
-    public function getPaymentMethods(): array
-    {
-        $paymentMethods = [];
-
-        if ($pm = $this->_scopeConfig->getPaymentMethods()) {
-            foreach (explode(',', $pm) as $paymentMethod) {
-                $paymentMethods[] = $paymentMethod;
-            }
-        }
-
-        return $paymentMethods;
     }
 }

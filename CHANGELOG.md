@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.10.0] - 2023-06-02
+
+### Removed
+
+- Remove setup for payment methods (set in WC please)
+
 ## [1.9.5] - 2023-05-23
 
 ### Updated
