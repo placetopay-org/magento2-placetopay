@@ -3,6 +3,7 @@
 namespace PlacetoPay\Payments\Model;
 
 use Dnetix\Redirection\Entities\Status;
+use Dnetix\Redirection\Entities\Transaction;
 use Dnetix\Redirection\Message\RedirectResponse;
 use Exception;
 use Magento\Framework\Exception\LocalizedException;
@@ -77,6 +78,7 @@ class Info
         $lastTransaction = null;
 
         if ($transactions && is_array($transactions) && !empty($transactions)) {
+            /** @var Transaction $lastTransaction */
             $lastTransaction = $transactions[0];
 
             foreach ($transactions as $transaction) {
@@ -102,6 +104,7 @@ class Info
             'authorization' => $lastTransaction ? $lastTransaction->authorization() : null,
             'refunded' => $lastTransaction ? $lastTransaction->refunded() : false,
             'transactions' => $parsedTransactions,
+            'processor_field' => $lastTransaction->processorFieldsToArray()
         ]);
     }
 
