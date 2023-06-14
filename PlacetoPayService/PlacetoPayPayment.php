@@ -268,7 +268,6 @@ class PlacetoPayPayment
                 }
             }
 
-            $this->tax->applyTaxAfterDiscount();
             $taxInformation = $this->item->getTaxItemsByOrderId($order->getId());
 
             if (\is_array($taxInformation) && \count($taxInformation) > 0) {
