@@ -236,69 +236,18 @@ class PlacetoPayPayment
             'noBuyerFill' => $this->config->getFillBuyerInformation(),
         ];
 
-        if ($this->config->getFillTaxInformation()) {
-            $data['payment']['amount']['taxes'] = $this->getPaymentTaxes($order);
+        $tax = $order->getTaxAmount();
+
+        if ($this->config->getFillTaxInformation() && $tax > 0) {
+
+            $data['payment']['amount']['taxes'] = [[
+                'kind' => 'valueAddedTax',
+                'amount' => $tax,
+                'base' => $order->getBaseGrandTotal() - $tax,
+            ]];
         }
 
         return $data;
-    }
-
-    private function getPaymentTaxes(Order $order): array
-    {
-        $mergedTaxes = [];
-
-        try {
-            $map = [];
-
-            if ($mapping = $this->config->getTaxRateParsing()) {
-                foreach (explode('|', $mapping) as $item) {
-                    $type = explode(':', $item);
-
-                    if (\is_array($type) && \count($type) == 2) {
-                        $map[$type[0]] = $type[1];
-                    }
-                }
-            }
-
-            $taxInformation = $this->item->getTaxItemsByOrderId($order->getId());
-
-            if (\is_array($taxInformation) && \count($taxInformation) > 0) {
-                $taxes = [];
-
-                foreach ($taxInformation as $item) {
-                    $base = isset($item['item_id']) ? $order->getItemById($item['item_id'])->getBasePrice() :
-                        ($item['real_amount'] * 100) / $item['tax_percent'];
-
-                    $taxes[] = [
-                        'kind' => $map[$item['code']] ?? 'valueAddedTax',
-                        'amount' => $item['real_amount'],
-                        'base' => $base,
-                    ];
-                }
-
-                foreach ($taxes as $elem) {
-                    $mergedTaxes[$elem['kind']]['kind'] = $elem['kind'];
-
-                    $mergedTaxes[$elem['kind']]['amount'] = isset($mergedTaxes[$elem['kind']]['amount'])
-                        ? $this->getFormatAmount((float)$mergedTaxes[$elem['kind']]['amount'] + (float)$elem['amount'])
-                        : $this->getFormatAmount((float)$elem['amount']);
-
-                    $mergedTaxes[$elem['kind']]['base'] = isset($mergedTaxes[$elem['kind']]['base'])
-                        ? $this->getFormatAmount((float)$mergedTaxes[$elem['kind']]['base'] + (float)$elem['base'])
-                        : $this->getFormatAmount((float)$elem['base']);
-                }
-
-                return array_values($mergedTaxes);
-            }
-        } catch (Exception $ex) {
-            $this->logger->debug(
-                'Error calculating taxes: [' .
-                $order->getRealOrderId() .
-                '] ' . serialize($this->item->getTaxItemsByOrderId($order->getId()))
-            );
-        }
-
-        return $mergedTaxes;
     }
 
     private function getFormatAmount(float $amount): string
