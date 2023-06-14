@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Add additional information to payment information
+
+### Fixed
+
+- Calculate base price of taxes
+
 ## [1.10.0] - 2023-06-02
 
 ### Removed
