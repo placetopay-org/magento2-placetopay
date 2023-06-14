@@ -104,7 +104,7 @@ class Info
             'authorization' => $lastTransaction ? $lastTransaction->authorization() : null,
             'refunded' => $lastTransaction ? $lastTransaction->refunded() : false,
             'transactions' => $parsedTransactions,
-            'processor_field' => $lastTransaction->processorFieldsToArray()
+            'processor_field' => $lastTransaction ? $lastTransaction->processorFieldsToArray() : null
         ]);
     }
 
