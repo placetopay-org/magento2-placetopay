@@ -3,6 +3,7 @@
 namespace PlacetoPay\Payments\Model;
 
 use Dnetix\Redirection\Entities\Status;
+use Dnetix\Redirection\Entities\Transaction;
 use Dnetix\Redirection\Message\RedirectResponse;
 use Exception;
 use Magento\Framework\Exception\LocalizedException;
@@ -70,13 +71,14 @@ class Info
      * @throws LocalizedException
      * @throws PlacetoPayException
      */
-    public function updateStatus(Payment $payment, Status $status, ?array $transactions = null)
+    public function updateStatus(Payment $payment, Status $status, array $transactions)
     {
         $information = $payment->getAdditionalInformation();
         $parsedTransactions = $information['transactions'];
         $lastTransaction = null;
 
-        if ($transactions && is_array($transactions) && !empty($transactions)) {
+        if ($transactions) {
+            /** @var Transaction $lastTransaction */
             $lastTransaction = $transactions[0];
 
             foreach ($transactions as $transaction) {
@@ -102,6 +104,7 @@ class Info
             'authorization' => $lastTransaction ? $lastTransaction->authorization() : null,
             'refunded' => $lastTransaction ? $lastTransaction->refunded() : false,
             'transactions' => $parsedTransactions,
+            'processor_field' => $lastTransaction ? $lastTransaction->processorFieldsToArray() : null
         ]);
     }
 
