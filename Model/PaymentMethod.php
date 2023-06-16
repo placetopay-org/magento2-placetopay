@@ -32,6 +32,7 @@ use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 use PlacetoPay\Payments\Model\Info as InfoFactory;
 use PlacetoPay\Payments\PlacetoPayService\PlacetoPayPayment;
+use Magento\Tax\Model\Config as TaxConfig;
 
 /**
  * Class PlaceToPay.
@@ -119,6 +120,11 @@ class PaymentMethod extends AbstractMethod
      */
     protected $placetoPayPayment;
 
+    /**
+     * @var TaxConfig
+     */
+    protected $tax;
+
     public function __construct(
         LoggerInterface $_logger,
         InfoFactory $infoFactory,
@@ -138,6 +144,7 @@ class PaymentMethod extends AbstractMethod
         Resolver $resolver,
         RemoteAddress $remoteAddress,
         SearchCriteriaBuilder $searchCriteriaBuilder,
+        TaxConfig $tax,
         AbstractResource $resource = null,
         AbstractDb $resourceCollection = null,
         array $data = []
@@ -174,7 +181,8 @@ class PaymentMethod extends AbstractMethod
             $urlInterface,
             $remoteAddress,
             $httpHeader,
-            $taxItem
+            $taxItem,
+            $tax
         );
     }
 

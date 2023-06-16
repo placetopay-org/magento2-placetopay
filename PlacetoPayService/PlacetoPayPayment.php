@@ -17,6 +17,7 @@ use PlacetoPay\Payments\Exception\PlacetoPayException;
 use PlacetoPay\Payments\Helper\Data as Config;
 use PlacetoPay\Payments\Helper\OrderHelper;
 use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
+use Magento\Tax\Model\Config as TaxConfig;
 
 class PlacetoPayPayment
 {
@@ -62,6 +63,11 @@ class PlacetoPayPayment
      */
     private $item;
 
+    /**
+     * @var TaxConfig
+     */
+    private $tax;
+
     public function __construct(
         Config $config,
         LoggerInterface $logger,
@@ -69,7 +75,8 @@ class PlacetoPayPayment
         UrlInterface $url,
         RemoteAddress $remoteAddress,
         Header $header,
-        Item $item
+        Item $item,
+        TaxConfig $tax
     ) {
         $this->config = $config;
         $this->logger = $logger;
@@ -78,6 +85,7 @@ class PlacetoPayPayment
         $this->remoteAddress = $remoteAddress;
         $this->header = $header;
         $this->item = $item;
+        $this->tax = $tax;
 
         $settings = [
             'login' => $config->getLogin(),
@@ -266,8 +274,16 @@ class PlacetoPayPayment
                 $taxes = [];
 
                 foreach ($taxInformation as $item) {
-                    $base = isset($item['item_id']) ? $order->getItemById($item['item_id'])->getBasePrice() :
-                        ($item['real_amount'] * 100) / $item['tax_percent'];
+                    $orderItem = $order->getItemById($item['item_id']);
+                    $quantity = $orderItem ? $orderItem->getQtyOrdered() : 1;
+                    $discount = $orderItem ? $orderItem->getDiscountAmount() : 0;
+
+                    $base = $orderItem ? $orderItem->getBasePrice() * $quantity
+                        : ($item['real_amount'] * 100) / $item['tax_percent'];
+
+                    if ($this->tax->applyTaxAfterDiscount()) {
+                        $base -= $discount;
+                    }
 
                     $taxes[] = [
                         'kind' => $map[$item['code']] ?? 'valueAddedTax',

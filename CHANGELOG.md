@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.10.1] - 2023-06-16
+
+### Added
+
+- Add additional information to payment information: Processor Fields
+
+### Fixed
+
+- Calculate base price of taxes (support applyTaxAfterDiscount option)
+
 ## [1.10.0] - 2023-06-02
 
 ### Removed
