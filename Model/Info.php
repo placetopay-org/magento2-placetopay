@@ -71,13 +71,13 @@ class Info
      * @throws LocalizedException
      * @throws PlacetoPayException
      */
-    public function updateStatus(Payment $payment, Status $status, ?array $transactions = null)
+    public function updateStatus(Payment $payment, Status $status, array $transactions)
     {
         $information = $payment->getAdditionalInformation();
         $parsedTransactions = $information['transactions'];
         $lastTransaction = null;
 
-        if ($transactions && is_array($transactions) && !empty($transactions)) {
+        if ($transactions) {
             /** @var Transaction $lastTransaction */
             $lastTransaction = $transactions[0];
 

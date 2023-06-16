@@ -278,7 +278,7 @@ class PlacetoPayPayment
                     $quantity = $orderItem ? $orderItem->getQtyOrdered() : 1;
                     $discount = $orderItem ? $orderItem->getDiscountAmount() : 0;
 
-                    $base = isset($item['item_id']) ? $orderItem->getBasePrice() * $quantity
+                    $base = $orderItem ? $orderItem->getBasePrice() * $quantity
                         : ($item['real_amount'] * 100) / $item['tax_percent'];
 
                     if ($this->tax->applyTaxAfterDiscount()) {
