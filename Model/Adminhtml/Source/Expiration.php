@@ -4,7 +4,7 @@ namespace PlacetoPay\Payments\Model\Adminhtml\Source;
 
 class Expiration
 {
-    public const EXPIRATION_TIME_MINUTES_LIMIT = 40320;
+    public const EXPIRATION_TIME_MINUTES_LIMIT = 8640;
 
     /**
      * @return array
@@ -25,12 +25,6 @@ class Expiration
             } elseif ($minutes >= 1440 && $minutes < 10080) {
                 $options[$minutes] = sprintf($format, $minutes / 1440, __('Day(s)'));
                 $minutes += 1440;
-            } elseif ($minutes >= 10080 && $minutes < 40320) {
-                $options[$minutes] = sprintf($format, $minutes / 10080, __('Week(s)'));
-                $minutes += 10080;
-            } else {
-                $options[$minutes] = sprintf($format, $minutes / 40320, __('Month(s)'));
-                $minutes += 40320;
             }
         }
 
