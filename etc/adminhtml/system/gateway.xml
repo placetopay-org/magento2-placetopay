@@ -37,49 +37,17 @@
         <field
             id="title"
             translate="label"
-            type="text"
+            type="select"
             sortOrder="20"
             showInDefault="1"
             showInWebsite="1"
             showInStore="1"
         >
-            <label>Title</label>
+            <label>Client</label>
 
-            <comment><![CDATA[This is the payment method title used at the checkout page.]]></comment>
+            <source_model>PlacetoPay\Payments\Model\Adminhtml\Source\Client</source_model>
 
             <config_path>payment/placetopay/title</config_path>
-        </field>
-
-        <field
-            id="description"
-            translate="label"
-            type="text"
-            sortOrder="30"
-            showInDefault="1"
-            showInWebsite="1"
-            showInStore="1"
-        >
-            <label>Description</label>
-
-            <comment><![CDATA[This is the payment method description used at the checkout page.]]></comment>
-
-            <config_path>payment/placetopay/description</config_path>
-        </field>
-
-        <field
-            id="country"
-            translate="label"
-            type="select"
-            sortOrder="40"
-            showInDefault="1"
-            showInWebsite="1"
-            showInStore="1"
-        >
-            <label>Country</label>
-
-            <source_model>PlacetoPay\Payments\Model\Adminhtml\Source\Country</source_model>
-
-            <config_path>payment/placetopay/country</config_path>
         </field>
 
         <field

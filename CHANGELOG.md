@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.11.0] - 2023-07-25
+
+### Added
+
+- Add branding by client country (it's defined in MG).
+- Add modifiers support: UY.
+
 ## [1.10.1] - 2023-06-16
 
 ### Added

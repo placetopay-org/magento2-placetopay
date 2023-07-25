@@ -11,9 +11,9 @@ use Magento\Payment\Model\Config;
 use Magento\Payment\Model\Method\Factory;
 use Magento\Store\Model\App\Emulation;
 use Magento\Store\Model\ScopeInterface;
+use PlacetoPay\Payments\Constants\Country;
 use PlacetoPay\Payments\Countries\CountryConfigInterface;
 use PlacetoPay\Payments\Logger\Logger;
-use PlacetoPay\Payments\Model\Adminhtml\Source\Country;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 use PlacetoPay\Payments\Model\Info as InfoFactory;
 
@@ -63,7 +63,7 @@ class Data extends BaseData
         );
         $this->infoFactory = $infoFactory;
         $this->logger = $logger;
-        $this->version = '1.9.4';
+        $this->version = '1.11.0';
 
         $this->mode = $this->scopeConfig->getValue(
             'payment/placetopay/placetopay_mode',
@@ -229,6 +229,28 @@ class Data extends BaseData
         );
     }
 
+    /**
+     * @return string|null
+     */
+    public function getDiscount(): ?string
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/discount',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getInvoice(): ?string
+    {
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/invoice',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
     public function getActive(): bool
     {
         return $this->scopeConfig->getValue(
@@ -244,17 +266,6 @@ class Data extends BaseData
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/title',
-            ScopeInterface::SCOPE_STORE
-        );
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getDescription(): ?string
-    {
-        return $this->scopeConfig->getValue(
-            'payment/placetopay/description',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -372,13 +383,10 @@ class Data extends BaseData
         return $login;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCountryCode(): ?string
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/country',
+            'general/country/default',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -406,7 +414,7 @@ class Data extends BaseData
                 continue;
             }
 
-            return $config::getEndpoints();
+            return $config::getEndpoints($this->getTitle());
         }
 
         return [];

@@ -2,6 +2,7 @@
 
 namespace PlacetoPay\Payments\PlacetoPayService;
 
+use Dnetix\Redirection\Entities\PaymentModifier;
 use Dnetix\Redirection\Message\RedirectInformation;
 use Dnetix\Redirection\PlacetoPay;
 use Exception;
@@ -13,10 +14,12 @@ use Magento\Framework\UrlInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
 use PlacetoPay\Payments\Concerns\IsSetStatusOrderTrait;
+use PlacetoPay\Payments\Constants\Country;
 use PlacetoPay\Payments\Exception\PlacetoPayException;
 use PlacetoPay\Payments\Helper\Data as Config;
 use PlacetoPay\Payments\Helper\OrderHelper;
 use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
+use PlacetoPay\Payments\Model\Adminhtml\Source\Discount;
 use Magento\Tax\Model\Config as TaxConfig;
 
 class PlacetoPayPayment
@@ -243,6 +246,22 @@ class PlacetoPayPayment
             'skipResult' => $this->config->getSkipResult(),
             'noBuyerFill' => $this->config->getFillBuyerInformation(),
         ];
+
+        if ($this->config->getCountryCode() === Country::URUGUAY) {
+            $discountCode = $this->config->getDiscount();
+
+            if ($discountCode !== Discount::UY_NONE) {
+                $data['payment']['modifiers'] = [
+                    new PaymentModifier([
+                        'type' => PaymentModifier::TYPE_FEDERAL_GOVERNMENT,
+                        'code' => $discountCode,
+                        'additional' => [
+                            'invoice' => $this->config->getInvoice()
+                        ]
+                    ])
+                ];
+            }
+        }
 
         if ($this->config->getFillTaxInformation()) {
             $data['payment']['amount']['taxes'] = $this->getPaymentTaxes($order);
