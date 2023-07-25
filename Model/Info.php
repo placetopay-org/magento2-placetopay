@@ -7,6 +7,7 @@ use Dnetix\Redirection\Entities\Transaction;
 use Dnetix\Redirection\Message\RedirectResponse;
 use Exception;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Sales\Api\OrderPaymentRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Sales\Model\Order\Payment\Transaction as TransactionModel;
@@ -20,9 +21,15 @@ class Info
      */
     protected $transactionBuilder;
 
-    public function __construct(BuilderInterface $transactionBuilder)
+    /**
+     * @var OrderPaymentRepositoryInterface
+     */
+    protected $orderPaymentRepository;
+
+    public function __construct(BuilderInterface $transactionBuilder, OrderPaymentRepositoryInterface $orderPaymentRepository)
     {
         $this->transactionBuilder = $transactionBuilder;
+        $this->orderPaymentRepository = $orderPaymentRepository;
     }
 
     /**
@@ -61,7 +68,7 @@ class Info
         ]);
 
         try {
-            $payment->save();
+            $this->orderPaymentRepository->save($payment);
         } catch (Exception $ex) {
             throw new PlacetoPayException($ex->getMessage(), 401);
         }
@@ -119,7 +126,7 @@ class Info
         $payment->setAdditionalInformation(array_merge($actual, $data));
 
         try {
-            $payment->save();
+            $this->orderPaymentRepository->save($payment);
         } catch (Exception $ex) {
             throw new PlacetoPayException($ex->getMessage(), 401);
         }
