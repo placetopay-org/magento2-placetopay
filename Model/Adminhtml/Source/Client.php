@@ -27,7 +27,6 @@ class Client
             if (!$config::resolve($countryCode)) {
                 continue;
             }
-
             return $config::getClient();
         }
         return [];
