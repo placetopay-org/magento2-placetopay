@@ -10,8 +10,10 @@ use Magento\Framework\View\Asset\Repository;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
+use PlacetoPay\Payments\Constants\Client;
+use PlacetoPay\Payments\Constants\Country;
 use PlacetoPay\Payments\Helper\Data;
-use PlacetoPay\Payments\Model\Adminhtml\Source\Country;
+use PlacetoPay\Payments\Helper\ParseData;
 
 class CustomConfigProvider implements ConfigProviderInterface
 {
@@ -89,13 +91,7 @@ class CustomConfigProvider implements ConfigProviderInterface
         $url = $this->_scopeConfig->getImageUrl();
 
         if (is_null($url)) {
-            switch ($this->_scopeConfig->getCountryCode()) {
-                case Country::CHILE:
-                    $image = 'https://banco.santander.cl/uploads/000/029/870/0620f532-9fc9-4248-b99e-78bae9f13e1d/original/Logo_WebCheckout_Getnet.svg';
-                    break;
-                default:
-                    $image = 'https://static.placetopay.com/placetopay-logo.svg';
-            }
+            $image = $this->getImageByClient($this->_scopeConfig->getTitle());
         } elseif ($this->checkValidUrl($url)) {
             $image = $url;
         } elseif ($this->checkDirectory($url)) {
@@ -106,6 +102,17 @@ class CustomConfigProvider implements ConfigProviderInterface
         }
 
         return $image;
+    }
+
+    protected function getImageByClient(string $client): string
+    {
+        $clientImage = [
+            Client::GNT => 'uggcf://onapb.fnagnaqre.py/hcybnqf/000/029/870/0620s532-9sp9-4248-o99r-78onr9s13r1q/bevtvany/Ybtb_JroPurpxbhg_Trgarg.fit',
+            Client::GOU => 'uggcf://cynprgbcnl-fgngvp-cebq-ohpxrg.f3.hf-rnfg-2.nznmbanjf.pbz/tbhcntbf-pbz-pb/urnqre.fit',
+            Client::PTP => 'uggcf://fgngvp.cynprgbcnl.pbz/cynprgbcnl-ybtb.fit'
+        ];
+
+        return ParseData::unmaskString($clientImage[ParseData::unmaskString($client)] ?? 'uggcf://fgngvp.cynprgbcnl.pbz/cynprgbcnl-ybtb.fit') ;
     }
 
     protected function checkDirectory(string $path): bool

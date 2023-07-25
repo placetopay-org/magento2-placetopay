@@ -2,7 +2,7 @@
 
 namespace PlacetoPay\Payments\Countries;
 
-use PlacetoPay\Payments\Model\Adminhtml\Source\Country;
+use PlacetoPay\Payments\Constants\Country;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 
 abstract class HondurasCountryConfig extends CountryConfig
@@ -12,9 +12,9 @@ abstract class HondurasCountryConfig extends CountryConfig
         return Country::HONDURAS === $countryCode;
     }
 
-    public static function getEndpoints(): array
+    public static function getEndpoints(string $client): array
     {
-        return array_merge(parent::getEndpoints(), [
+        return array_merge(parent::getEndpoints($client), [
             Mode::PRODUCTION => 'https://pagoenlinea.bancatlan.hn'
         ]);
     }
