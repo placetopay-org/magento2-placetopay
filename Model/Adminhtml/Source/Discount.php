@@ -20,6 +20,10 @@ class Discount
     {
         return [
             [
+                'value' => self::UY_NONE,
+                'label' => __('None'),
+            ],
+            [
                 'value' => self::UY_IVA_REFUND,
                 'label' => __(self::UY_IVA_REFUND),
             ],
@@ -38,10 +42,6 @@ class Discount
             [
                 'value' => self::UY_TAX_REFUND,
                 'label' => __(self::UY_TAX_REFUND),
-            ],
-            [
-                'value' => self::UY_NONE,
-                'label' => __('None'),
             ],
         ];
     }
