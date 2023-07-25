@@ -251,8 +251,6 @@ class PlacetoPayPayment
             $discountCode = $this->config->getDiscount();
 
             if ($discountCode !== Discount::UY_NONE) {
-                $this->logger->info('holaa', ['code' => $discountCode]);
-                $this->logger->info('hol', ['invoice' => $this->config->getInvoice()]);
                 $data['payment']['modifiers'] = [
                     new PaymentModifier([
                         'type' => PaymentModifier::TYPE_FEDERAL_GOVERNMENT,

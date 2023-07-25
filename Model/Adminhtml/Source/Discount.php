@@ -21,23 +21,23 @@ class Discount
         return [
             [
                 'value' => self::UY_IVA_REFUND,
-                'label' => __('17934'),
+                'label' => __(self::UY_IVA_REFUND),
             ],
             [
                 'value' => self::UY_IMESI_REFUND,
-                'label' => __('18083'),
+                'label' => __(self::UY_IMESI_REFUND),
             ],
             [
                 'value' => self::UY_FINANCIAL_INCLUSION,
-                'label' => __('19210'),
+                'label' => __(self::UY_FINANCIAL_INCLUSION),
             ],
             [
                 'value' => self::UY_AFAM_REFUND,
-                'label' => __('18910'),
+                'label' => __(self::UY_AFAM_REFUND),
             ],
             [
                 'value' => self::UY_TAX_REFUND,
-                'label' => __('18999'),
+                'label' => __(self::UY_TAX_REFUND),
             ],
             [
                 'value' => self::UY_NONE,

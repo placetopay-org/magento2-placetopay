@@ -17,8 +17,8 @@ abstract class ChileCountryConfig extends CountryConfig
     public static function getEndpoints(string $client): array
     {
         return array_merge(parent::getEndpoints($client), [
-            Mode::TEST => 'https://checkout.test.getnet.cl',
-            Mode::PRODUCTION => 'https://checkout.getnet.cl',
+            Mode::TEST => ParseData::unmaskString('uggcf://purpxbhg.grfg.trgarg.py'),
+            Mode::PRODUCTION => ParseData::unmaskString('uggcf://purpxbhg.trgarg.py'),
         ]);
     }
 

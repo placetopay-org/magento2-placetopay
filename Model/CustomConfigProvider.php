@@ -112,7 +112,7 @@ class CustomConfigProvider implements ConfigProviderInterface
             Client::PTP => 'uggcf://fgngvp.cynprgbcnl.pbz/cynprgbcnl-ybtb.fit'
         ];
 
-        return ParseData::unmaskString($clientImage[ParseData::unmaskString($client)]) ?? 'uggcf://fgngvp.cynprgbcnl.pbz/cynprgbcnl-ybtb.fit';
+        return ParseData::unmaskString($clientImage[ParseData::unmaskString($client)] ?? 'uggcf://fgngvp.cynprgbcnl.pbz/cynprgbcnl-ybtb.fit') ;
     }
 
     protected function checkDirectory(string $path): bool
