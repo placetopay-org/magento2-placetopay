@@ -297,8 +297,12 @@ class PlacetoPayPayment
                     $quantity = $orderItem ? $orderItem->getQtyOrdered() : 1;
                     $discount = $orderItem ? $orderItem->getDiscountAmount() : 0;
 
-                    $base = $orderItem ? $orderItem->getBasePrice() * $quantity
-                        : ($item['real_amount'] * 100) / $item['tax_percent'];
+                    if ($item['taxable_item_type'] === 'shipping') {
+                        $base = $order->getShippingAmount();
+                    } else {
+                        $base = $orderItem ? $orderItem->getBasePrice() * $quantity
+                            : ($item['real_amount'] * 100) / $item['tax_percent'];
+                    }
 
                     if ($this->tax->applyTaxAfterDiscount()) {
                         $base -= $discount;
