@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Can load payment method image by client and personalized image.
+- Can load payment method image by client and personalized image (CSP).
 
 ## [1.11.1] - 2024-04-26
 
