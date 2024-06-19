@@ -2,6 +2,8 @@
 
 [PlacetoPay][link-placetopay] Plugin Payment for [Magento 2][link-magento] Stable
 
+For more information about the component and the functionalities it offers, visit the following link **[Magento-Placetopay](https://placetopay.dev/plugins/magento)**.
+
 ## Prerequisites
 - `php` ^7.1
 - `ext-bcmath`
@@ -54,7 +56,7 @@ Set permissions and install dependencies with composer
 
 ```bash
 cd /var/www/html \
-    && composer require dnetix/redirection \
+    && composer require alejociro/redirection \
     && cd app/code/PlacetoPay/Payments \
     && sudo setfacl -dR -m u:www-data:rwX -m u:`whoami`:rwX `pwd` \
     && sudo setfacl -R -m u:www-data:rwX -m u:`whoami`:rwX `pwd`
