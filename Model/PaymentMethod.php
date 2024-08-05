@@ -277,4 +277,9 @@ class PaymentMethod extends AbstractMethod
     {
         return in_array($this->config->getMode(), [Mode::DEVELOPMENT, Mode::CUSTOM], true);
     }
+
+    public function setGateway($gatewayConfig): void
+    {
+        $this->placetoPayPayment->setGateway($gatewayConfig);
+    }
 }
