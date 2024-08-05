@@ -63,7 +63,7 @@ class Data extends BaseData
         );
         $this->infoFactory = $infoFactory;
         $this->logger = $logger;
-        $this->version = '1.11.2';
+        $this->version = '1.12.0';
 
         $this->mode = $this->getMode();
     }
@@ -282,17 +282,18 @@ class Data extends BaseData
     /**
      * @return string|null
      */
-    public function getCustomConnectionUrl(): ?string
+    public function getCustomConnectionUrl($storeId = null): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/placetopay_custom_url',
-            ScopeInterface::SCOPE_STORE
+            ScopeInterface::SCOPE_STORE,
+            $storeId
         );
     }
 
-    public function isCustomEnvironment(): bool
+    public function isCustomEnvironment($storeId = null): bool
     {
-        return $this->getMode() === Mode::CUSTOM;
+        return $this->getMode($storeId) === Mode::CUSTOM;
     }
 
     /**
@@ -303,8 +304,8 @@ class Data extends BaseData
         $uri = null;
         $endpoints = $this->getEndpointsTo($this->getCountryCode());
 
-        if ($this->isCustomEnvironment()) {
-            return $this->getCustomConnectionUrl();
+        if ($this->isCustomEnvironment($storeId)) {
+            return $this->getCustomConnectionUrl($storeId);
         }
 
         if (!empty($endpoints[$this->getMode($storeId)])) {

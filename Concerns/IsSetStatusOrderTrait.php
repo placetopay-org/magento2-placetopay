@@ -52,7 +52,7 @@ trait IsSetStatusOrderTrait
                 $order->cancel()->save();
             } else {
                 $this->logger->info('Change the state of the order ' . $order->getRealOrderId() . ' to  ', ['state: ' => $data['state']]);
-                $this->logger->info('Setting order status of the order' . $order->getRealOrderId() . ' to  ', ['Order status: ' => $data['orderStatus']]);
+                $this->logger->info('Setting order status of the order ' . $order->getRealOrderId() . ' to  ', ['Order status: ' => $data['orderStatus']]);
                 $order->setState($data['state'])->setStatus($data['orderStatus'])->save();
             }
         }
