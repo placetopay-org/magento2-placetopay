@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.12.0] - 2024-08-05
+
+### Added
+
+- Add support multistore
+
 ## [1.11.3] - 2024-06-20
 
 ### Added

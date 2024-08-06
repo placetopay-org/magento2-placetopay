@@ -172,7 +172,7 @@ class PaymentMethod extends AbstractMethod
         $this->orderRepository = $orderRepository;
         $this->infoFactory = $infoFactory;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->version = '1.11.2';
+        $this->version = '1.12.0';
 
         $this->placetoPayPayment = new PlacetoPayPayment(
             $config,
@@ -276,5 +276,10 @@ class PaymentMethod extends AbstractMethod
     public function inDebugMode(): bool
     {
         return in_array($this->config->getMode(), [Mode::DEVELOPMENT, Mode::CUSTOM], true);
+    }
+
+    public function setGateway($gatewayConfig): void
+    {
+        $this->placetoPayPayment->setGateway($gatewayConfig);
     }
 }

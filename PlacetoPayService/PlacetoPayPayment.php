@@ -91,13 +91,18 @@ class PlacetoPayPayment
         $this->tax = $tax;
 
         $settings = [
-            'login' => $config->getLogin(),
-            'tranKey' => $config->getTranKey(),
+            'login' => $config->getLogin() ?? 'emptyLogin',
+            'tranKey' => $config->getTranKey() ?? 'emptyTranKey',
             'baseUrl' => $config->getUri(),
             'headers' => $config->getHeaders(),
         ];
 
         $this->gateway = new PlacetoPay($settings);
+    }
+
+    public function setGateway(array $config): void
+    {
+        $this->gateway = new PlacetoPay($config);
     }
 
     /**
