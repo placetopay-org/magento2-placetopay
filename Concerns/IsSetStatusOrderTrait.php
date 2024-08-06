@@ -48,7 +48,7 @@ trait IsSetStatusOrderTrait
                 $payment->setIsTransactionDenied(true);
                 $payment->setSkipOrderProcessing(true);
                 $this->logger->info('The order ' . $order->getRealOrderId() .
-                    ' with status ' . $order->getStatus() . ' the order will go to state ' . PaymentStatus::APPROVED);
+                    ' with status ' . $order->getStatus() . ' the order will go to state ' . PaymentStatus::REJECTED);
                 $order->cancel()->save();
             } else {
                 $this->logger->info('Change the state of the order ' . $order->getRealOrderId() . ' to  ', ['state: ' => $data['state']]);
