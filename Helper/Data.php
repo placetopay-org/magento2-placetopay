@@ -63,12 +63,9 @@ class Data extends BaseData
         );
         $this->infoFactory = $infoFactory;
         $this->logger = $logger;
-        $this->version = '1.11.2';
+        $this->version = '1.12.0';
 
-        $this->mode = $this->scopeConfig->getValue(
-            'payment/placetopay/placetopay_mode',
-            ScopeInterface::SCOPE_STORE
-        );
+        $this->mode = $this->getMode();
     }
 
     /**
@@ -273,41 +270,46 @@ class Data extends BaseData
     /**
      * @return string|null
      */
-    public function getMode(): ?string
-    {
-        return $this->mode;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCustomConnectionUrl(): ?string
+    public function getMode($storeId = null)
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/placetopay_custom_url',
-            ScopeInterface::SCOPE_STORE
+            'payment/placetopay/placetopay_mode',
+            ScopeInterface::SCOPE_STORE,
+            $storeId
         );
     }
 
-    public function isCustomEnvironment(): bool
+    /**
+     * @return string|null
+     */
+    public function getCustomConnectionUrl($storeId = null): ?string
     {
-        return $this->getMode() === Mode::CUSTOM;
+        return $this->scopeConfig->getValue(
+            'payment/placetopay/placetopay_custom_url',
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+    }
+
+    public function isCustomEnvironment($storeId = null): bool
+    {
+        return $this->getMode($storeId) === Mode::CUSTOM;
     }
 
     /**
      * @return string|null
      */
-    public function getUri(): ?string
+    public function getUri($storeId = null): ?string
     {
         $uri = null;
         $endpoints = $this->getEndpointsTo($this->getCountryCode());
 
-        if ($this->isCustomEnvironment()) {
-            return $this->getCustomConnectionUrl();
+        if ($this->isCustomEnvironment($storeId)) {
+            return $this->getCustomConnectionUrl($storeId);
         }
 
-        if (!empty($endpoints[$this->getMode()])) {
-            return $endpoints[$this->getMode()];
+        if (!empty($endpoints[$this->getMode($storeId)])) {
+            return $endpoints[$this->getMode($storeId)];
         }
 
         return $uri;
@@ -316,31 +318,37 @@ class Data extends BaseData
     /**
      * @return string|null
      */
-    public function getTranKey(): ?string
+    public function getTranKey($storeId = null): ?string
     {
-        switch ($this->mode) {
+        $mode = $this->getMode($storeId);
+
+        switch ($mode) {
             case Mode::DEVELOPMENT:
                 $tranKey = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_development_tk',
-                    ScopeInterface::SCOPE_STORE
+                    ScopeInterface::SCOPE_STORE,
+                    $storeId
                 );
                 break;
             case Mode::TEST:
                 $tranKey = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_test_tk',
-                    ScopeInterface::SCOPE_STORE
+                    ScopeInterface::SCOPE_STORE,
+                    $storeId
                 );
                 break;
             case Mode::CUSTOM:
                 $tranKey = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_custom_tk',
-                    ScopeInterface::SCOPE_STORE
+                    ScopeInterface::SCOPE_STORE,
+                    $storeId
                 );
                 break;
             default:
                 $tranKey = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_production_tk',
-                    ScopeInterface::SCOPE_STORE
+                    ScopeInterface::SCOPE_STORE,
+                    $storeId
                 );
                 break;
         }
@@ -348,34 +356,37 @@ class Data extends BaseData
         return $tranKey;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getLogin(): ?string
+    public function getLogin($storeId = null): ?string
     {
-        switch ($this->mode) {
+        $mode = $this->getMode($storeId);
+
+        switch ($mode) {
             case Mode::DEVELOPMENT:
                 $login = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_development_lg',
-                    ScopeInterface::SCOPE_STORE
+                    ScopeInterface::SCOPE_STORE,
+                    $storeId
                 );
                 break;
             case Mode::TEST:
                 $login = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_test_lg',
-                    ScopeInterface::SCOPE_STORE
+                    ScopeInterface::SCOPE_STORE,
+                    $storeId
                 );
                 break;
             case Mode::CUSTOM:
                 $login = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_custom_lg',
-                    ScopeInterface::SCOPE_STORE
+                    ScopeInterface::SCOPE_STORE,
+                    $storeId
                 );
                 break;
             default:
                 $login = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_production_lg',
-                    ScopeInterface::SCOPE_STORE
+                    ScopeInterface::SCOPE_STORE,
+                    $storeId
                 );
                 break;
         }

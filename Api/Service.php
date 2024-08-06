@@ -161,6 +161,14 @@ class Service implements ServiceInterface
 
     private function getRequestData(string $data): array
     {
-        return $this->json->unserialize($data);
+        $request = [];
+
+        try {
+            $request = $this->json->unserialize($data);
+        } catch (Exception $exception) {
+            $this->logger->log($this, 'error', __FUNCTION__ . ' message', [$exception->getMessage()]);
+        }
+
+        return $request;
     }
 }
