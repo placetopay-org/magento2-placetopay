@@ -1,4 +1,11 @@
 <div class="payment-method" id="payment-method-placetopay" data-bind="css: {'_active': (getCode() == isChecked())}">
+    <style>
+        .placetopay-method-logo img {
+            width: 250px;
+            height: 150px;
+        }
+    </style>
+
     <div class="payment-method-title field choice">
         <input type="radio"
                name="payment[method]"
