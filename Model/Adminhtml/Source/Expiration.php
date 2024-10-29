@@ -2,9 +2,23 @@
 
 namespace PlacetoPay\Payments\Model\Adminhtml\Source;
 
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
+
 class Expiration
 {
-    public const EXPIRATION_TIME_MINUTES_LIMIT = 8640;
+    private const EXPIRATION_TIME_MINUTES_DEFAULT = 8640;
+    private const EXPIRATION_TIME_MINUTES_CL = 30;
+
+    /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    public function __construct(ScopeConfigInterface $scopeConfig)
+    {
+        $this->scopeConfig = $scopeConfig;
+    }
 
     /**
      * @return array
@@ -15,7 +29,9 @@ class Expiration
         $format = '%d %s';
         $minutes = 10;
 
-        while ($minutes <= self::EXPIRATION_TIME_MINUTES_LIMIT) {
+        $expirationTimeLimit = $this->getExpirationTimeLimit();
+
+        while ($minutes <= $expirationTimeLimit) {
             if ($minutes < 60) {
                 $options[$minutes] = sprintf($format, $minutes, __('Minutes'));
                 $minutes += 10;
@@ -29,5 +45,18 @@ class Expiration
         }
 
         return $options;
+    }
+
+    /**
+     * @return int
+     */
+    private function getExpirationTimeLimit(): int
+    {
+        $countryCode = $this->scopeConfig->getValue(
+            'general/country/default',
+            ScopeInterface::SCOPE_STORE
+        );
+
+        return $countryCode === 'CL' ? self::EXPIRATION_TIME_MINUTES_CL : self::EXPIRATION_TIME_MINUTES_DEFAULT;
     }
 }

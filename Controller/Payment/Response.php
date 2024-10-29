@@ -169,7 +169,7 @@ class Response extends Action
             if (strcmp($path, 'magento_default') === 0) {
                 if ($status->status() == Order::STATE_COMPLETE) {
                     $this->messageManager->addSuccessMessage(
-                        sprintf(__('Thanks, transaction approved by %s.'), $placetopay->getNameOfStore())
+                        sprintf(__('Thanks, transaction approved by')) . $placetopay->getNameOfStore()
                     );
                 } elseif ($status->isApproved()) {
                     $this->setPaymentApproved($payment, $transaction);
@@ -178,7 +178,7 @@ class Response extends Action
                     $session->setLastSuccessQuoteId($order->getQuoteId());
 
                     $this->messageManager->addSuccessMessage(
-                        sprintf(__('Thanks, transaction approved by %s.'), $placetopay->getNameOfStore())
+                        sprintf(__('Thanks, transaction approved by')) . $placetopay->getNameOfStore()
                     );
                 } elseif ($status->isRejected()) {
                     $this->setPaymentDenied($payment, $transaction);
@@ -218,7 +218,7 @@ class Response extends Action
             } else {
                 if ($status->isApproved()) {
                     $this->messageManager->addSuccessMessage(
-                        sprintf(__('Thanks, transaction approved by %s.'), $placetopay->getNameOfStore())
+                        sprintf(__('Thanks, transaction approved by')) . $placetopay->getNameOfStore()
                     );
                     $this->setPaymentApproved($payment, $transaction);
                 } elseif ($status->isRejected()) {
