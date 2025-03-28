@@ -63,7 +63,7 @@ class Data extends BaseData
         );
         $this->infoFactory = $infoFactory;
         $this->logger = $logger;
-        $this->version = '1.12.1';
+        $this->version = '1.12.2';
 
         $this->mode = $this->getMode();
     }

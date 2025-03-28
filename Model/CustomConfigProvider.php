@@ -108,7 +108,7 @@ class CustomConfigProvider implements ConfigProviderInterface
     {
         $clientImage = [
             Client::GNT => 'uggcf://onapb.fnagnaqre.py/hcybnqf/000/029/870/0620s532-9sp9-4248-o99r-78onr9s13r1q/bevtvany/Ybtb_JroPurpxbhg_Trgarg.fit',
-            Client::GOU => 'uggcf://cynprgbcnl-fgngvp-cebq-ohpxrg.f3.hf-rnfg-2.nznmbanjf.pbz/tbhcntbf-pbz-pb/urnqre.fit',
+            Client::GOU => 'uggcf://cynprgbcnl-fgngvp-hng-ohpxrg.f3.hf-rnfg-2.nznmbanjf.pbz/ninycnlpragre-pbz/ybtbf/Urnqre+Pbeerb+-+Ybtb+Ninycnl.fit',
             Client::PTP => 'uggcf://fgngvp.cynprgbcnl.pbz/cynprgbcnl-ybtb.fit'
         ];
 

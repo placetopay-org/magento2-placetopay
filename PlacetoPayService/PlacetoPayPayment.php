@@ -111,6 +111,10 @@ class PlacetoPayPayment
     public function getCheckoutRedirect(Order $order): ?string
     {
         try {
+            $this->logger->debug(
+                'Payment URI [' . $order->getRealOrderId() . '] ' . $this->config->getUri()
+            );
+
             $response = $this->gateway()->request($this->getRedirectRequestData($order));
 
             if (!$response->isSuccessful()) {

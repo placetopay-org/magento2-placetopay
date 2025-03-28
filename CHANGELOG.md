@@ -6,9 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Added
+## [1.12.2] - 2025-03-28
+
+### Updated
+
+- Update branding for clients
 
 ## [1.12.1] - 2024-10-29
+
+### Added
 
 - Add options expiration by client
 - Add styles to logo
