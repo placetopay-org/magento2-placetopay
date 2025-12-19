@@ -34,7 +34,7 @@ define(
         return Component.extend({
             redirectAfterPlaceOrder: false,
             defaults: {
-                template: 'PlacetoPay_Payments/payment/placetopay'
+                template: 'Banchile_Payments/payment/banchile'
             },
 
             placeOrder: function (data, event) {
@@ -67,7 +67,7 @@ define(
             },
 
             afterPlaceOrder: function () {
-                $.post(url.build('placetopay/payment/data'), 'json')
+                $.post(url.build('banchile/payment/data'), 'json')
                     .done(data => {
                         window.location = data.url;
                     }).fail(response => {
@@ -79,26 +79,26 @@ define(
             },
 
             getLogo: function () {
-                return '<img src="'+window.checkoutConfig.payment.placetopay.logo+'" height="48" alt="PlacetoPay"/>';
+                return '<img src="'+window.checkoutConfig.payment.banchile.logo+'" height="48" alt="Banchile"/>';
             },
 
             hasPendingPayment: function () {
-                return window.checkoutConfig.payment.placetopay.order.hasPendingOrder;
+                return window.checkoutConfig.payment.banchile.order.hasPendingOrder;
             },
 
             hasCifin: function () {
-                return window.checkoutConfig.payment.placetopay.hasCifinMessage;
+                return window.checkoutConfig.payment.banchile.hasCifinMessage;
             },
 
             pendingMessage: function () {
-                let orderId = window.checkoutConfig.payment.placetopay.order.id;
-                let phone = window.checkoutConfig.payment.placetopay.order.phone;
+                let orderId = window.checkoutConfig.payment.banchile.order.id;
+                let phone = window.checkoutConfig.payment.banchile.order.phone;
 
                 let email = '<a href="mailto:' +
-                    window.checkoutConfig.payment.placetopay.order.email + '">' +
-                    window.checkoutConfig.payment.placetopay.order.email + '</a>';
+                    window.checkoutConfig.payment.banchile.order.email + '">' +
+                    window.checkoutConfig.payment.banchile.order.email + '</a>';
 
-                let authorization = window.checkoutConfig.payment.placetopay.order.authorization;
+                let authorization = window.checkoutConfig.payment.banchile.order.authorization;
                 let data = [orderId, phone, email, authorization];
 
                 return $t("At this time your order #%1 display a checkout transaction which is pending receipt of confirmation from your financial institution, please wait a few minutes and check back later to see if your payment was successfully confirmed. For more information about the current state of your operation you may contact our customer service line at %2 or send your concerns to the email %3 and ask for the status of the transaction: '%4'.")
@@ -106,10 +106,10 @@ define(
             },
 
             securityMessage: function () {
-                let url = window.checkoutConfig.payment.placetopay.url;
-                let name = window.checkoutConfig.payment.placetopay.legalName;
-                let merchant = '<b>EGM Ingeniería Sin Fronteras S.A.S</b>';
-                let brand = '<b>Placetopay</b>';
+                let url = window.checkoutConfig.payment.banchile.url;
+                let name = window.checkoutConfig.payment.banchile.legalName;
+                let merchant = '<b>Bachile Pagos</b>';
+                let brand = '<b>Banchile</b>';
                 let data = [url, name, merchant, brand];
 
                 return $t('Any person who realizes a purchase in the site %1, acting freely and voluntarily, authorizes to %2, through the service provider %3 y/o %4 to consult and request information from credit, financial, commercial performance and services to third parties, even in countries of the same nature in the central risk, generating a footprint consultation.')
@@ -117,7 +117,7 @@ define(
             },
 
             getPaymentIcons: function () {
-                let paymentMethods = window.checkoutConfig.payment.placetopay.paymentMethods;
+                let paymentMethods = window.checkoutConfig.payment.banchile.paymentMethods;
                 let icons = [];
                 const franchises = {
                     'CDNSA': 'codensa',
@@ -187,19 +187,19 @@ define(
 
                 paymentMethods.forEach(function (icon) {
                     // console.log(franchises[icon]);
-                    // icons.push('<img src="'+window.checkoutConfig.payment.placetopay.media+'/icon_card/'+franchises[icon]+'.svg" class="acceptance_logo" alt="'+icon+'" />');
-                    icons.push('<img src="https://www.placetopay.com/images/providers/' + icon + '.png" alt="" class="acceptance_logo" />');
+                    // icons.push('<img src="'+window.checkoutConfig.payment.banchile.media+'/icon_card/'+franchises[icon]+'.svg" class="acceptance_logo" alt="'+icon+'" />');
+                    icons.push('<img src="https://www.banchile.com/images/providers/' + icon + '.png" alt="" class="acceptance_logo" />');
                 });
 
                 return icons.join(' ');
             },
 
             getMinimum: function () {
-                return window.checkoutConfig.payment.placetopay.minimum;
+                return window.checkoutConfig.payment.banchile.minimum;
             },
 
             getMaximum: function () {
-                return window.checkoutConfig.payment.placetopay.maximum;
+                return window.checkoutConfig.payment.banchile.maximum;
             },
 
             getTotal: function () {
@@ -207,7 +207,7 @@ define(
             },
 
             showErrorMessage: function (message) {
-                document.getElementById('payment-method-placetopay').scrollIntoView(true);
+                document.getElementById('payment-method-banchile').scrollIntoView(true);
                 this.messageContainer.addErrorMessage({message: message});
             },
 
@@ -250,7 +250,7 @@ define(
             },
 
             allowPendingPayment: function () {
-                return window.checkoutConfig.payment.placetopay.allowPendingPayments;
+                return window.checkoutConfig.payment.banchile.allowPendingPayments;
             }
         });
     }

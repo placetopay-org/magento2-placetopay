@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Api;
+namespace Banchile\Payments\Api;
 
 /**
  * Interface ServiceInterface.

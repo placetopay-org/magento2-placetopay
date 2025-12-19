@@ -1,7 +1,8 @@
 <?php
 
-namespace PlacetoPay\Payments\Helper;
+namespace Banchile\Payments\Helper;
 
+use Banchile\Payments\Countries\ChileCountryConfig;
 use Magento\Framework\App\Config\Initial;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\App\ObjectManager;
@@ -11,15 +12,15 @@ use Magento\Payment\Model\Config;
 use Magento\Payment\Model\Method\Factory;
 use Magento\Store\Model\App\Emulation;
 use Magento\Store\Model\ScopeInterface;
-use PlacetoPay\Payments\Constants\Country;
-use PlacetoPay\Payments\Countries\CountryConfigInterface;
-use PlacetoPay\Payments\Logger\Logger;
-use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
-use PlacetoPay\Payments\Model\Info as InfoFactory;
+use Banchile\Payments\Constants\Country;
+use Banchile\Payments\Countries\CountryConfigInterface;
+use Banchile\Payments\Logger\Logger;
+use Banchile\Payments\Model\Adminhtml\Source\Mode;
+use Banchile\Payments\Model\Info as InfoFactory;
 
 class Data extends BaseData
 {
-    public const CODE = 'placetopay';
+    public const CODE = 'banchile';
     public const EXPIRATION_TIME_MINUTES_DEFAULT = 120;
     public const EXPIRATION_TIME_MINUTES_MIN = 10;
 
@@ -74,7 +75,7 @@ class Data extends BaseData
     public function getMerchantId(): ?string
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/merchant_id',
+            'payment/banchile/merchant_id',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -85,7 +86,7 @@ class Data extends BaseData
     public function getLegalName(): ?string
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/legal_name',
+            'payment/banchile/legal_name',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -96,7 +97,7 @@ class Data extends BaseData
     public function getEmail(): ?string
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/email',
+            'payment/banchile/email',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -107,7 +108,7 @@ class Data extends BaseData
     public function getPhone(): ?string
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/phone',
+            'payment/banchile/phone',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -118,7 +119,7 @@ class Data extends BaseData
     public function getExpirationTime(): ?string
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/expiration',
+            'payment/banchile/expiration',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -129,7 +130,7 @@ class Data extends BaseData
     public function getFinalPage(): ?string
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/final_page',
+            'payment/banchile/final_page',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -137,7 +138,7 @@ class Data extends BaseData
     public function getAllowPendingPayment(): bool
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/allow_pending_payment',
+            'payment/banchile/allow_pending_payment',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -145,7 +146,7 @@ class Data extends BaseData
     public function getAllowPartialPayment(): bool
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/allow_partial_payment',
+            'payment/banchile/allow_partial_payment',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -153,7 +154,7 @@ class Data extends BaseData
     public function getHasCifin(): bool
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/has_cifin',
+            'payment/banchile/has_cifin',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -161,7 +162,7 @@ class Data extends BaseData
     public function getFillTaxInformation(): bool
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/fill_tax_information',
+            'payment/banchile/fill_tax_information',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -169,7 +170,7 @@ class Data extends BaseData
     public function getFillBuyerInformation(): bool
     {
         return !$this->scopeConfig->getValue(
-            'payment/placetopay/fill_buyer_information',
+            'payment/banchile/fill_buyer_information',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -177,7 +178,7 @@ class Data extends BaseData
     public function getSkipResult(): bool
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/skip_result',
+            'payment/banchile/skip_result',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -188,7 +189,7 @@ class Data extends BaseData
     public function getMinimumAmount(): ?string
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/minimum_amount',
+            'payment/banchile/minimum_amount',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -199,7 +200,7 @@ class Data extends BaseData
     public function getMaximumAmount(): ?string
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/maximum_amount',
+            'payment/banchile/maximum_amount',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -210,7 +211,7 @@ class Data extends BaseData
     public function getTaxRateParsing(): ?string
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/tax_rate_parsing',
+            'payment/banchile/tax_rate_parsing',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -221,7 +222,7 @@ class Data extends BaseData
     public function getEmailSuccessOption(): bool
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/email_success',
+            'payment/banchile/email_success',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -232,7 +233,7 @@ class Data extends BaseData
     public function getDiscount(): ?string
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/discount',
+            'payment/banchile/discount',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -243,7 +244,7 @@ class Data extends BaseData
     public function getInvoice(): ?string
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/invoice',
+            'payment/banchile/invoice',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -251,7 +252,7 @@ class Data extends BaseData
     public function getActive(): bool
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/active',
+            'payment/banchile/active',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -262,7 +263,7 @@ class Data extends BaseData
     public function getTitle(): ?string
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/title',
+            'payment/banchile/title',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -273,7 +274,7 @@ class Data extends BaseData
     public function getMode($storeId = null)
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/placetopay_mode',
+            'payment/banchile/banchile_mode',
             ScopeInterface::SCOPE_STORE,
             $storeId
         );
@@ -285,7 +286,7 @@ class Data extends BaseData
     public function getCustomConnectionUrl($storeId = null): ?string
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/placetopay_custom_url',
+            'payment/banchile/banchile_custom_url',
             ScopeInterface::SCOPE_STORE,
             $storeId
         );
@@ -302,7 +303,7 @@ class Data extends BaseData
     public function getUri($storeId = null): ?string
     {
         $uri = null;
-        $endpoints = $this->getEndpointsTo($this->getCountryCode());
+        $endpoints = $this->getEndpointsTo();
 
         if ($this->isCustomEnvironment($storeId)) {
             return $this->getCustomConnectionUrl($storeId);
@@ -325,28 +326,28 @@ class Data extends BaseData
         switch ($mode) {
             case Mode::DEVELOPMENT:
                 $tranKey = $this->scopeConfig->getValue(
-                    'payment/placetopay/placetopay_development_tk',
+                    'payment/banchile/banchile_development_tk',
                     ScopeInterface::SCOPE_STORE,
                     $storeId
                 );
                 break;
             case Mode::TEST:
                 $tranKey = $this->scopeConfig->getValue(
-                    'payment/placetopay/placetopay_test_tk',
+                    'payment/banchile/banchile_test_tk',
                     ScopeInterface::SCOPE_STORE,
                     $storeId
                 );
                 break;
             case Mode::CUSTOM:
                 $tranKey = $this->scopeConfig->getValue(
-                    'payment/placetopay/placetopay_custom_tk',
+                    'payment/banchile/banchile_custom_tk',
                     ScopeInterface::SCOPE_STORE,
                     $storeId
                 );
                 break;
             default:
                 $tranKey = $this->scopeConfig->getValue(
-                    'payment/placetopay/placetopay_production_tk',
+                    'payment/banchile/banchile_production_tk',
                     ScopeInterface::SCOPE_STORE,
                     $storeId
                 );
@@ -363,28 +364,28 @@ class Data extends BaseData
         switch ($mode) {
             case Mode::DEVELOPMENT:
                 $login = $this->scopeConfig->getValue(
-                    'payment/placetopay/placetopay_development_lg',
+                    'payment/banchile/banchile_development_lg',
                     ScopeInterface::SCOPE_STORE,
                     $storeId
                 );
                 break;
             case Mode::TEST:
                 $login = $this->scopeConfig->getValue(
-                    'payment/placetopay/placetopay_test_lg',
+                    'payment/banchile/banchile_test_lg',
                     ScopeInterface::SCOPE_STORE,
                     $storeId
                 );
                 break;
             case Mode::CUSTOM:
                 $login = $this->scopeConfig->getValue(
-                    'payment/placetopay/placetopay_custom_lg',
+                    'payment/banchile/banchile_custom_lg',
                     ScopeInterface::SCOPE_STORE,
                     $storeId
                 );
                 break;
             default:
                 $login = $this->scopeConfig->getValue(
-                    'payment/placetopay/placetopay_production_lg',
+                    'payment/banchile/banchile_production_lg',
                     ScopeInterface::SCOPE_STORE,
                     $storeId
                 );
@@ -408,27 +409,17 @@ class Data extends BaseData
     public function getImageUrl(): ?string
     {
         return $this->scopeConfig->getValue(
-            'payment/placetopay/payment_button_image',
+            'payment/banchile/payment_button_image',
             ScopeInterface::SCOPE_STORE
         );
     }
 
     /**
-     * @param $countryCode
      * @return string[]
      */
-    public function getEndpointsTo($countryCode): array
+    public function getEndpointsTo(): array
     {
-        /** @var CountryConfigInterface $config */
-        foreach (Country::COUNTRIES_CONFIG as $config) {
-            if (!$config::resolve($countryCode)) {
-                continue;
-            }
-
-            return $config::getEndpoints($this->getTitle());
-        }
-
-        return [];
+        return ChileCountryConfig::getEndpoints();
     }
 
     public function cleanText($text)

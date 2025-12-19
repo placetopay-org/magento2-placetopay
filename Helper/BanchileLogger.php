@@ -1,11 +1,11 @@
 <?php
 
-namespace PlacetoPay\Payments\Helper;
+namespace Banchile\Payments\Helper;
 
 use Magento\Framework\Serialize\Serializer\Json;
-use PlacetoPay\Payments\Logger\Logger;
+use Banchile\Payments\Logger\Logger;
 
-class PlacetoPayLogger
+class BanchileLogger
 {
     /**
      * @var Logger

@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Controller\Payment;
+namespace Banchile\Payments\Controller\Payment;
 
 use Exception;
 use Magento\Checkout\Model\Session;
@@ -15,8 +15,8 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
-use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
-use PlacetoPay\Payments\Model\PaymentMethod;
+use Banchile\Payments\Logger\Logger as LoggerInterface;
+use Banchile\Payments\Model\PaymentMethod;
 
 /**
  * Class Data.
@@ -99,10 +99,10 @@ class Data extends Action
             }
 
             /**
-             * @var PaymentMethod
+             * @var PaymentMethod $banchile
              */
-            $placetopay = $order->getPayment()->getMethodInstance();
-            $url = $placetopay->getCheckoutRedirect($order);
+            $banchile = $order->getPayment()->getMethodInstance();
+            $url = $banchile->getCheckoutRedirect($order);
 
             $order->setStatus('pending');
             $order->setState(Order::STATE_PENDING_PAYMENT);

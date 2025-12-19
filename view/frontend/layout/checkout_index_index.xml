@@ -16,10 +16,10 @@
                                                         <item name="renders" xsi:type="array">
                                                             <!-- merge payment method renders here -->
                                                             <item name="children" xsi:type="array">
-                                                                <item name="placetopay" xsi:type="array">
-                                                                    <item name="component" xsi:type="string">PlacetoPay_Payments/js/view/payment/placetopay</item>
+                                                                <item name="banchile" xsi:type="array">
+                                                                    <item name="component" xsi:type="string">Banchile_Payments/js/view/payment/banchile</item>
                                                                     <item name="methods" xsi:type="array">
-                                                                        <item name="placetopay" xsi:type="array">
+                                                                        <item name="banchile" xsi:type="array">
                                                                             <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
                                                                         </item>
                                                                     </item>

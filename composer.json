@@ -1,6 +1,6 @@
 {
   "name": "placetopay/magento2-module-payments",
-  "description": "Shared component for accepting online payments in Magento 2 using the PlacetoPay payment gateway.",
+  "description": "Shared component for accepting online payments in Magento 2 using the Banchile pagos payment gateway.",
   "type": "magento2-module",
   "license": [
     "OSL-3.0",
@@ -14,7 +14,8 @@
   ],
   "require": {
     "php": ">=7.2",
-    "ext-json": "*"
+    "ext-json": "*",
+    "alejociro/redirection": "^1.0"
   },
   "require-dev": {
     "magento/magento-coding-standard": "*",
@@ -26,7 +27,7 @@
       "registration.php"
     ],
     "psr-4": {
-      "PlacetoPay\\Payments\\": ""
+      "Banchile\\Payments\\": ""
     }
   },
   "scripts": {

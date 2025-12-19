@@ -1,10 +1,10 @@
 <?php
 
-namespace PlacetoPay\Payments\Constants;
+namespace Banchile\Payments\Constants;
 
 abstract class PathUrlRedirect
 {
-    public const FAILURE = 'placetopay/onepage/failure';
-    public const SUCCESSFUL = 'placetopay/onepage/success';
-    public const PENDING = 'placetopay/onepage/pending';
+    public const FAILURE = 'banchile/onepage/failure';
+    public const SUCCESSFUL = 'banchile/onepage/success';
+    public const PENDING = 'banchile/onepage/pending';
 }

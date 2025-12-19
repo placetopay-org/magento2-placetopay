@@ -5,16 +5,16 @@
 >
     <default>
         <payment>
-            <placetopay>
+            <banchile>
                 <active>0</active>
-                <model>PlacetoPay\Payments\Model\PaymentMethod</model>
-                <!--<model>PlacetoPayPaymentsFacade</model>-->
-                <placetopay_development_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
-                <placetopay_test_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
-                <placetopay_production_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
-                <placetopay_custom_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
-                <title><![CDATA[Pay by Card (Placetopay)]]></title>
-                <description><![CDATA[Pay securely through Placetopay.]]></description>
+                <model>Banchile\Payments\Model\PaymentMethod</model>
+                <!--<model>BanchilePaymentsFacade</model>-->
+                <banchile_development_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <banchile_test_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <banchile_production_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <banchile_custom_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <title><![CDATA[Pay by Card (Banchile Pagos)]]></title>
+                <description><![CDATA[Pay securely through Banchile Pagos.]]></description>
                 <allowspecific>0</allowspecific>
                 <sort_order>1</sort_order>
                 <expiration>2880</expiration>
@@ -27,7 +27,7 @@
                 <skip_result>0</skip_result>
                 <tax_rate_parsing>iva_c:valueAddedTax|ice_c:ice|iva_e:valueAddedTax|ice_e:ice</tax_rate_parsing>
                 <email_success>0</email_success>
-            </placetopay>
+            </banchile>
         </payment>
     </default>
 </config>

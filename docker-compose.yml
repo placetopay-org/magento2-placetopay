@@ -6,7 +6,7 @@ services:
     volumes:
       - type: bind
         source: .
-        target: /var/www/html/app/code/PlacetoPay/Payments
+        target: /var/www/html/app/code/Banchile/Payments
     ports:
       - 80:80
     depends_on:

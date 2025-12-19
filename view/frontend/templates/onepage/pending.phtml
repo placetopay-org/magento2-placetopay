@@ -1,6 +1,6 @@
 <?php
 
-/** @var $block \PlacetoPay\Payments\Block\Frontend\Onepage\Pending */
+/** @var $block \Banchile\Payments\Block\Frontend\Onepage\Pending */
 
 ?>
 <?php if ($warning = $block->getWarningMessage()): ?>
@@ -13,7 +13,7 @@
         $information = $payment->getAdditionalInformation();
     ?>
 
-    <div class="placetopay-checkout-onepage">
+    <div class="banchile-checkout-onepage">
         <?php if ($order): ?>
             <?php if ($order->getStatus() == 'failed'): ?>
                 <p><?= $block->escapeHtml(__('Unfortunately your order cannot be processed as the originating bank/merchant has declined your transaction. Please attempt your purchase again.')) ?></p>

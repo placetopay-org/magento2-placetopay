@@ -6,7 +6,7 @@
             </action>
         </referenceBlock>
         <referenceContainer name="content">
-            <block class="PlacetoPay\Payments\Block\Frontend\Onepage\Failure" name="placetopay.checkout.failure" template="PlacetoPay_Payments::onepage/failure.phtml" />
+            <block class="Banchile\Payments\Block\Frontend\Onepage\Failure" name="banchile.checkout.failure" template="Banchile_Payments::onepage/failure.phtml" />
         </referenceContainer>
     </body>
 </page>

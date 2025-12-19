@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Helper;
+namespace Banchile\Payments\Helper;
 
 abstract class ParseData
 {

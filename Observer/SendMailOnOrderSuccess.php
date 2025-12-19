@@ -1,13 +1,13 @@
 <?php
 
-namespace PlacetoPay\Payments\Observer;
+namespace Banchile\Payments\Observer;
 
 use Magento\Checkout\Model\Session;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Sales\Model\OrderFactory;
-use PlacetoPay\Payments\Helper\Data;
+use Banchile\Payments\Helper\Data;
 
 /**
  * Class SendMailOnOrderSuccess.

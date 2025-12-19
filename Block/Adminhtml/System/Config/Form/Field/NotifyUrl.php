@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Block\Adminhtml\System\Config\Form\Field;
+namespace Banchile\Payments\Block\Adminhtml\System\Config\Form\Field;
 
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
@@ -23,6 +23,6 @@ class NotifyUrl extends Field
         $baseUrl = $this->_storeManager->getStore($id)
             ->getBaseUrl(UrlInterface::URL_TYPE_WEB, true);
 
-        return "{$baseUrl}rest/V1/placetopay/payment/notify";
+        return "{$baseUrl}rest/V1/banchile/payment/notify";
     }
 }

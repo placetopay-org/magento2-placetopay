@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Logger;
+namespace Banchile\Payments\Logger;
 
 use Exception;
 use Magento\Framework\App\Filesystem\DirectoryList;
@@ -58,7 +58,7 @@ class Handler extends Base
     ) {
         $this->_localeDate = $localeDate;
 
-        $fileName = 'placetopay-' . $this->getTimeStamp() . '.log';
+        $fileName = 'banchile-' . $this->getTimeStamp() . '.log';
         $ds = DIRECTORY_SEPARATOR;
         $this->filePath = $dir->getPath('log') . $ds . $fileName;
 

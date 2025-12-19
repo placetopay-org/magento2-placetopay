@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Controller\Payment;
+namespace Banchile\Payments\Controller\Payment;
 
 use Dnetix\Redirection\Entities\Status;
 use Exception;
@@ -25,11 +25,11 @@ use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Sales\Model\OrderFactory;
 use Magento\Store\Model\ScopeInterface;
-use PlacetoPay\Payments\Actions\SetOrderInfoSession;
-use PlacetoPay\Payments\Constants\PathUrlRedirect;
-use PlacetoPay\Payments\Helper\OrderHelper;
-use PlacetoPay\Payments\Helper\PlacetoPayLogger;
-use PlacetoPay\Payments\Model\PaymentMethod;
+use Banchile\Payments\Actions\SetOrderInfoSession;
+use Banchile\Payments\Constants\PathUrlRedirect;
+use Banchile\Payments\Helper\OrderHelper;
+use Banchile\Payments\Helper\BanchileLogger;
+use Banchile\Payments\Model\PaymentMethod;
 
 /**
  * Class Response.
@@ -37,7 +37,7 @@ use PlacetoPay\Payments\Model\PaymentMethod;
 class Response extends Action
 {
     /**
-     * @var PlacetoPayLogger
+     * @var BanchileLogger
      */
     protected $_logger;
 
@@ -106,7 +106,7 @@ class Response extends Action
         Session $checkoutSession,
         OrderFactory $salesOrderFactory,
         ManagerInterface $messageManager,
-        PlacetoPayLogger $logger,
+        BanchileLogger $logger,
         Http $request,
         ScopeConfigInterface $scopeConfig,
         QuoteFactory $quoteQuoteFactory,
@@ -142,15 +142,15 @@ class Response extends Action
         try {
             $payment = $order->getPayment();
 
-            /** @var PaymentMethod $placetopay */
-            $placetopay = $payment->getMethodInstance();
+            /** @var PaymentMethod $banchile */
+            $banchile = $payment->getMethodInstance();
 
-            if (strcmp($placetopay->getCode(), PaymentMethod::CODE) !== 0) {
+            if (strcmp($banchile->getCode(), PaymentMethod::CODE) !== 0) {
                 throw new LocalizedException(__('Unknown payment method.'));
             }
 
             if (OrderHelper::isPendingOrder($order)) {
-                $status = OrderHelper::getPaymentStatus($placetopay->resolve($order, $payment));
+                $status = OrderHelper::getPaymentStatus($banchile->resolve($order, $payment));
             } else {
                 $status = OrderHelper::parseOrderState($order);
             }
@@ -162,14 +162,14 @@ class Response extends Action
             );
 
             $path = $this->scopeConfig->getValue(
-                'payment/' . $placetopay->getCode() . '/final_page',
+                'payment/' . $banchile->getCode() . '/final_page',
                 ScopeInterface::SCOPE_STORE,
                 $order->getStore()
             );
             if (strcmp($path, 'magento_default') === 0) {
                 if ($status->status() == Order::STATE_COMPLETE) {
                     $this->messageManager->addSuccessMessage(
-                        sprintf(__('Thanks, transaction approved by')) . $placetopay->getNameOfStore()
+                        sprintf(__('Thanks, transaction approved by')) . $banchile->getNameOfStore()
                     );
                 } elseif ($status->isApproved()) {
                     $this->setPaymentApproved($payment, $transaction);
@@ -178,7 +178,7 @@ class Response extends Action
                     $session->setLastSuccessQuoteId($order->getQuoteId());
 
                     $this->messageManager->addSuccessMessage(
-                        sprintf(__('Thanks, transaction approved by')) . $placetopay->getNameOfStore()
+                        sprintf(__('Thanks, transaction approved by')) . $banchile->getNameOfStore()
                     );
                 } elseif ($status->isRejected()) {
                     $this->setPaymentDenied($payment, $transaction);
@@ -218,7 +218,7 @@ class Response extends Action
             } else {
                 if ($status->isApproved()) {
                     $this->messageManager->addSuccessMessage(
-                        sprintf(__('Thanks, transaction approved by')) . $placetopay->getNameOfStore()
+                        sprintf(__('Thanks, transaction approved by')) . $banchile->getNameOfStore()
                     );
                     $this->setPaymentApproved($payment, $transaction);
                 } elseif ($status->isRejected()) {

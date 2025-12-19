@@ -1,10 +1,8 @@
 <?php
 
-namespace PlacetoPay\Payments\Model\Adminhtml\Source;
+namespace Banchile\Payments\Model\Adminhtml\Source;
 
-use PlacetoPay\Payments\Countries\CountryConfigInterface;
-use PlacetoPay\Payments\Constants\Country;
-use PlacetoPay\Payments\Helper\Data;
+use Banchile\Payments\Helper\Data;
 
 class Client
 {
@@ -20,15 +18,11 @@ class Client
 
     public function toOptionArray(): array
     {
-        $countryCode = $this->dataHelper->getCountryCode();
-
-        /** @var CountryConfigInterface $config */
-        foreach (Country::COUNTRIES_CLIENT as $config) {
-            if (!$config::resolve($countryCode)) {
-                continue;
-            }
-            return $config::getClient();
-        }
-        return [];
+        return [
+            [
+                'value' => 'Banchile Pagos',
+                'label' => 'Banchile Pagos',
+            ],
+        ];
     }
 }

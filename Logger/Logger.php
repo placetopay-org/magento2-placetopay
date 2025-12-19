@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Logger;
+namespace Banchile\Payments\Logger;
 
 use Monolog\Logger as CustomLogger;
 

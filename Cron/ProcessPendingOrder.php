@@ -1,14 +1,14 @@
 <?php
 
-namespace PlacetoPay\Payments\Cron;
+namespace Banchile\Payments\Cron;
 
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
-use PlacetoPay\Payments\Constants\PaymentStatus;
-use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
-use PlacetoPay\Payments\Model\PaymentMethod;
+use Banchile\Payments\Constants\PaymentStatus;
+use Banchile\Payments\Logger\Logger as LoggerInterface;
+use Banchile\Payments\Model\PaymentMethod;
 use Magento\Store\Model\StoreManagerInterface;
-use PlacetoPay\Payments\Helper\Data as Config;
+use Banchile\Payments\Helper\Data as Config;
 
 /**
  * Class ProcessPendingOrder.
@@ -23,7 +23,7 @@ class ProcessPendingOrder
     /**
      * @var PaymentMethod
      */
-    protected $placetopay;
+    protected $banchile;
 
     /**
      * @var LoggerInterface
@@ -36,18 +36,18 @@ class ProcessPendingOrder
      * ProcessPendingOrder constructor.
      *
      * @param CollectionFactory $collectionFactory
-     * @param PaymentMethod $placetopay
+     * @param PaymentMethod $banchile
      */
     public function __construct(
         LoggerInterface $logger,
         CollectionFactory $collectionFactory,
-        PaymentMethod $placetopay,
+        PaymentMethod $banchile,
         StoreManagerInterface $storeManager,
         Config $config
     ) {
         $this->logger = $logger;
         $this->collectionFactory = $collectionFactory;
-        $this->placetopay = $placetopay;
+        $this->banchile = $banchile;
         $this->storeManager = $storeManager;
         $this->config = $config;
     }
@@ -78,7 +78,7 @@ class ProcessPendingOrder
             'headers' => $this->config->getHeaders(),
         ];
 
-        $this->placetopay->setGateway($gatewayConfig);
+        $this->banchile->setGateway($gatewayConfig);
 
         $orders = $this->collectionFactory->create()
             ->addFieldToFilter('store_id', $storeId)
@@ -100,7 +100,7 @@ class ProcessPendingOrder
                 $payment = $order->getPayment();
                 if ($payment === null) {
                     $this->logger->warning('Order ' . $order->getRealOrderId() . ' does not have a payment associated.');
-                    $this->placetopay->processPendingOrderFail($order);
+                    $this->banchile->processPendingOrderFail($order);
                     continue;
                 }
 
@@ -112,11 +112,11 @@ class ProcessPendingOrder
                     $this->logger->debug('Status ' . $statusPayment);
                     if (!in_array($statusPayment, [PaymentStatus::APPROVED, PaymentStatus::REJECTED])) {
                         $this->logger->info('ProcessPendingOrder', ['Request:' => $requestId]);
-                        $this->placetopay->processPendingOrder($order, $requestId);
+                        $this->banchile->processPendingOrder($order, $requestId);
                     }
                 } else {
                     $this->logger->warning('The payment for the order ' . $order->getRealOrderId() . ' does not have a request ID.');
-                    $this->placetopay->processPendingOrderFail($order);
+                    $this->banchile->processPendingOrderFail($order);
                 }
             }
         } else {

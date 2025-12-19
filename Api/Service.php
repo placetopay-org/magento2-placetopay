@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Api;
+namespace Banchile\Payments\Api;
 
 use Dnetix\Redirection\Exceptions\PlacetoPayException;
 use Exception;
@@ -13,8 +13,8 @@ use Magento\Framework\Webapi\Rest\Request;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\OrderRepository;
-use PlacetoPay\Payments\Helper\PlacetoPayLogger;
-use PlacetoPay\Payments\Model\PaymentMethod;
+use Banchile\Payments\Helper\BanchileLogger;
+use Banchile\Payments\Model\PaymentMethod;
 
 class Service implements ServiceInterface
 {
@@ -24,7 +24,7 @@ class Service implements ServiceInterface
     protected $request;
 
     /**
-     * @var PlacetoPayLogger
+     * @var BanchileLogger
      */
     protected $logger;
 
@@ -50,7 +50,7 @@ class Service implements ServiceInterface
 
     public function __construct(
         Request $request,
-        PlacetoPayLogger $logger,
+        BanchileLogger $logger,
         EventManager $manager,
         Json $json,
         OrderRepository $orderRepository,
@@ -92,13 +92,13 @@ class Service implements ServiceInterface
             /** @var Order\Payment $payment */
             $payment = $order->getPayment();
 
-            /** @var PaymentMethod $placetopay */
-            $placetopay = $payment->getMethodInstance();
+            /** @var PaymentMethod $banchile */
+            $banchile = $payment->getMethodInstance();
 
-            $notification = $placetopay->gateway()->readNotification($data);
+            $notification = $banchile->gateway()->readNotification($data);
 
             if (!$notification->isValidNotification()) {
-                return $placetopay->inDebugMode()
+                return $banchile->inDebugMode()
                     ? [
                         'signature' => $notification->makeSignature(),
                         'message' => 'Replace this signature with the one on the request body for testing.',
@@ -108,12 +108,12 @@ class Service implements ServiceInterface
                     ];
             }
 
-            $information = $placetopay->gateway()->query($notification->requestId());
+            $information = $banchile->gateway()->query($notification->requestId());
 
-            $placetopay->setStatus($information, $order);
+            $banchile->setStatus($information, $order);
 
             if ($information->isApproved()) {
-                $this->manager->dispatch('placetopay_api_success', [
+                $this->manager->dispatch('banchile_api_success', [
                     'order_ids' => [$order->getRealOrderId()],
                 ]);
 

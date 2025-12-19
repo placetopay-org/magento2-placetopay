@@ -11,4 +11,4 @@
 
 use Magento\Framework\Component\ComponentRegistrar;
 
-ComponentRegistrar::register(ComponentRegistrar::MODULE, 'PlacetoPay_Payments', __DIR__);
+ComponentRegistrar::register(ComponentRegistrar::MODULE, 'Banchile_Payments', __DIR__);

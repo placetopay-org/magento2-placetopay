@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\PlacetoPayService;
+namespace Banchile\Payments\BanchileService;
 
 use Dnetix\Redirection\Entities\PaymentModifier;
 use Dnetix\Redirection\Message\RedirectInformation;
@@ -13,16 +13,16 @@ use Magento\Framework\Locale\Resolver;
 use Magento\Framework\UrlInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
-use PlacetoPay\Payments\Concerns\IsSetStatusOrderTrait;
-use PlacetoPay\Payments\Constants\Country;
-use PlacetoPay\Payments\Exception\PlacetoPayException;
-use PlacetoPay\Payments\Helper\Data as Config;
-use PlacetoPay\Payments\Helper\OrderHelper;
-use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
-use PlacetoPay\Payments\Model\Adminhtml\Source\Discount;
+use Banchile\Payments\Concerns\IsSetStatusOrderTrait;
+use Banchile\Payments\Constants\Country;
+use Banchile\Payments\Exception\BanchileException;
+use Banchile\Payments\Helper\Data as Config;
+use Banchile\Payments\Helper\OrderHelper;
+use Banchile\Payments\Logger\Logger as LoggerInterface;
+use Banchile\Payments\Model\Adminhtml\Source\Discount;
 use Magento\Tax\Model\Config as TaxConfig;
 
-class PlacetoPayPayment
+class BanchilePayment
 {
     use IsSetStatusOrderTrait;
 
@@ -150,11 +150,11 @@ class PlacetoPayPayment
 
             $this->logger->error('The order ' . $order->getRealOrderId() . ' has a problem to create the payment');
 
-            throw new PlacetoPayException(__('Something went wrong with your request. Please try again later.'));
+            throw new BanchileException(__('Something went wrong with your request. Please try again later.'));
         }
     }
 
-    public function resolve(Order $order, Order\Payment $payment = null): RedirectInformation
+    public function resolve(Order $order, ?Order\Payment $payment = null): RedirectInformation
     {
         if (!$payment) {
             $payment = $order->getPayment();
@@ -248,29 +248,13 @@ class PlacetoPayPayment
                 'shipping' => OrderHelper::parseAddressPerson($order->getShippingAddress()),
                 'allowPartial' => $this->config->getAllowPartialPayment(),
             ],
-            'returnUrl' => $this->url->getUrl('placetopay/payment/response', ['reference' => $reference]),
+            'returnUrl' => $this->url->getUrl('banchile/payment/response', ['reference' => $reference]),
             'expiration' => $expiration,
             'ipAddress' => $this->remoteAddress->getRemoteAddress(),
             'userAgent' => $this->header->getHttpUserAgent(),
             'skipResult' => $this->config->getSkipResult(),
             'noBuyerFill' => $this->config->getFillBuyerInformation(),
         ];
-
-        if ($this->config->getCountryCode() === Country::URUGUAY) {
-            $discountCode = $this->config->getDiscount();
-
-            if ($discountCode !== Discount::UY_NONE) {
-                $data['payment']['modifiers'] = [
-                    new PaymentModifier([
-                        'type' => PaymentModifier::TYPE_FEDERAL_GOVERNMENT,
-                        'code' => $discountCode,
-                        'additional' => [
-                            'invoice' => $this->config->getInvoice()
-                        ]
-                    ])
-                ];
-            }
-        }
 
         if ($this->config->getFillTaxInformation()) {
             $data['payment']['amount']['taxes'] = $this->getPaymentTaxes($order);

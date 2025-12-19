@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Controller\Onepage;
+namespace Banchile\Payments\Controller\Onepage;
 
 use Magento\Checkout\Controller\Onepage;
 use Magento\Checkout\Model\Session\SuccessValidator;

@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Model;
+namespace Banchile\Payments\Model;
 
 use Dnetix\Redirection\Message\RedirectInformation;
 use Dnetix\Redirection\PlacetoPay;
@@ -25,22 +25,22 @@ use Magento\Quote\Api\Data\CartInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
-use PlacetoPay\Payments\Concerns\IsSetStatusOrderTrait;
-use PlacetoPay\Payments\Constants\PaymentStatus;
-use PlacetoPay\Payments\Helper\Data as Config;
-use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
-use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
-use PlacetoPay\Payments\Model\Info as InfoFactory;
-use PlacetoPay\Payments\PlacetoPayService\PlacetoPayPayment;
+use Banchile\Payments\Concerns\IsSetStatusOrderTrait;
+use Banchile\Payments\Constants\PaymentStatus;
+use Banchile\Payments\Helper\Data as Config;
+use Banchile\Payments\Logger\Logger as LoggerInterface;
+use Banchile\Payments\Model\Adminhtml\Source\Mode;
+use Banchile\Payments\Model\Info as InfoFactory;
+use Banchile\Payments\BanchileService\BanchilePayment;
 use Magento\Tax\Model\Config as TaxConfig;
 
 /**
- * Class PlaceToPay.
+ * Class Banchile.
  */
 class PaymentMethod extends AbstractMethod
 {
     use IsSetStatusOrderTrait;
-    public const CODE = 'placetopay';
+    public const CODE = 'banchile';
 
     protected $_code = self::CODE;
     protected $_isGateway = true;
@@ -116,9 +116,9 @@ class PaymentMethod extends AbstractMethod
     protected $searchCriteriaBuilder;
 
     /**
-     * @var PlacetoPayPayment
+     * @var BanchilePayment
      */
-    protected $placetoPayPayment;
+    protected $banchilePayment;
 
     /**
      * @var TaxConfig
@@ -145,8 +145,8 @@ class PaymentMethod extends AbstractMethod
         RemoteAddress $remoteAddress,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         TaxConfig $tax,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         parent::__construct(
@@ -174,7 +174,7 @@ class PaymentMethod extends AbstractMethod
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->version = '1.12.2';
 
-        $this->placetoPayPayment = new PlacetoPayPayment(
+        $this->banchilePayment = new BanchilePayment(
             $config,
             $_logger,
             $resolver,
@@ -201,11 +201,11 @@ class PaymentMethod extends AbstractMethod
      * @return bool
      * @see vendor/magento/module-payment/Model/MethodInterface.php
      */
-    public function isAvailable(CartInterface $quote = null): bool
+    public function isAvailable(?CartInterface $quote = null): bool
     {
         return !(!$this->config->getTranKey()
             || !$this->config->getLogin()
-            || !$this->config->getEndpointsTo($this->config->getCountryCode()));
+            || !$this->config->getEndpointsTo());
     }
 
     /**
@@ -242,8 +242,8 @@ class PaymentMethod extends AbstractMethod
 
     public function processPendingOrder(Order $order, string $requestId): void
     {
-        $transactionInfo = $this->placetoPayPayment->consultTransactionInfo($requestId);
-        $this->logger->info('processPendingOrder with placetopay status: ' . $transactionInfo->status()->status());
+        $transactionInfo = $this->banchilePayment->consultTransactionInfo($requestId);
+        $this->logger->info('processPendingOrder with banchile pagos status: ' . $transactionInfo->status()->status());
 
         $this->setStatus($transactionInfo, $order);
         $this->logger->info('Cron job processed order with ID = ' . $order->getRealOrderId());
@@ -251,7 +251,7 @@ class PaymentMethod extends AbstractMethod
 
     public function gateway(): PlacetoPay
     {
-        return $this->placetoPayPayment->gateway();
+        return $this->banchilePayment->gateway();
     }
 
     /**
@@ -260,12 +260,12 @@ class PaymentMethod extends AbstractMethod
      */
     public function getCheckoutRedirect(Order $order)
     {
-        return $this->placetoPayPayment->getCheckoutRedirect($order);
+        return $this->banchilePayment->getCheckoutRedirect($order);
     }
 
-    public function resolve(Order $order, Order\Payment $payment = null): RedirectInformation
+    public function resolve(Order $order, ?Order\Payment $payment = null): RedirectInformation
     {
-        return $this->placetoPayPayment->resolve($order, $payment);
+        return $this->banchilePayment->resolve($order, $payment);
     }
 
     public function getNameOfStore(): string
@@ -280,6 +280,6 @@ class PaymentMethod extends AbstractMethod
 
     public function setGateway($gatewayConfig): void
     {
-        $this->placetoPayPayment->setGateway($gatewayConfig);
+        $this->banchilePayment->setGateway($gatewayConfig);
     }
 }

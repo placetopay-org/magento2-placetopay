@@ -3,7 +3,7 @@
     <type name="Magento\Checkout\Model\CompositeConfigProvider">
         <arguments>
             <argument name="configProviders" xsi:type="array">
-                <item name="placetopay_custom_provider" xsi:type="object">PlacetoPay\Payments\Model\CustomConfigProvider</item>
+                <item name="banchile_custom_provider" xsi:type="object">Banchile\Payments\Model\CustomConfigProvider</item>
             </argument>
         </arguments>
     </type>

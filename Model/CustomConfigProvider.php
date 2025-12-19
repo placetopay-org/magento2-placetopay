@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Model;
+namespace Banchile\Payments\Model;
 
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Customer\Model\Session as CustomerSession;
@@ -10,10 +10,10 @@ use Magento\Framework\View\Asset\Repository;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use PlacetoPay\Payments\Constants\Client;
-use PlacetoPay\Payments\Constants\Country;
-use PlacetoPay\Payments\Helper\Data;
-use PlacetoPay\Payments\Helper\ParseData;
+use Banchile\Payments\Constants\Client;
+use Banchile\Payments\Constants\Country;
+use Banchile\Payments\Helper\Data;
+use Banchile\Payments\Helper\ParseData;
 
 class CustomConfigProvider implements ConfigProviderInterface
 {
@@ -67,8 +67,8 @@ class CustomConfigProvider implements ConfigProviderInterface
         return [
             'payment' => [
                 self::CODE => [
-                    'media' => $this->_assetRepo->getUrl('PlacetoPay_Payments::images'),
-                    'logoUrl' => $this->_assetRepo->getUrl('PlacetoPay_Payments::images/logo.png'),
+                    'media' => $this->_assetRepo->getUrl('Banchile_Payments::images'),
+                    'logoUrl' => $this->_assetRepo->getUrl('Banchile_Payments::images/logo.png'),
                     'logo' => $this->getImage(),
                     'legalName' => $this->_scopeConfig->getLegalName(),
                     'order' => $this->getLastOrder(),
@@ -106,13 +106,7 @@ class CustomConfigProvider implements ConfigProviderInterface
 
     protected function getImageByClient(string $client): string
     {
-        $clientImage = [
-            Client::GNT => 'uggcf://onapb.fnagnaqre.py/hcybnqf/000/029/870/0620s532-9sp9-4248-o99r-78onr9s13r1q/bevtvany/Ybtb_JroPurpxbhg_Trgarg.fit',
-            Client::GOU => 'uggcf://cynprgbcnl-fgngvp-hng-ohpxrg.f3.hf-rnfg-2.nznmbanjf.pbz/ninycnlpragre-pbz/ybtbf/Urnqre+Pbeerb+-+Ybtb+Ninycnl.fit',
-            Client::PTP => 'uggcf://fgngvp.cynprgbcnl.pbz/cynprgbcnl-ybtb.fit'
-        ];
-
-        return ParseData::unmaskString($clientImage[ParseData::unmaskString($client)] ?? 'uggcf://fgngvp.cynprgbcnl.pbz/cynprgbcnl-ybtb.fit') ;
+        return ParseData::unmaskString('uggcf://cynprgbcnl-fgngvp-cebq-ohpxrg.f3.hf-rnfg-2.nznmbanjf.pbz/onapuvyr/ybtbf/Ybtbgvcb_fhcrevbe.cat') ;
     }
 
     protected function checkDirectory(string $path): bool

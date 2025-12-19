@@ -10,8 +10,8 @@ define(
         'use strict';
         rendererList.push(
             {
-                type: 'placetopay',
-                component: 'PlacetoPay_Payments/js/view/payment/method-renderer/placetopay'
+                type: 'banchile',
+                component: 'Banchile_Payments/js/view/payment/method-renderer/banchile'
             }
         );
         /** Add view logic here if needed */
