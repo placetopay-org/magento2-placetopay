@@ -98,10 +98,14 @@ class Service implements ServiceInterface
             $notification = $getnet->gateway()->readNotification($data);
 
             if (!$notification->isValidNotification()) {
-                return [
-                    'signature' => $notification->makeSignature(),
-                    'message' => 'Replace this signature with the one on the request body for testing.',
-                ];
+                return $getnet->inDebugMode()
+                    ? [
+                        'signature' => $notification->makeSignature(),
+                        'message' => 'Replace this signature with the one on the request body for testing.',
+                    ]
+                    : [
+                        'message' => 'Invalid notification for order #' . $order->getId(),
+                    ];
             }
 
             $information = $getnet->gateway()->query($notification->requestId());
