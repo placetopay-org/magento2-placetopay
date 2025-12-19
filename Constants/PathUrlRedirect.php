@@ -1,10 +1,10 @@
 <?php
 
-namespace PlacetoPay\Payments\Constants;
+namespace Getnet\Payments\Constants;
 
 abstract class PathUrlRedirect
 {
-    public const FAILURE = 'placetopay/onepage/failure';
-    public const SUCCESSFUL = 'placetopay/onepage/success';
-    public const PENDING = 'placetopay/onepage/pending';
+    public const FAILURE = 'getnet/onepage/failure';
+    public const SUCCESSFUL = 'getnet/onepage/success';
+    public const PENDING = 'getnet/onepage/pending';
 }

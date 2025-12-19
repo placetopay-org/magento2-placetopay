@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\PlacetoPayService;
+namespace Getnet\Payments\GetnetService;
 
 use Dnetix\Redirection\Entities\PaymentModifier;
 use Dnetix\Redirection\Message\RedirectInformation;
@@ -13,18 +13,18 @@ use Magento\Framework\Locale\Resolver;
 use Magento\Framework\UrlInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
-use PlacetoPay\Payments\Concerns\IsSetStatusOrderTrait;
-use PlacetoPay\Payments\Constants\Country;
-use PlacetoPay\Payments\Exception\PlacetoPayException;
-use PlacetoPay\Payments\Helper\Data as Config;
-use PlacetoPay\Payments\Helper\OrderHelper;
-use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
-use PlacetoPay\Payments\Model\Adminhtml\Source\Discount;
+use Getnet\Payments\Concerns\IsSetStatusOrderGetnetTrait;
+use Getnet\Payments\Constants\Country;
+use Getnet\Payments\Exception\GetnetException;
+use Getnet\Payments\Helper\Data as Config;
+use Getnet\Payments\Helper\OrderHelper;
+use Getnet\Payments\Logger\Logger as LoggerInterface;
+use Getnet\Payments\Model\Adminhtml\Source\Discount;
 use Magento\Tax\Model\Config as TaxConfig;
 
-class PlacetoPayPayment
+class GetnetPayment
 {
-    use IsSetStatusOrderTrait;
+    use IsSetStatusOrderGetnetTrait;
 
     /**
      * @var PlacetoPay
@@ -150,7 +150,7 @@ class PlacetoPayPayment
 
             $this->logger->error('The order ' . $order->getRealOrderId() . ' has a problem to create the payment');
 
-            throw new PlacetoPayException(__('Something went wrong with your request. Please try again later.'));
+            throw new GetnetException(__('Something went wrong with your request. Please try again later.'));
         }
     }
 
@@ -248,7 +248,7 @@ class PlacetoPayPayment
                 'shipping' => OrderHelper::parseAddressPerson($order->getShippingAddress()),
                 'allowPartial' => $this->config->getAllowPartialPayment(),
             ],
-            'returnUrl' => $this->url->getUrl('placetopay/payment/response', ['reference' => $reference]),
+            'returnUrl' => $this->url->getUrl('getnet/payment/response', ['reference' => $reference]),
             'expiration' => $expiration,
             'ipAddress' => $this->remoteAddress->getRemoteAddress(),
             'userAgent' => $this->header->getHttpUserAgent(),

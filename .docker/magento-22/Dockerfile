@@ -1,6 +1,6 @@
 FROM php:7.1-apache
 
-LABEL maintainer="simon.godoy@placetopay.com"
+LABEL maintainer="desarrollo@getnet.com"
 LABEL php_version="7.1"
 LABEL magento_version="2.2.10"
 LABEL description="Magento 2.2.10 with PHP 7.1"

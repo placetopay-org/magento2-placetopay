@@ -5,16 +5,16 @@
 >
     <default>
         <payment>
-            <placetopay>
+            <getnet>
                 <active>0</active>
-                <model>PlacetoPay\Payments\Model\PaymentMethod</model>
-                <!--<model>PlacetoPayPaymentsFacade</model>-->
-                <placetopay_development_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
-                <placetopay_test_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
-                <placetopay_production_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
-                <placetopay_custom_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
-                <title><![CDATA[Pay by Card (Placetopay)]]></title>
-                <description><![CDATA[Pay securely through Placetopay.]]></description>
+                <model>Getnet\Payments\Model\PaymentMethod</model>
+                <!--<model>GetnetPaymentsFacade</model>-->
+                <getnet_development_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <getnet_test_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <getnet_production_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <getnet_custom_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <title><![CDATA[Pay by Card (Getnet)]]></title>
+                <description><![CDATA[Pay securely through Getnet.]]></description>
                 <allowspecific>0</allowspecific>
                 <sort_order>1</sort_order>
                 <expiration>2880</expiration>
@@ -27,7 +27,7 @@
                 <skip_result>0</skip_result>
                 <tax_rate_parsing>iva_c:valueAddedTax|ice_c:ice|iva_e:valueAddedTax|ice_e:ice</tax_rate_parsing>
                 <email_success>0</email_success>
-            </placetopay>
+            </getnet>
         </payment>
     </default>
 </config>

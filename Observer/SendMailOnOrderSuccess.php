@@ -1,13 +1,13 @@
 <?php
 
-namespace PlacetoPay\Payments\Observer;
+namespace Getnet\Payments\Observer;
 
 use Magento\Checkout\Model\Session;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Sales\Model\OrderFactory;
-use PlacetoPay\Payments\Helper\Data;
+use Getnet\Payments\Helper\Data;
 
 /**
  * Class SendMailOnOrderSuccess.
@@ -37,13 +37,13 @@ class SendMailOnOrderSuccess implements ObserverInterface
     /**
      * SendMailOnOrderSuccess constructor.
      *
-     * @param \PlacetoPay\Payments\Helper\Data $config
+     * @param \Getnet\Payments\Helper\Data $config
      * @param \Magento\Sales\Model\OrderFactory $order
      * @param \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderSender
      * @param \Magento\Checkout\Model\Session $session
      */
     public function __construct(
-        \PlacetoPay\Payments\Helper\Data $config,
+        \Getnet\Payments\Helper\Data $config,
         \Magento\Sales\Model\OrderFactory $order,
         \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderSender,
         \Magento\Checkout\Model\Session $session

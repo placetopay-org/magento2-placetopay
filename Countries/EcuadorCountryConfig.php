@@ -1,9 +1,9 @@
 <?php
 
-namespace PlacetoPay\Payments\Countries;
+namespace Getnet\Payments\Countries;
 
-use PlacetoPay\Payments\Constants\Country;
-use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
+use Getnet\Payments\Constants\Country;
+use Getnet\Payments\Model\Adminhtml\Source\Mode;
 
 abstract class EcuadorCountryConfig implements CountryConfigInterface
 {

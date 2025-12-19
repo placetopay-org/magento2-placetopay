@@ -1,6 +1,6 @@
-<div class="payment-method" id="payment-method-placetopay" data-bind="css: {'_active': (getCode() == isChecked())}">
+<div class="payment-method" id="payment-method-getnet" data-bind="css: {'_active': (getCode() == isChecked())}">
     <style>
-        .placetopay-method-logo img {
+        .getnet-method-logo img {
             width: 250px;
             height: 150px;
         }
@@ -12,7 +12,7 @@
                class="radio"
                data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()"/>
         <label class="label" data-bind="attr: {'for': getCode()}">
-            <span class="placetopay-icon-container">
+            <span class="getnet-icon-container">
                 <span data-bind="html: getPaymentIcons()"></span>
             </span>
             <span data-bind="text: getTitle()"></span>
@@ -23,25 +23,25 @@
         <!-- ko foreach: getRegion('messages') -->
         <!-- ko template: getTemplate() --><!-- /ko -->
         <!--/ko-->
-        <div class="placetopay-method-logo" data-bind="html: getLogo()"></div>
-        <div class="placetopay-method-description">
+        <div class="getnet-method-logo" data-bind="html: getLogo()"></div>
+        <div class="getnet-method-description">
             <!-- ko i18n: 'You will be redirected to the'--> <!-- /ko -->
             <span data-bind="text: getTitle()"></span>
             <!-- ko i18n: 'secure payment page when you place an order.'--><!-- /ko -->
         </div>
-        <div class="placetopay-method-message" data-bind="if: hasPendingPayment() && allowPendingPayment()">
-            <p class="placetopay-method-message-warning">
+        <div class="getnet-method-message" data-bind="if: hasPendingPayment() && allowPendingPayment()">
+            <p class="getnet-method-message-warning">
                 <!-- ko i18n: 'Warning!'--><!-- /ko -->
             </p>
-            <p class="placetopay-method-message-text" data-bind="html: pendingMessage()"></p>
+            <p class="getnet-method-message-text" data-bind="html: pendingMessage()"></p>
 
-            <p class="placetopay-method-message-recommendation">
+            <p class="getnet-method-message-recommendation">
                 <!-- ko i18n: 'Meanwhile you have pending transactions is not advised to proceed.'--><!-- /ko -->
             </p>
         </div>
 
         <div class="payment-method-message" data-bind="if: hasCifin()">
-            <p class="placetopay-method-message-text" data-bind="html: securityMessage()"></p>
+            <p class="getnet-method-message-text" data-bind="html: securityMessage()"></p>
         </div>
 
         <div class="payment-method-billing-address">

@@ -1,11 +1,11 @@
 <?php
 
-namespace PlacetoPay\Payments\Countries;
+namespace Getnet\Payments\Countries;
 
-use PlacetoPay\Payments\Constants\Client;
-use PlacetoPay\Payments\Constants\Country;
-use PlacetoPay\Payments\Helper\ParseData;
-use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
+use Getnet\Payments\Constants\Client;
+use Getnet\Payments\Constants\Country;
+use Getnet\Payments\Helper\ParseData;
+use Getnet\Payments\Model\Adminhtml\Source\Mode;
 
 class ColombiaCountryConfig extends CountryConfig
 {

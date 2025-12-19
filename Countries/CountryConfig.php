@@ -1,10 +1,10 @@
 <?php
 
-namespace PlacetoPay\Payments\Countries;
+namespace Getnet\Payments\Countries;
 
-use PlacetoPay\Payments\Constants\Client;
-use PlacetoPay\Payments\Helper\ParseData;
-use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
+use Getnet\Payments\Constants\Client;
+use Getnet\Payments\Helper\ParseData;
+use Getnet\Payments\Model\Adminhtml\Source\Mode;
 
 abstract class CountryConfig implements CountryConfigInterface
 {
@@ -17,8 +17,8 @@ abstract class CountryConfig implements CountryConfigInterface
     {
         return [
             Mode::DEVELOPMENT => 'https://checkout-co.placetopay.dev',
-            Mode::TEST => 'https://checkout-test.placetopay.com',
-            Mode::PRODUCTION => 'https://checkout.placetopay.com',
+            Mode::TEST => 'https://checkout.test.getnet.cl',
+            Mode::PRODUCTION => 'https://checkout.getnet.cl',
         ];
     }
 
@@ -26,8 +26,8 @@ abstract class CountryConfig implements CountryConfigInterface
     {
         return [
             [
-                'value' => ParseData::unmaskString(Client::PTP),
-                'label' => __(ParseData::unmaskString(Client::PTP)),
+                'value' => ParseData::unmaskString(Client::GNT),
+                'label' => __(ParseData::unmaskString(Client::GNT)),
             ],
         ];
     }

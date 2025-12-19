@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Api;
+namespace Getnet\Payments\Api;
 
 /**
  * Interface ServiceInterface.

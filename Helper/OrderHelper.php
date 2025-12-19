@@ -1,12 +1,12 @@
 <?php
 
-namespace PlacetoPay\Payments\Helper;
+namespace Getnet\Payments\Helper;
 
 use Dnetix\Redirection\Entities\Status;
 use Dnetix\Redirection\Message\RedirectInformation;
 use Magento\Sales\Api\Data\OrderAddressInterface;
 use Magento\Sales\Model\Order;
-use PlacetoPay\Payments\Constants\PaymentStatus;
+use Getnet\Payments\Constants\PaymentStatus;
 
 abstract class OrderHelper
 {

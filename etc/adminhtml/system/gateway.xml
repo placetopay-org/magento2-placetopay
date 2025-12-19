@@ -15,7 +15,7 @@
         <label>Connection Settings</label>
 
         <comment>
-            <![CDATA[You will need to set your API keys before you can accept payments. If you do not yet have a Placetopay account, please <a href="https://www.placetopay.com/web/contactanos" target="_blank">click here</a> to contact and register.]]>
+            <![CDATA[You will need to set your API keys before you can accept payments. If you do not yet have a Getnet account, please <a href="https://www.placetopay.com/web/contactanos" target="_blank">click here</a> to contact and register.]]>
         </comment>
 
         <field
@@ -31,7 +31,7 @@
 
             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
 
-            <config_path>payment/placetopay/active</config_path>
+            <config_path>payment/getnet/active</config_path>
         </field>
 
         <field
@@ -45,13 +45,13 @@
         >
             <label>Client</label>
 
-            <source_model>PlacetoPay\Payments\Model\Adminhtml\Source\Client</source_model>
+            <source_model>Getnet\Payments\Model\Adminhtml\Source\Client</source_model>
 
-            <config_path>payment/placetopay/title</config_path>
+            <config_path>payment/getnet/title</config_path>
         </field>
 
         <field
-            id="placetopay_mode"
+            id="getnet_mode"
             translate="label"
             type="select"
             sortOrder="50"
@@ -63,13 +63,13 @@
 
             <comment><![CDATA[Set this to production when you are ready to accept payments.]]></comment>
 
-            <source_model>PlacetoPay\Payments\Model\Adminhtml\Source\Mode</source_model>
+            <source_model>Getnet\Payments\Model\Adminhtml\Source\Mode</source_model>
 
-            <config_path>payment/placetopay/placetopay_mode</config_path>
+            <config_path>payment/getnet/getnet_mode</config_path>
         </field>
 
         <field
-            id="placetopay_custom_url"
+            id="getnet_custom_url"
             translate="label comment"
             type="text"
             sortOrder="60"
@@ -80,18 +80,18 @@
             <label>Custom connection URL</label>
 
             <comment>
-                <![CDATA[By example: "https://alternative.placetopay.com/redirection". This value only is required when you select custom mode]]>
+                <![CDATA[By example: "https://alternative.getnet.com/redirection". This value only is required when you select custom mode]]>
             </comment>
 
             <depends>
-                <field id="placetopay_mode">custom</field>
+                <field id="getnet_mode">custom</field>
             </depends>
 
-            <config_path>payment/placetopay/placetopay_custom_url</config_path>
+            <config_path>payment/getnet/getnet_custom_url</config_path>
         </field>
 
         <field
-            id="placetopay_development_lg"
+            id="getnet_development_lg"
             translate="label comment"
             type="text"
             sortOrder="70"
@@ -102,18 +102,18 @@
             <label>Development Login</label>
 
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your Placetopay Account</a> > Sites > Development Login]]>
+                <![CDATA[<a target="_blank" href="https://panel.getnet.cl">Your Getnet Account</a> > Sites > Development Login]]>
             </comment>
 
             <depends>
-                <field id="placetopay_mode">development</field>
+                <field id="getnet_mode">development</field>
             </depends>
 
-            <config_path>payment/placetopay/placetopay_development_lg</config_path>
+            <config_path>payment/getnet/getnet_development_lg</config_path>
         </field>
 
         <field
-            id="placetopay_development_tk"
+            id="getnet_development_tk"
             translate="label comment"
             type="obscure"
             sortOrder="80"
@@ -124,20 +124,20 @@
             <label>Development TranKey</label>
 
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your Placetopay Account</a> > Sites > Development TranKey]]>
+                <![CDATA[<a target="_blank" href="https://panel.getnet.cl">Your Getnet Account</a> > Sites > Development TranKey]]>
             </comment>
 
             <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
 
             <depends>
-                <field id="placetopay_mode">development</field>
+                <field id="getnet_mode">development</field>
             </depends>
 
-            <config_path>payment/placetopay/placetopay_development_tk</config_path>
+            <config_path>payment/getnet/getnet_development_tk</config_path>
         </field>
 
         <field
-            id="placetopay_test_lg"
+            id="getnet_test_lg"
             translate="label comment"
             type="text"
             sortOrder="90"
@@ -148,18 +148,18 @@
             <label>Test Login</label>
 
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your Placetopay Account</a> > Sites > Test Login]]>
+                <![CDATA[<a target="_blank" href="https://panel.getnet.cl">Your Getnet Account</a> > Sites > Test Login]]>
             </comment>
 
             <depends>
-                <field id="placetopay_mode">test</field>
+                <field id="getnet_mode">test</field>
             </depends>
 
-            <config_path>payment/placetopay/placetopay_test_lg</config_path>
+            <config_path>payment/getnet/getnet_test_lg</config_path>
         </field>
 
         <field
-            id="placetopay_test_tk"
+            id="getnet_test_tk"
             translate="label comment"
             type="obscure"
             sortOrder="100"
@@ -170,20 +170,20 @@
             <label>Test TranKey</label>
 
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your Placetopay Account</a> > Sites > Test TranKey]]>
+                <![CDATA[<a target="_blank" href="https://panel.getnet.cl">Your Getnet Account</a> > Sites > Test TranKey]]>
             </comment>
 
             <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
 
             <depends>
-                <field id="placetopay_mode">test</field>
+                <field id="getnet_mode">test</field>
             </depends>
 
-            <config_path>payment/placetopay/placetopay_test_tk</config_path>
+            <config_path>payment/getnet/getnet_test_tk</config_path>
         </field>
 
         <field
-            id="placetopay_production_lg"
+            id="getnet_production_lg"
             translate="label comment"
             type="text"
             sortOrder="110"
@@ -194,18 +194,18 @@
             <label>Production Login</label>
 
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your Placetopay Account</a> > Sites > Production Login]]>
+                <![CDATA[<a target="_blank" href="https://panel.getnet.cl">Your Getnet Account</a> > Sites > Production Login]]>
             </comment>
 
             <depends>
-                <field id="placetopay_mode">production</field>
+                <field id="getnet_mode">production</field>
             </depends>
 
-            <config_path>payment/placetopay/placetopay_production_lg</config_path>
+            <config_path>payment/getnet/getnet_production_lg</config_path>
         </field>
 
         <field
-            id="placetopay_production_tk"
+            id="getnet_production_tk"
             translate="label comment"
             type="obscure"
             sortOrder="120"
@@ -216,20 +216,20 @@
             <label>Production TranKey</label>
 
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your Placetopay Account</a> > Sites > Production TranKey]]>
+                <![CDATA[<a target="_blank" https://panel.getnet.cl">Your Getnet Account</a> > Sites > Production TranKey]]>
             </comment>
 
             <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
 
             <depends>
-                <field id="placetopay_mode">production</field>
+                <field id="getnet_mode">production</field>
             </depends>
 
-            <config_path>payment/placetopay/placetopay_production_tk</config_path>
+            <config_path>payment/getnet/getnet_production_tk</config_path>
         </field>
 
         <field
-            id="placetopay_custom_lg"
+            id="getnet_custom_lg"
             translate="label comment"
             type="text"
             sortOrder="130"
@@ -240,18 +240,18 @@
             <label>Custom Login</label>
 
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your Placetopay Account</a> > Sites > Custom Login]]>
+                <![CDATA[<a target="_blank" href="https://panel.getnet.cl">Your Getnet Account</a> > Sites > Custom Login]]>
             </comment>
 
             <depends>
-                <field id="placetopay_mode">custom</field>
+                <field id="getnet_mode">custom</field>
             </depends>
 
-            <config_path>payment/placetopay/placetopay_custom_lg</config_path>
+            <config_path>payment/getnet/getnet_custom_lg</config_path>
         </field>
 
         <field
-            id="placetopay_custom_tk"
+            id="getnet_custom_tk"
             translate="label comment"
             type="obscure"
             sortOrder="140"
@@ -262,16 +262,16 @@
             <label>Custom TranKey</label>
 
             <comment>
-                <![CDATA[<a target="_blank" href="https://panel.placetopay.com">Your Placetopay Account</a> > Sites > Custom TranKey]]>
+                <![CDATA[<a target="_blank" href="https://panel.getnet.cl">Your Getnet Account</a> > Sites > Custom TranKey]]>
             </comment>
 
             <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
 
             <depends>
-                <field id="placetopay_mode">custom</field>
+                <field id="getnet_mode">custom</field>
             </depends>
 
-            <config_path>payment/placetopay/placetopay_custom_tk</config_path>
+            <config_path>payment/getnet/getnet_custom_tk</config_path>
         </field>
 
         <field
@@ -285,9 +285,9 @@
         >
             <label>Payment Button Image</label>
 
-            <comment><![CDATA[It can be a URL, an image name (provide the image to the placetopay team as svg format for this to work) or a local path (save the image to the pub/media folder).]]></comment>
+            <comment><![CDATA[It can be a URL, an image name (provide the image to the getnet team as svg format for this to work) or a local path (save the image to the pub/media folder).]]></comment>
 
-            <config_path>payment/placetopay/payment_button_image</config_path>
+            <config_path>payment/getnet/payment_button_image</config_path>
         </field>
 
         <field
@@ -305,7 +305,7 @@
 
             <frontend_class>validate-number</frontend_class>
 
-            <config_path>payment/placetopay/sort_order</config_path>
+            <config_path>payment/getnet/sort_order</config_path>
         </field>
     </group>
 </include>

@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Model;
+namespace Getnet\Payments\Model;
 
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Customer\Model\Session as CustomerSession;
@@ -10,10 +10,10 @@ use Magento\Framework\View\Asset\Repository;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use PlacetoPay\Payments\Constants\Client;
-use PlacetoPay\Payments\Constants\Country;
-use PlacetoPay\Payments\Helper\Data;
-use PlacetoPay\Payments\Helper\ParseData;
+use Getnet\Payments\Constants\Client;
+use Getnet\Payments\Constants\Country;
+use Getnet\Payments\Helper\Data;
+use Getnet\Payments\Helper\ParseData;
 
 class CustomConfigProvider implements ConfigProviderInterface
 {
@@ -67,8 +67,8 @@ class CustomConfigProvider implements ConfigProviderInterface
         return [
             'payment' => [
                 self::CODE => [
-                    'media' => $this->_assetRepo->getUrl('PlacetoPay_Payments::images'),
-                    'logoUrl' => $this->_assetRepo->getUrl('PlacetoPay_Payments::images/logo.png'),
+                    'media' => $this->_assetRepo->getUrl('Getnet_Payments::images'),
+                    'logoUrl' => $this->_assetRepo->getUrl('Getnet_Payments::images/logo.png'),
                     'logo' => $this->getImage(),
                     'legalName' => $this->_scopeConfig->getLegalName(),
                     'order' => $this->getLastOrder(),

@@ -12,7 +12,7 @@
         <referenceContainer name="content">
             <block class="Magento\Checkout\Block\Onepage\Success" name="checkout.success" template="Magento_Checkout::success.phtml" cacheable="false">
                 <container name="order.success.additional.info" label="Order Success Additional Info">
-                    <block class="PlacetoPay\Payments\Block\Frontend\Onepage\Success" name="placetopay.checkout.success" template="PlacetoPay_Payments::onepage/success.phtml" after="-"/>
+                    <block class="Getnet\Payments\Block\Frontend\Onepage\Success" name="getnet.checkout.success" template="Getnet_Payments::onepage/success.phtml" after="-"/>
                 </container>
             </block>
             <block class="Magento\Checkout\Block\Registration" name="checkout.registration" template="Magento_Checkout::registration.phtml" cacheable="false"/>

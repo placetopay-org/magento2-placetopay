@@ -7,24 +7,24 @@
                showInStore="1">
             <label>Merchant ID</label>
             <frontend_class>validate-number</frontend_class>
-            <config_path>payment/placetopay/merchant_id</config_path>
+            <config_path>payment/getnet/merchant_id</config_path>
         </field>
         <field id="legal_name" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>Legal Name</label>
-            <config_path>payment/placetopay/legal_name</config_path>
+            <config_path>payment/getnet/legal_name</config_path>
         </field>
         <field id="email" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>Email Contact</label>
             <frontend_class>validate-email</frontend_class>
-            <config_path>payment/placetopay/email</config_path>
+            <config_path>payment/getnet/email</config_path>
         </field>
         <field id="phone" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>Telephone Contact</label>
             <frontend_class>validate-phoneStrict</frontend_class>
-            <config_path>payment/placetopay/phone</config_path>
+            <config_path>payment/getnet/phone</config_path>
         </field>
     </group>
 </include>

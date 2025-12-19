@@ -1,10 +1,10 @@
 <?php
 
-namespace PlacetoPay\Payments\Plugin\Sales\Order\Email\Container;
+namespace Getnet\Payments\Plugin\Sales\Order\Email\Container;
 
 use Magento\Checkout\Model\Session;
 use Magento\Sales\Model\Order\Email\Container\OrderIdentity;
-use PlacetoPay\Payments\Helper\Data;
+use Getnet\Payments\Helper\Data;
 
 /**
  * Class OrderIdentityPlugin.

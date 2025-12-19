@@ -7,9 +7,9 @@
         <field id="notification_url" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>Notification URL</label>
-            <frontend_model>PlacetoPay\Payments\Block\Adminhtml\System\Config\Form\Field\NotifyUrl</frontend_model>
-            <comment><![CDATA[URL where Placetopay will send payment status to Magento.]]></comment>
-            <config_path>payment/placetopay/notification_url</config_path>
+            <frontend_model>Getnet\Payments\Block\Adminhtml\System\Config\Form\Field\NotifyUrl</frontend_model>
+            <comment><![CDATA[URL where Getnet will send payment status to Magento.]]></comment>
+            <config_path>payment/getnet/notification_url</config_path>
         </field>
     </group>
 </include>

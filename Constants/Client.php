@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Constants;
+namespace Getnet\Payments\Constants;
 
 class Client
 {

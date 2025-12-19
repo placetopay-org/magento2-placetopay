@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Model;
+namespace Getnet\Payments\Model;
 
 use Dnetix\Redirection\Message\RedirectInformation;
 use Dnetix\Redirection\PlacetoPay;
@@ -25,22 +25,22 @@ use Magento\Quote\Api\Data\CartInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
-use PlacetoPay\Payments\Concerns\IsSetStatusOrderTrait;
-use PlacetoPay\Payments\Constants\PaymentStatus;
-use PlacetoPay\Payments\Helper\Data as Config;
-use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
-use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
-use PlacetoPay\Payments\Model\Info as InfoFactory;
-use PlacetoPay\Payments\PlacetoPayService\PlacetoPayPayment;
+use Getnet\Payments\Concerns\IsSetStatusOrderGetnetTrait;
+use Getnet\Payments\Constants\PaymentStatus;
+use Getnet\Payments\Helper\Data as Config;
+use Getnet\Payments\Logger\Logger as LoggerInterface;
+use Getnet\Payments\Model\Adminhtml\Source\Mode;
+use Getnet\Payments\Model\Info as InfoFactory;
+use Getnet\Payments\GetnetService\GetnetPayment;
 use Magento\Tax\Model\Config as TaxConfig;
 
 /**
- * Class PlaceToPay.
+ * Class Getnet.
  */
 class PaymentMethod extends AbstractMethod
 {
-    use IsSetStatusOrderTrait;
-    public const CODE = 'placetopay';
+    use IsSetStatusOrderGetnetTrait;
+    public const CODE = 'getnet';
 
     protected $_code = self::CODE;
     protected $_isGateway = true;
@@ -116,9 +116,9 @@ class PaymentMethod extends AbstractMethod
     protected $searchCriteriaBuilder;
 
     /**
-     * @var PlacetoPayPayment
+     * @var GetnetPayment
      */
-    protected $placetoPayPayment;
+    protected $getnetPayment;
 
     /**
      * @var TaxConfig
@@ -174,7 +174,7 @@ class PaymentMethod extends AbstractMethod
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->version = '1.12.2';
 
-        $this->placetoPayPayment = new PlacetoPayPayment(
+        $this->getnetPayment = new GetnetPayment(
             $config,
             $_logger,
             $resolver,
@@ -242,8 +242,8 @@ class PaymentMethod extends AbstractMethod
 
     public function processPendingOrder(Order $order, string $requestId): void
     {
-        $transactionInfo = $this->placetoPayPayment->consultTransactionInfo($requestId);
-        $this->logger->info('processPendingOrder with placetopay status: ' . $transactionInfo->status()->status());
+        $transactionInfo = $this->getnetPayment->consultTransactionInfo($requestId);
+        $this->logger->info('processPendingOrder with getnet status: ' . $transactionInfo->status()->status());
 
         $this->setStatus($transactionInfo, $order);
         $this->logger->info('Cron job processed order with ID = ' . $order->getRealOrderId());
@@ -251,7 +251,7 @@ class PaymentMethod extends AbstractMethod
 
     public function gateway(): PlacetoPay
     {
-        return $this->placetoPayPayment->gateway();
+        return $this->getnetPayment->gateway();
     }
 
     /**
@@ -260,12 +260,12 @@ class PaymentMethod extends AbstractMethod
      */
     public function getCheckoutRedirect(Order $order)
     {
-        return $this->placetoPayPayment->getCheckoutRedirect($order);
+        return $this->getnetPayment->getCheckoutRedirect($order);
     }
 
     public function resolve(Order $order, Order\Payment $payment = null): RedirectInformation
     {
-        return $this->placetoPayPayment->resolve($order, $payment);
+        return $this->getnetPayment->resolve($order, $payment);
     }
 
     public function getNameOfStore(): string
@@ -280,6 +280,6 @@ class PaymentMethod extends AbstractMethod
 
     public function setGateway($gatewayConfig): void
     {
-        $this->placetoPayPayment->setGateway($gatewayConfig);
+        $this->getnetPayment->setGateway($gatewayConfig);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Block\Frontend\Onepage;
+namespace Getnet\Payments\Block\Frontend\Onepage;
 
 use Magento\Checkout\Model\Session;
 use Magento\Framework\Pricing\PriceCurrencyInterface;

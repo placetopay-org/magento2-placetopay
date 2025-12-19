@@ -2,7 +2,7 @@
     <body>
         <referenceBlock name="form">
             <action method="setTemplate">
-                <argument name="template" xsi:type="string">PlacetoPay_Payments::order/invoice/view/form.phtml</argument>
+                <argument name="template" xsi:type="string">Getnet_Payments::order/invoice/view/form.phtml</argument>
             </action>
         </referenceBlock>
     </body>

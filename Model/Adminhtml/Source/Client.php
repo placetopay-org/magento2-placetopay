@@ -1,10 +1,10 @@
 <?php
 
-namespace PlacetoPay\Payments\Model\Adminhtml\Source;
+namespace Getnet\Payments\Model\Adminhtml\Source;
 
-use PlacetoPay\Payments\Countries\CountryConfigInterface;
-use PlacetoPay\Payments\Constants\Country;
-use PlacetoPay\Payments\Helper\Data;
+use Getnet\Payments\Countries\CountryConfigInterface;
+use Getnet\Payments\Constants\Country;
+use Getnet\Payments\Helper\Data;
 
 class Client
 {

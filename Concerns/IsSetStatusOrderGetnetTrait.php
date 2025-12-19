@@ -1,14 +1,14 @@
 <?php
 
-namespace PlacetoPay\Payments\Concerns;
+namespace Getnet\Payments\Concerns;
 
 use Dnetix\Redirection\Message\RedirectInformation;
+use Getnet\Payments\Actions\CreateInvoiceAction;
+use Getnet\Payments\Constants\PaymentStatus;
+use Getnet\Payments\Helper\OrderHelper;
 use Magento\Sales\Model\Order;
-use PlacetoPay\Payments\Actions\CreateInvoiceAction;
-use PlacetoPay\Payments\Constants\PaymentStatus;
-use PlacetoPay\Payments\Helper\OrderHelper;
 
-trait IsSetStatusOrderTrait
+trait IsSetStatusOrderGetnetTrait
 {
     public function setStatus(RedirectInformation $information, Order $order, Order\Payment $payment = null): void
     {

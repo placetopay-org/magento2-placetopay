@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Model\Adminhtml\Source;
+namespace Getnet\Payments\Model\Adminhtml\Source;
 
 class Discount
 {

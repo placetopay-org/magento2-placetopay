@@ -1,14 +1,14 @@
 <?php
 
-namespace PlacetoPay\Payments\Constants;
+namespace Getnet\Payments\Constants;
 
-use PlacetoPay\Payments\Countries\BelizeCountryConfig;
-use PlacetoPay\Payments\Countries\ChileCountryConfig;
-use PlacetoPay\Payments\Countries\ColombiaCountryConfig;
-use PlacetoPay\Payments\Countries\CountryConfig;
-use PlacetoPay\Payments\Countries\EcuadorCountryConfig;
-use PlacetoPay\Payments\Countries\HondurasCountryConfig;
-use PlacetoPay\Payments\Countries\UruguayCountryConfig;
+use Getnet\Payments\Countries\BelizeCountryConfig;
+use Getnet\Payments\Countries\ChileCountryConfig;
+use Getnet\Payments\Countries\ColombiaCountryConfig;
+use Getnet\Payments\Countries\CountryConfig;
+use Getnet\Payments\Countries\EcuadorCountryConfig;
+use Getnet\Payments\Countries\HondurasCountryConfig;
+use Getnet\Payments\Countries\UruguayCountryConfig;
 
 class Country
 {

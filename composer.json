@@ -14,7 +14,8 @@
   ],
   "require": {
     "php": ">=7.2",
-    "ext-json": "*"
+    "ext-json": "*",
+    "alejociro/redirection": "^1.0"
   },
   "require-dev": {
     "magento/magento-coding-standard": "*",
@@ -26,7 +27,7 @@
       "registration.php"
     ],
     "psr-4": {
-      "PlacetoPay\\Payments\\": ""
+      "Getnet\\Payments\\": ""
     }
   },
   "scripts": {

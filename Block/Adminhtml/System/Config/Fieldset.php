@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Block\Adminhtml\System\Config;
+namespace Getnet\Payments\Block\Adminhtml\System\Config;
 
 use Magento\Backend\Block\Context;
 use Magento\Backend\Model\Auth\Session;
@@ -67,10 +67,10 @@ class Fieldset extends BaseField
 
         $html .= '<div class="button-container"><button type="button" ' .
             ' class="button action-configure' .
-            (empty($groupConfig['placetopay_ec_separate']) ? '' : ' placetopay-ec-separate') .
+            (empty($groupConfig['getnet_ec_separate']) ? '' : ' getnet-ec-separate') .
             '" id="' .
             $htmlId .
-            '-head" onclick="placetopayToggleSolution.call(this, \'' .
+            '-head" onclick="getnetToggleSolution.call(this, \'' .
             $htmlId .
             "', '" .
             $this->getUrl(
@@ -139,7 +139,7 @@ class Fieldset extends BaseField
     protected function _getExtraJs($element)
     {
         $script = "require(['jquery', 'prototype'], function(jQuery){
-            window.placetopayToggleSolution = function (id, url) {
+            window.getnetToggleSolution = function (id, url) {
                 var doScroll = false;
                 Fieldset.toggleCollapse(id, url);
                 if ($(this).hasClassName(\"open\")) {

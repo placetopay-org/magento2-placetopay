@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Controller\Payment;
+namespace Getnet\Payments\Controller\Payment;
 
 use Exception;
 use Magento\Checkout\Model\Session;
@@ -15,8 +15,8 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
-use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
-use PlacetoPay\Payments\Model\PaymentMethod;
+use Getnet\Payments\Logger\Logger as LoggerInterface;
+use Getnet\Payments\Model\PaymentMethod;
 
 /**
  * Class Data.
@@ -101,8 +101,8 @@ class Data extends Action
             /**
              * @var PaymentMethod
              */
-            $placetopay = $order->getPayment()->getMethodInstance();
-            $url = $placetopay->getCheckoutRedirect($order);
+            $getnet = $order->getPayment()->getMethodInstance();
+            $url = $getnet->getCheckoutRedirect($order);
 
             $order->setStatus('pending');
             $order->setState(Order::STATE_PENDING_PAYMENT);

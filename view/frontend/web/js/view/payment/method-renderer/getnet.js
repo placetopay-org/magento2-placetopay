@@ -34,7 +34,7 @@ define(
         return Component.extend({
             redirectAfterPlaceOrder: false,
             defaults: {
-                template: 'PlacetoPay_Payments/payment/placetopay'
+                template: 'Getnet_Payments/payment/getnet'
             },
 
             placeOrder: function (data, event) {
@@ -67,7 +67,7 @@ define(
             },
 
             afterPlaceOrder: function () {
-                $.post(url.build('placetopay/payment/data'), 'json')
+                $.post(url.build('getnet/payment/data'), 'json')
                     .done(data => {
                         window.location = data.url;
                     }).fail(response => {
@@ -79,26 +79,26 @@ define(
             },
 
             getLogo: function () {
-                return '<img src="'+window.checkoutConfig.payment.placetopay.logo+'" height="48" alt="PlacetoPay"/>';
+                return '<img src="'+window.checkoutConfig.payment.getnet.logo+'" height="48" alt="Getnet"/>';
             },
 
             hasPendingPayment: function () {
-                return window.checkoutConfig.payment.placetopay.order.hasPendingOrder;
+                return window.checkoutConfig.payment.getnet.order.hasPendingOrder;
             },
 
             hasCifin: function () {
-                return window.checkoutConfig.payment.placetopay.hasCifinMessage;
+                return window.checkoutConfig.payment.getnet.hasCifinMessage;
             },
 
             pendingMessage: function () {
-                let orderId = window.checkoutConfig.payment.placetopay.order.id;
-                let phone = window.checkoutConfig.payment.placetopay.order.phone;
+                let orderId = window.checkoutConfig.payment.getnet.order.id;
+                let phone = window.checkoutConfig.payment.getnet.order.phone;
 
                 let email = '<a href="mailto:' +
-                    window.checkoutConfig.payment.placetopay.order.email + '">' +
-                    window.checkoutConfig.payment.placetopay.order.email + '</a>';
+                    window.checkoutConfig.payment.getnet.order.email + '">' +
+                    window.checkoutConfig.payment.getnet.order.email + '</a>';
 
-                let authorization = window.checkoutConfig.payment.placetopay.order.authorization;
+                let authorization = window.checkoutConfig.payment.getnet.order.authorization;
                 let data = [orderId, phone, email, authorization];
 
                 return $t("At this time your order #%1 display a checkout transaction which is pending receipt of confirmation from your financial institution, please wait a few minutes and check back later to see if your payment was successfully confirmed. For more information about the current state of your operation you may contact our customer service line at %2 or send your concerns to the email %3 and ask for the status of the transaction: '%4'.")
@@ -106,10 +106,10 @@ define(
             },
 
             securityMessage: function () {
-                let url = window.checkoutConfig.payment.placetopay.url;
-                let name = window.checkoutConfig.payment.placetopay.legalName;
+                let url = window.checkoutConfig.payment.getnet.url;
+                let name = window.checkoutConfig.payment.getnet.legalName;
                 let merchant = '<b>EGM Ingeniería Sin Fronteras S.A.S</b>';
-                let brand = '<b>Placetopay</b>';
+                let brand = '<b>Getnet</b>';
                 let data = [url, name, merchant, brand];
 
                 return $t('Any person who realizes a purchase in the site %1, acting freely and voluntarily, authorizes to %2, through the service provider %3 y/o %4 to consult and request information from credit, financial, commercial performance and services to third parties, even in countries of the same nature in the central risk, generating a footprint consultation.')
@@ -117,7 +117,7 @@ define(
             },
 
             getPaymentIcons: function () {
-                let paymentMethods = window.checkoutConfig.payment.placetopay.paymentMethods;
+                let paymentMethods = window.checkoutConfig.payment.getnet.paymentMethods;
                 let icons = [];
                 const franchises = {
                     'CDNSA': 'codensa',
@@ -187,7 +187,7 @@ define(
 
                 paymentMethods.forEach(function (icon) {
                     // console.log(franchises[icon]);
-                    // icons.push('<img src="'+window.checkoutConfig.payment.placetopay.media+'/icon_card/'+franchises[icon]+'.svg" class="acceptance_logo" alt="'+icon+'" />');
+                    // icons.push('<img src="'+window.checkoutConfig.payment.getnet.media+'/icon_card/'+franchises[icon]+'.svg" class="acceptance_logo" alt="'+icon+'" />');
                     icons.push('<img src="https://www.placetopay.com/images/providers/' + icon + '.png" alt="" class="acceptance_logo" />');
                 });
 
@@ -195,11 +195,11 @@ define(
             },
 
             getMinimum: function () {
-                return window.checkoutConfig.payment.placetopay.minimum;
+                return window.checkoutConfig.payment.getnet.minimum;
             },
 
             getMaximum: function () {
-                return window.checkoutConfig.payment.placetopay.maximum;
+                return window.checkoutConfig.payment.getnet.maximum;
             },
 
             getTotal: function () {
@@ -207,7 +207,7 @@ define(
             },
 
             showErrorMessage: function (message) {
-                document.getElementById('payment-method-placetopay').scrollIntoView(true);
+                document.getElementById('payment-method-getnet').scrollIntoView(true);
                 this.messageContainer.addErrorMessage({message: message});
             },
 
@@ -250,7 +250,7 @@ define(
             },
 
             allowPendingPayment: function () {
-                return window.checkoutConfig.payment.placetopay.allowPendingPayments;
+                return window.checkoutConfig.payment.getnet.allowPendingPayments;
             }
         });
     }

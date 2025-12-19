@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Actions;
+namespace Getnet\Payments\Actions;
 
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\Order;

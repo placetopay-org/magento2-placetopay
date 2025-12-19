@@ -10,8 +10,8 @@ define(
         'use strict';
         rendererList.push(
             {
-                type: 'placetopay',
-                component: 'PlacetoPay_Payments/js/view/payment/method-renderer/placetopay'
+                type: 'getnet',
+                component: 'Getnet_Payments/js/view/payment/method-renderer/getnet'
             }
         );
         /** Add view logic here if needed */

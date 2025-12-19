@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Countries;
+namespace Getnet\Payments\Countries;
 
 interface CountryConfigInterface
 {

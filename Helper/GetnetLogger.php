@@ -1,11 +1,11 @@
 <?php
 
-namespace PlacetoPay\Payments\Helper;
+namespace Getnet\Payments\Helper;
 
 use Magento\Framework\Serialize\Serializer\Json;
-use PlacetoPay\Payments\Logger\Logger;
+use Getnet\Payments\Logger\Logger;
 
-class PlacetoPayLogger
+class GetnetLogger
 {
     /**
      * @var Logger

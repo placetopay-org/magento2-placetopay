@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Block;
+namespace Getnet\Payments\Block;
 
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Template;

@@ -5,14 +5,14 @@
  */
 
 ?>
-<?php /** @var $block \PlacetoPay\Payments\Block\Frontend\Onepage\Success */ ?>
+<?php /** @var $block \Getnet\Payments\Block\Frontend\Onepage\Success */ ?>
 <?php $order = $block->getOrder(); ?>
 <?php $payment = $order->getPayment(); ?>
 <?php $information = $payment->getAdditionalInformation(); ?>
 <div class="checkout-success">
     <?= $block->getAdditionalInfoHtml() ?>
 
-    <div class="placetopay-checkout-onepage">
+    <div class="getnet-checkout-onepage">
         <?php if ($order): ?>
             <?php if ($order->getStatus() == 'failed'): ?>
                 <p><?= $block->escapeHtml(__('Unfortunately your order cannot be processed as the originating bank/merchant has declined your transaction. Please attempt your purchase again.')) ?></p>

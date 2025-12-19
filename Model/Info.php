@@ -1,6 +1,6 @@
 <?php
 
-namespace PlacetoPay\Payments\Model;
+namespace Getnet\Payments\Model;
 
 use Dnetix\Redirection\Entities\Status;
 use Dnetix\Redirection\Entities\Transaction;
@@ -12,7 +12,7 @@ use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Sales\Model\Order\Payment\Transaction as TransactionModel;
 use Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface;
-use PlacetoPay\Payments\Exception\PlacetoPayException;
+use Getnet\Payments\Exception\GetnetException;
 
 class Info
 {
@@ -34,7 +34,7 @@ class Info
 
     /**
      * @throws LocalizedException
-     * @throws PlacetoPayException
+     * @throws GetnetException
      */
     public function loadInformationFromRedirectResponse(
         Payment $payment,
@@ -70,13 +70,13 @@ class Info
         try {
             $this->orderPaymentRepository->save($payment);
         } catch (Exception $ex) {
-            throw new PlacetoPayException($ex->getMessage(), 401);
+            throw new GetnetException($ex->getMessage(), 401);
         }
     }
 
     /**
      * @throws LocalizedException
-     * @throws PlacetoPayException
+     * @throws GetnetException
      */
     public function updateStatus(Payment $payment, Status $status, array $transactions)
     {
@@ -117,7 +117,7 @@ class Info
 
     /**
      * @throws LocalizedException
-     * @throws PlacetoPayException
+     * @throws GetnetException
      */
     public function importToPayment(Payment $payment, array $data)
     {
@@ -128,7 +128,7 @@ class Info
         try {
             $this->orderPaymentRepository->save($payment);
         } catch (Exception $ex) {
-            throw new PlacetoPayException($ex->getMessage(), 401);
+            throw new GetnetException($ex->getMessage(), 401);
         }
     }
 }
