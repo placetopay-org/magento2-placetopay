@@ -42,13 +42,13 @@ cd "$DEST_DIR" \
 
 # 📦 Crear ZIP (sin incluir la carpeta -build)
 cd "$BUILD_DIR"
-zip -r -q -o "${CURRENT_FOLDER}/${MODULE_NAME_VR}.zip" "${X_FOLDER}"
+zip -r -q -o "${CURRENT_FOLDER}/${MODULE_NAME_VR}-${X_FOLDER}.zip" "${X_FOLDER}"
 
 # 🔒 Permisos y limpieza
 cd "$CURRENT_FOLDER"
-chown "$USER_ID":"$USER_ID" "${MODULE_NAME_VR}.zip" 2>/dev/null || true
-chmod 644 "${MODULE_NAME_VR}.zip"
+chown "$USER_ID":"$USER_ID" "${MODULE_NAME_VR}-${X_FOLDER}.zip" 2>/dev/null || true
+chmod 644 "${MODULE_NAME_VR}-${X_FOLDER}.zip"
 rm -rf "$BUILD_DIR"
 
-echo "✅ ZIP generado: ${MODULE_NAME_VR}.zip"
+echo "✅ ZIP generado: ${MODULE_NAME_VR}-${X_FOLDER}.zip"
 echo "📁 Al descomprimir tendrás: ${X_FOLDER}/Payments/"
