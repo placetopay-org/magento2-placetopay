@@ -69,52 +69,6 @@
         </field>
 
         <field
-            id="getnet_development_lg"
-            translate="label comment"
-            type="text"
-            sortOrder="70"
-            showInDefault="1"
-            showInWebsite="1"
-            showInStore="1"
-        >
-            <label>Development Login</label>
-
-            <comment>
-                <![CDATA[<a target="_blank" href="https://panel.getnet.cl">Your Getnet Account</a> > Sites > Development Login]]>
-            </comment>
-
-            <depends>
-                <field id="getnet_mode">development</field>
-            </depends>
-
-            <config_path>payment/getnet/getnet_development_lg</config_path>
-        </field>
-
-        <field
-            id="getnet_development_tk"
-            translate="label comment"
-            type="obscure"
-            sortOrder="80"
-            showInDefault="1"
-            showInWebsite="1"
-            showInStore="1"
-        >
-            <label>Development TranKey</label>
-
-            <comment>
-                <![CDATA[<a target="_blank" href="https://panel.getnet.cl">Your Getnet Account</a> > Sites > Development TranKey]]>
-            </comment>
-
-            <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-
-            <depends>
-                <field id="getnet_mode">development</field>
-            </depends>
-
-            <config_path>payment/getnet/getnet_development_tk</config_path>
-        </field>
-
-        <field
             id="getnet_test_lg"
             translate="label comment"
             type="text"

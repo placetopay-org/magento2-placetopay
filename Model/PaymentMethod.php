@@ -205,7 +205,7 @@ class PaymentMethod extends AbstractMethod
     {
         return !(!$this->config->getTranKey()
             || !$this->config->getLogin()
-            || !$this->config->getEndpointsTo($this->config->getCountryCode()));
+            || !$this->config->getEndpointsTo());
     }
 
     /**
@@ -275,7 +275,7 @@ class PaymentMethod extends AbstractMethod
 
     public function inDebugMode(): bool
     {
-        return in_array($this->config->getMode(), [Mode::DEVELOPMENT, Mode::CUSTOM], true);
+        return false;
     }
 
     public function setGateway($gatewayConfig): void

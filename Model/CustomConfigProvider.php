@@ -11,7 +11,6 @@ use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use Getnet\Payments\Constants\Client;
-use Getnet\Payments\Constants\Country;
 use Getnet\Payments\Helper\Data;
 use Getnet\Payments\Helper\ParseData;
 

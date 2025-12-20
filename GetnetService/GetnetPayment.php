@@ -2,7 +2,6 @@
 
 namespace Getnet\Payments\GetnetService;
 
-use Dnetix\Redirection\Entities\PaymentModifier;
 use Dnetix\Redirection\Message\RedirectInformation;
 use Dnetix\Redirection\PlacetoPay;
 use Exception;
@@ -14,12 +13,10 @@ use Magento\Framework\UrlInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
 use Getnet\Payments\Concerns\IsSetStatusOrderTrait;
-use Getnet\Payments\Constants\Country;
 use Getnet\Payments\Exception\GetnetException;
 use Getnet\Payments\Helper\Data as Config;
 use Getnet\Payments\Helper\OrderHelper;
 use Getnet\Payments\Logger\Logger as LoggerInterface;
-use Getnet\Payments\Model\Adminhtml\Source\Discount;
 use Magento\Tax\Model\Config as TaxConfig;
 
 class GetnetPayment
@@ -255,22 +252,6 @@ class GetnetPayment
             'skipResult' => $this->config->getSkipResult(),
             'noBuyerFill' => $this->config->getFillBuyerInformation(),
         ];
-
-        if ($this->config->getCountryCode() === Country::URUGUAY) {
-            $discountCode = $this->config->getDiscount();
-
-            if ($discountCode !== Discount::UY_NONE) {
-                $data['payment']['modifiers'] = [
-                    new PaymentModifier([
-                        'type' => PaymentModifier::TYPE_FEDERAL_GOVERNMENT,
-                        'code' => $discountCode,
-                        'additional' => [
-                            'invoice' => $this->config->getInvoice()
-                        ]
-                    ])
-                ];
-            }
-        }
 
         if ($this->config->getFillTaxInformation()) {
             $data['payment']['amount']['taxes'] = $this->getPaymentTaxes($order);

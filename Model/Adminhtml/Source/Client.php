@@ -2,9 +2,9 @@
 
 namespace Getnet\Payments\Model\Adminhtml\Source;
 
-use Getnet\Payments\Countries\CountryConfigInterface;
-use Getnet\Payments\Constants\Country;
 use Getnet\Payments\Helper\Data;
+use Getnet\Payments\Helper\ParseData;
+use Getnet\Payments\Constants\Client as Clients;
 
 class Client
 {
@@ -20,15 +20,11 @@ class Client
 
     public function toOptionArray(): array
     {
-        $countryCode = $this->dataHelper->getCountryCode();
-
-        /** @var CountryConfigInterface $config */
-        foreach (Country::COUNTRIES_CLIENT as $config) {
-            if (!$config::resolve($countryCode)) {
-                continue;
-            }
-            return $config::getClient();
-        }
-        return [];
+        return [
+            [
+                'value' => ParseData::unmaskString(Clients::GNT),
+                'label' => __(ParseData::unmaskString(Clients::GNT)),
+            ],
+        ];
     }
 }

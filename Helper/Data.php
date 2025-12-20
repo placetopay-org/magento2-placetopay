@@ -11,8 +11,6 @@ use Magento\Payment\Model\Config;
 use Magento\Payment\Model\Method\Factory;
 use Magento\Store\Model\App\Emulation;
 use Magento\Store\Model\ScopeInterface;
-use Getnet\Payments\Constants\Country;
-use Getnet\Payments\Countries\CountryConfigInterface;
 use Getnet\Payments\Logger\Logger;
 use Getnet\Payments\Model\Adminhtml\Source\Mode;
 use Getnet\Payments\Model\Info as InfoFactory;
@@ -302,13 +300,6 @@ class Data extends BaseData
         $mode = $this->getMode($storeId);
 
         switch ($mode) {
-            case Mode::DEVELOPMENT:
-                $tranKey = $this->scopeConfig->getValue(
-                    'payment/getnet/getnet_development_tk',
-                    ScopeInterface::SCOPE_STORE,
-                    $storeId
-                );
-                break;
             case Mode::TEST:
                 $tranKey = $this->scopeConfig->getValue(
                     'payment/getnet/getnet_test_tk',
@@ -333,23 +324,9 @@ class Data extends BaseData
         $mode = $this->getMode($storeId);
 
         switch ($mode) {
-            case Mode::DEVELOPMENT:
-                $login = $this->scopeConfig->getValue(
-                    'payment/getnet/getnet_development_lg',
-                    ScopeInterface::SCOPE_STORE,
-                    $storeId
-                );
-                break;
             case Mode::TEST:
                 $login = $this->scopeConfig->getValue(
                     'payment/getnet/getnet_test_lg',
-                    ScopeInterface::SCOPE_STORE,
-                    $storeId
-                );
-                break;
-            case Mode::CUSTOM:
-                $login = $this->scopeConfig->getValue(
-                    'payment/getnet/getnet_custom_lg',
                     ScopeInterface::SCOPE_STORE,
                     $storeId
                 );
@@ -389,18 +366,12 @@ class Data extends BaseData
      * @param $countryCode
      * @return string[]
      */
-    public function getEndpointsTo($countryCode): array
+    public function getEndpointsTo(): array
     {
-        /** @var CountryConfigInterface $config */
-        foreach (Country::COUNTRIES_CONFIG as $config) {
-            if (!$config::resolve($countryCode)) {
-                continue;
-            }
-
-            return $config::getEndpoints($this->getTitle());
-        }
-
-        return [];
+        return [
+            Mode::TEST => ParseData::unmaskString('uggcf://purpxbhg.grfg.trgarg.py'),
+            Mode::PRODUCTION => ParseData::unmaskString('uggcf://purpxbhg.trgarg.py'),
+        ];
     }
 
     public function cleanText($text)
