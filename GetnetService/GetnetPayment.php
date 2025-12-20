@@ -13,7 +13,7 @@ use Magento\Framework\Locale\Resolver;
 use Magento\Framework\UrlInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
-use Getnet\Payments\Concerns\IsSetStatusOrderGetnetTrait;
+use Getnet\Payments\Concerns\IsSetStatusOrderTrait;
 use Getnet\Payments\Constants\Country;
 use Getnet\Payments\Exception\GetnetException;
 use Getnet\Payments\Helper\Data as Config;
@@ -24,7 +24,7 @@ use Magento\Tax\Model\Config as TaxConfig;
 
 class GetnetPayment
 {
-    use IsSetStatusOrderGetnetTrait;
+    use IsSetStatusOrderTrait;
 
     /**
      * @var PlacetoPay

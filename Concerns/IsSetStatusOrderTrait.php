@@ -8,7 +8,7 @@ use Getnet\Payments\Constants\PaymentStatus;
 use Getnet\Payments\Helper\OrderHelper;
 use Magento\Sales\Model\Order;
 
-trait IsSetStatusOrderGetnetTrait
+trait IsSetStatusOrderTrait
 {
     public function setStatus(RedirectInformation $information, Order $order, Order\Payment $payment = null): void
     {

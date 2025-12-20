@@ -25,7 +25,7 @@ use Magento\Quote\Api\Data\CartInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
-use Getnet\Payments\Concerns\IsSetStatusOrderGetnetTrait;
+use Getnet\Payments\Concerns\IsSetStatusOrderTrait;
 use Getnet\Payments\Constants\PaymentStatus;
 use Getnet\Payments\Helper\Data as Config;
 use Getnet\Payments\Logger\Logger as LoggerInterface;
@@ -39,7 +39,7 @@ use Magento\Tax\Model\Config as TaxConfig;
  */
 class PaymentMethod extends AbstractMethod
 {
-    use IsSetStatusOrderGetnetTrait;
+    use IsSetStatusOrderTrait;
     public const CODE = 'getnet';
 
     protected $_code = self::CODE;
