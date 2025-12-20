@@ -58,7 +58,7 @@ trait IsSetStatusOrderTrait
         }
     }
 
-    public function changeStatusOrderFail(Order $order, Order\Payment $payment = null): void
+    public function changeStatusOrderFail(Order $order, ?Order\Payment $payment = null): void
     {
         if (!$payment) {
             $payment = $order->getPayment();
