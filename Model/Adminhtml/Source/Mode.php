@@ -7,7 +7,6 @@ class Mode
     public const DEVELOPMENT = 'development';
     public const TEST = 'test';
     public const PRODUCTION = 'production';
-    public const CUSTOM = 'custom';
 
     /**
      * @return array
@@ -26,10 +25,6 @@ class Mode
             [
                 'value' => self::PRODUCTION,
                 'label' => __('Production'),
-            ],
-            [
-                'value' => self::CUSTOM,
-                'label' => __('Custom'),
             ]
         ];
     }

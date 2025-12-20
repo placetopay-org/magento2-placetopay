@@ -69,28 +69,6 @@
         </field>
 
         <field
-            id="getnet_custom_url"
-            translate="label comment"
-            type="text"
-            sortOrder="60"
-            showInDefault="1"
-            showInWebsite="1"
-            showInStore="1"
-        >
-            <label>Custom connection URL</label>
-
-            <comment>
-                <![CDATA[By example: "https://alternative.getnet.com/redirection". This value only is required when you select custom mode]]>
-            </comment>
-
-            <depends>
-                <field id="getnet_mode">custom</field>
-            </depends>
-
-            <config_path>payment/getnet/getnet_custom_url</config_path>
-        </field>
-
-        <field
             id="getnet_development_lg"
             translate="label comment"
             type="text"
@@ -226,52 +204,6 @@
             </depends>
 
             <config_path>payment/getnet/getnet_production_tk</config_path>
-        </field>
-
-        <field
-            id="getnet_custom_lg"
-            translate="label comment"
-            type="text"
-            sortOrder="130"
-            showInDefault="1"
-            showInWebsite="1"
-            showInStore="1"
-        >
-            <label>Custom Login</label>
-
-            <comment>
-                <![CDATA[<a target="_blank" href="https://panel.getnet.cl">Your Getnet Account</a> > Sites > Custom Login]]>
-            </comment>
-
-            <depends>
-                <field id="getnet_mode">custom</field>
-            </depends>
-
-            <config_path>payment/getnet/getnet_custom_lg</config_path>
-        </field>
-
-        <field
-            id="getnet_custom_tk"
-            translate="label comment"
-            type="obscure"
-            sortOrder="140"
-            showInDefault="1"
-            showInWebsite="1"
-            showInStore="1"
-        >
-            <label>Custom TranKey</label>
-
-            <comment>
-                <![CDATA[<a target="_blank" href="https://panel.getnet.cl">Your Getnet Account</a> > Sites > Custom TranKey]]>
-            </comment>
-
-            <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-
-            <depends>
-                <field id="getnet_mode">custom</field>
-            </depends>
-
-            <config_path>payment/getnet/getnet_custom_tk</config_path>
         </field>
 
         <field

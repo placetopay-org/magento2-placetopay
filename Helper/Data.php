@@ -282,31 +282,10 @@ class Data extends BaseData
     /**
      * @return string|null
      */
-    public function getCustomConnectionUrl($storeId = null): ?string
-    {
-        return $this->scopeConfig->getValue(
-            'payment/getnet/getnet_custom_url',
-            ScopeInterface::SCOPE_STORE,
-            $storeId
-        );
-    }
-
-    public function isCustomEnvironment($storeId = null): bool
-    {
-        return $this->getMode($storeId) === Mode::CUSTOM;
-    }
-
-    /**
-     * @return string|null
-     */
     public function getUri($storeId = null): ?string
     {
         $uri = null;
         $endpoints = $this->getEndpointsTo($this->getCountryCode());
-
-        if ($this->isCustomEnvironment($storeId)) {
-            return $this->getCustomConnectionUrl($storeId);
-        }
 
         if (!empty($endpoints[$this->getMode($storeId)])) {
             return $endpoints[$this->getMode($storeId)];
@@ -333,13 +312,6 @@ class Data extends BaseData
             case Mode::TEST:
                 $tranKey = $this->scopeConfig->getValue(
                     'payment/getnet/getnet_test_tk',
-                    ScopeInterface::SCOPE_STORE,
-                    $storeId
-                );
-                break;
-            case Mode::CUSTOM:
-                $tranKey = $this->scopeConfig->getValue(
-                    'payment/getnet/getnet_custom_tk',
                     ScopeInterface::SCOPE_STORE,
                     $storeId
                 );
