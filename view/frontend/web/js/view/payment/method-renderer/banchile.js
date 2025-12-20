@@ -79,7 +79,7 @@ define(
             },
 
             getLogo: function () {
-                return '<img src="'+window.checkoutConfig.payment.banchile.logo+'" height="48" alt="Banchile"/>';
+                return '<img src="'+window.checkoutConfig.payment.banchile.logo+'" alt="Banchile"/>';
             },
 
             hasPendingPayment: function () {

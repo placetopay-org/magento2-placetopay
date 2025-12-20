@@ -13,7 +13,6 @@ use Magento\Payment\Model\Method\Factory;
 use Magento\Store\Model\App\Emulation;
 use Magento\Store\Model\ScopeInterface;
 use Banchile\Payments\Constants\Country;
-use Banchile\Payments\Countries\CountryConfigInterface;
 use Banchile\Payments\Logger\Logger;
 use Banchile\Payments\Model\Adminhtml\Source\Mode;
 use Banchile\Payments\Model\Info as InfoFactory;
@@ -283,31 +282,10 @@ class Data extends BaseData
     /**
      * @return string|null
      */
-    public function getCustomConnectionUrl($storeId = null): ?string
-    {
-        return $this->scopeConfig->getValue(
-            'payment/banchile/banchile_custom_url',
-            ScopeInterface::SCOPE_STORE,
-            $storeId
-        );
-    }
-
-    public function isCustomEnvironment($storeId = null): bool
-    {
-        return $this->getMode($storeId) === Mode::CUSTOM;
-    }
-
-    /**
-     * @return string|null
-     */
     public function getUri($storeId = null): ?string
     {
         $uri = null;
         $endpoints = $this->getEndpointsTo();
-
-        if ($this->isCustomEnvironment($storeId)) {
-            return $this->getCustomConnectionUrl($storeId);
-        }
 
         if (!empty($endpoints[$this->getMode($storeId)])) {
             return $endpoints[$this->getMode($storeId)];
@@ -334,13 +312,6 @@ class Data extends BaseData
             case Mode::TEST:
                 $tranKey = $this->scopeConfig->getValue(
                     'payment/banchile/banchile_test_tk',
-                    ScopeInterface::SCOPE_STORE,
-                    $storeId
-                );
-                break;
-            case Mode::CUSTOM:
-                $tranKey = $this->scopeConfig->getValue(
-                    'payment/banchile/banchile_custom_tk',
                     ScopeInterface::SCOPE_STORE,
                     $storeId
                 );
@@ -372,13 +343,6 @@ class Data extends BaseData
             case Mode::TEST:
                 $login = $this->scopeConfig->getValue(
                     'payment/banchile/banchile_test_lg',
-                    ScopeInterface::SCOPE_STORE,
-                    $storeId
-                );
-                break;
-            case Mode::CUSTOM:
-                $login = $this->scopeConfig->getValue(
-                    'payment/banchile/banchile_custom_lg',
                     ScopeInterface::SCOPE_STORE,
                     $storeId
                 );

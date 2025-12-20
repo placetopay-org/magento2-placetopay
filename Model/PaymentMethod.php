@@ -275,7 +275,7 @@ class PaymentMethod extends AbstractMethod
 
     public function inDebugMode(): bool
     {
-        return in_array($this->config->getMode(), [Mode::DEVELOPMENT, Mode::CUSTOM], true);
+        return in_array($this->config->getMode(), [Mode::DEVELOPMENT], true);
     }
 
     public function setGateway($gatewayConfig): void

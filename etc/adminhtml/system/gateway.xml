@@ -53,28 +53,6 @@
         </field>
 
         <field
-            id="banchile_custom_url"
-            translate="label comment"
-            type="text"
-            sortOrder="60"
-            showInDefault="1"
-            showInWebsite="1"
-            showInStore="1"
-        >
-            <label>Custom connection URL</label>
-
-            <comment>
-                <![CDATA[By example: "https://alternative.banchilepagos.cl/redirection". This value only is required when you select custom mode]]>
-            </comment>
-
-            <depends>
-                <field id="banchile_mode">custom</field>
-            </depends>
-
-            <config_path>payment/banchile/banchile_custom_url</config_path>
-        </field>
-
-        <field
             id="banchile_development_lg"
             translate="label comment"
             type="text"
