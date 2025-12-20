@@ -28,7 +28,7 @@
 "If it is selected, the confirmation email will be sent after payment success response.","If it is selected, the confirmation email will be sent after payment success response."
 "Translates the Tax rate name to a Getnet tax name.","Translates the Tax rate name to a Getnet tax name."
 "Connection Settings","Connection Settings"
-"You will need to set your API keys before you can accept payments. If you do not yet have a Getnet account, please <a href=""https://www.placetopay.com/web/contactanos"" target=""_blank"">click here</a> to contact and register.","You will need to set your API keys before you can accept payments. If you do not yet have a Placetopay account, please <a href=""https://www.placetopay.com/web/contactanos"" target=""_blank"">click here</a> to contact and register."
+"You will need to set your API keys before you can accept payments. If you do not yet have a Getnet account, please <a href=""https://www.getnet.cl/contacto"" target=""_blank"">click here</a> to contact and register.","You will need to set your API keys before you can accept payments. If you do not yet have a Placetopay account, please <a href=""https://www.getnet.cl/contacto"" target=""_blank"">click here</a> to contact and register."
 "Enabled","Enabled"
 "Title","Title"
 "This is the payment method title used at the checkout page.","This is the payment method title used at the checkout page."

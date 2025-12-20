@@ -15,7 +15,7 @@
         <label>Connection Settings</label>
 
         <comment>
-            <![CDATA[You will need to set your API keys before you can accept payments. If you do not yet have a Getnet account, please <a href="https://www.placetopay.com/web/contactanos" target="_blank">click here</a> to contact and register.]]>
+            <![CDATA[You will need to set your API keys before you can accept payments. If you do not yet have a Getnet account, please <a href="https://www.getnet.cl/contacto" target="_blank">click here</a> to contact and register.]]>
         </comment>
 
         <field

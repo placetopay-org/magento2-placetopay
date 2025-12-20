@@ -28,7 +28,7 @@
 "If it is selected, the confirmation email will be sent after payment success response.","Si se selecciona, el correo electrónico de confirmación se enviará después de la respuesta de pago exitoso"
 "Translates the Tax rate name to a Getnet tax name.","Traduce el nombre del tipo de impuesto al que utiliza Getnet."
 "Connection Settings","Configuración de Conexión"
-"You will need to set your API keys before you can accept payments. If you do not yet have a Getnet account, please <a href=""https://www.placetopay.com/web/contactanos"" target=""_blank"">click here</a> to contact and register.","Deberá configurar sus claves API antes de poder aceptar pagos. Si aún no tiene una cuenta de Placetopay, haga <a href=""https://www.placetopay.com/web/contactanos"" target=""_blank"">clic aquí</a> para contactar y registrarse."
+"You will need to set your API keys before you can accept payments. If you do not yet have a Getnet account, please <a href=""https://www.getnet.cl/contacto"" target=""_blank"">click here</a> to contact and register.","Deberá configurar sus claves API antes de poder aceptar pagos. Si aún no tiene una cuenta de Placetopay, haga <a href=""https://www.getnet.cl/contacto"" target=""_blank"">clic aquí</a> para contactar y registrarse."
 "Enabled","Habilitado"
 "Title","Título"
 "This is the payment method title used at the checkout page.","Este es el título del método de pago utilizado en la página de pago"
