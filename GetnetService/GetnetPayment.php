@@ -151,7 +151,7 @@ class GetnetPayment
         }
     }
 
-    public function resolve(Order $order, Order\Payment $payment = null): RedirectInformation
+    public function resolve(Order $order, ?Order\Payment $payment = null): RedirectInformation
     {
         if (!$payment) {
             $payment = $order->getPayment();

@@ -145,8 +145,8 @@ class PaymentMethod extends AbstractMethod
         RemoteAddress $remoteAddress,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         TaxConfig $tax,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         parent::__construct(
@@ -201,7 +201,7 @@ class PaymentMethod extends AbstractMethod
      * @return bool
      * @see vendor/magento/module-payment/Model/MethodInterface.php
      */
-    public function isAvailable(CartInterface $quote = null): bool
+    public function isAvailable(?CartInterface $quote = null): bool
     {
         return !(!$this->config->getTranKey()
             || !$this->config->getLogin()
@@ -263,7 +263,7 @@ class PaymentMethod extends AbstractMethod
         return $this->getnetPayment->getCheckoutRedirect($order);
     }
 
-    public function resolve(Order $order, Order\Payment $payment = null): RedirectInformation
+    public function resolve(Order $order, ?Order\Payment $payment = null): RedirectInformation
     {
         return $this->getnetPayment->resolve($order, $payment);
     }
