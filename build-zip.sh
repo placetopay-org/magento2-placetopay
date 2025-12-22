@@ -18,34 +18,37 @@ USER_ID=$(id -u)
 echo "🧩 Preparando build para: $MODULE_NAME_VR"
 echo "📁 Estructura final: ${X_FOLDER}/Payments/"
 
-# 🧹 Limpiar y copiar estructura
-rm -rf "$BUILD_DIR" \
-  && mkdir -p "$DEST_DIR" \
-  && cp -pr "$CURRENT_FOLDER/"* "$DEST_DIR"
+# 🧹 Limpiar y copiar estructura (excluyendo el directorio -build)
+rm -rf "$BUILD_DIR"
+mkdir -p "$DEST_DIR"
+
+# Copiar archivos excepto el propio -build
+rsync -a --exclude "${MODULE_NAME_VR}-build" "$CURRENT_FOLDER/" "$DEST_DIR/"
 
 # 🚿 Limpiar archivos innecesarios dentro del destino
-cd "$DEST_DIR" \
-  && find . -type d -name ".git*" -exec rm -rf {} + \
-  && rm -rf \
-      .git* \
-      .idea \
-      Makefile \
-      .env* \
-      env \
-      .docker* \
-      docker* \
-      *.md \
-      *.txt \
-      *.sh \
-      vendor \
-      node_modules
+cd "$DEST_DIR" || exit 1
+find . -type d -name ".git*" -exec rm -rf {} + >/dev/null 2>&1
+rm -rf \
+  .git* \
+  .idea \
+  Makefile \
+  .env* \
+  env \
+  .docker* \
+  docker* \
+  *.md \
+  *.txt \
+  *.sh \
+  *.yml \
+  vendor \
+  node_modules
 
 # 📦 Crear ZIP (sin incluir la carpeta -build)
-cd "$BUILD_DIR"
+cd "$BUILD_DIR" || exit 1
 zip -r -q -o "${CURRENT_FOLDER}/${MODULE_NAME_VR}-${X_FOLDER}.zip" "${X_FOLDER}"
 
 # 🔒 Permisos y limpieza
-cd "$CURRENT_FOLDER"
+cd "$CURRENT_FOLDER" || exit 1
 chown "$USER_ID":"$USER_ID" "${MODULE_NAME_VR}-${X_FOLDER}.zip" 2>/dev/null || true
 chmod 644 "${MODULE_NAME_VR}-${X_FOLDER}.zip"
 rm -rf "$BUILD_DIR"
