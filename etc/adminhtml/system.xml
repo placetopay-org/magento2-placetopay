@@ -3,8 +3,8 @@
     <system>
         <section id="payment">
             <group id="banchile" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Banchile Pagos</label>
-                <comment>Accept payments by credit cards and debits account using Banchile Pagos.</comment>
+                <label>Banchile pagos</label>
+                <comment>Accept payments by credit cards and debits account using Banchile pagos.</comment>
                 <fieldset_css>complex banchile-admin-config</fieldset_css>
                 <frontend_model>Banchile\Payments\Block\Adminhtml\System\Config\Fieldset</frontend_model>
                 <attribute type="displayIn">recommended_solutions</attribute>

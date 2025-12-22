@@ -247,7 +247,7 @@
         >
             <label>Payment Button Image</label>
 
-            <comment><![CDATA[It can be a URL, an image name (provide the image to the Banchile Pagos team as svg format for this to work) or a local path (save the image to the pub/media folder).]]></comment>
+            <comment><![CDATA[It can be a URL, an image name (provide the image to the Banchile pagos team as svg format for this to work) or a local path (save the image to the pub/media folder).]]></comment>
 
             <config_path>payment/banchile/payment_button_image</config_path>
         </field>

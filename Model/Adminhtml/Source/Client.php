@@ -20,8 +20,8 @@ class Client
     {
         return [
             [
-                'value' => 'Banchile Pagos',
-                'label' => 'Banchile Pagos',
+                'value' => 'Banchile pagos',
+                'label' => 'Banchile pagos',
             ],
         ];
     }
