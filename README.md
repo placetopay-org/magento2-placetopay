@@ -40,7 +40,7 @@ View releases [here][link-releases]
 
 ## Manual Installation
 
-Create `PlacetoPay\Payments` folder (this is required, with this name)
+Create `Banchile\Payments` folder (this is required, with this name)
 
 ```bash
 mkdir /var/www/html/app/code/PlacetoPay/Payments

@@ -37,13 +37,13 @@ class SendMailOnOrderSuccess implements ObserverInterface
     /**
      * SendMailOnOrderSuccess constructor.
      *
-     * @param \PlacetoPay\Payments\Helper\Data $config
+     * @param \Banchile\Payments\Helper\Data $config
      * @param \Magento\Sales\Model\OrderFactory $order
      * @param \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderSender
      * @param \Magento\Checkout\Model\Session $session
      */
     public function __construct(
-        \PlacetoPay\Payments\Helper\Data $config,
+        \Banchile\Payments\Helper\Data $config,
         \Magento\Sales\Model\OrderFactory $order,
         \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderSender,
         \Magento\Checkout\Model\Session $session
