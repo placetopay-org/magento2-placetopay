@@ -2,6 +2,8 @@
 
 namespace PlacetoPay\Payments\Model\Adminhtml\Source;
 
+use PlacetoPay\Payments\CountryConfig;
+
 class Mode
 {
     public const DEVELOPMENT = 'development';
@@ -14,7 +16,7 @@ class Mode
      */
     public function toOptionArray(): array
     {
-        return [
+        $environments = [
             [
                 'value' => self::DEVELOPMENT,
                 'label' => __('Development'),
@@ -27,10 +29,16 @@ class Mode
                 'value' => self::PRODUCTION,
                 'label' => __('Production'),
             ],
-            [
-                'value' => self::CUSTOM,
-                'label' => __('Custom'),
-            ]
         ];
+
+        if (CountryConfig::COUNTRY_CODE != 'CL' ) {
+            $environments[] =
+                [
+                    'value' => self::CUSTOM,
+                    'label' => __('Custom'),
+                ];
+        }
+
+        return $environments;
     }
 }

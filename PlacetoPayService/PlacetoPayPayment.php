@@ -15,6 +15,7 @@ use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
 use PlacetoPay\Payments\Concerns\IsSetStatusOrderTrait;
 use PlacetoPay\Payments\Constants\Country;
+use PlacetoPay\Payments\CountryConfig;
 use PlacetoPay\Payments\Exception\PlacetoPayException;
 use PlacetoPay\Payments\Helper\Data as Config;
 use PlacetoPay\Payments\Helper\OrderHelper;
@@ -154,7 +155,7 @@ class PlacetoPayPayment
         }
     }
 
-    public function resolve(Order $order, Order\Payment $payment = null): RedirectInformation
+    public function resolve(Order $order, ?Order\Payment $payment = null): RedirectInformation
     {
         if (!$payment) {
             $payment = $order->getPayment();
@@ -248,7 +249,7 @@ class PlacetoPayPayment
                 'shipping' => OrderHelper::parseAddressPerson($order->getShippingAddress()),
                 'allowPartial' => $this->config->getAllowPartialPayment(),
             ],
-            'returnUrl' => $this->url->getUrl('placetopay/payment/response', ['reference' => $reference]),
+            'returnUrl' => $this->url->getUrl(CountryConfig::CLIENT_ID . '/payment/response', ['reference' => $reference]),
             'expiration' => $expiration,
             'ipAddress' => $this->remoteAddress->getRemoteAddress(),
             'userAgent' => $this->header->getHttpUserAgent(),
