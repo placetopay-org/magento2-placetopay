@@ -789,6 +789,7 @@ cleanup_build_files() {
 # Función para crear versión de marca blanca
 create_white_label_version() {
     local client_key="$1"
+    local plugin_version="${2:-untagged}"
     # Normalizar client_key: convertir guiones a guiones bajos (los templates ahora usan guiones bajos)
     client_key=$(echo "$client_key" | tr '-' '_')
     
@@ -817,10 +818,15 @@ create_white_label_version() {
     module_name=$(get_module_name "$namespace_name")
     
     # Usar namespace_name para el nombre de la carpeta (PascalCase sin guiones)
-    local project_name="${namespace_name}"
+    # Incluir versión en el nombre del ZIP si no es "untagged"
+    # Agregar prefijo "magento-" al nombre del ZIP
+    local project_name="magento-${namespace_name}"
+    if [[ "$plugin_version" != "untagged" ]]; then
+        project_name="magento-${namespace_name}-${plugin_version}"
+    fi
 
     print_status "Creando versión de marca blanca: $project_name"
-    print_status "Cliente: $CLIENT, País: $COUNTRY_NAME ($COUNTRY_CODE)"
+    print_status "Cliente: $CLIENT, País: $COUNTRY_NAME ($COUNTRY_CODE), Versión: $plugin_version"
 
     # Crear directorio de trabajo temporal
     local work_dir="$TEMP_DIR/$project_name"
@@ -901,7 +907,9 @@ create_white_label_version() {
 
 # Función principal
 main() {
+    local plugin_version="${1:-untagged}"
     print_status "Iniciando proceso de generación de marca blanca..."
+    print_status "Versión del plugin: $plugin_version"
 
     if [[ ! -f "$CONFIG_FILE" ]]; then
         print_error "Archivo de configuración no encontrado: $CONFIG_FILE"
@@ -919,7 +927,7 @@ main() {
         print_status "Procesando cliente: $client_key"
         print_status "========================================="
         echo
-        create_white_label_version "$client_key"
+        create_white_label_version "$client_key" "$plugin_version"
         echo
     done
 
@@ -939,13 +947,14 @@ main() {
 
 # Mostrar información de uso
 usage() {
-    echo "Uso: $0 [OPCIONES] [CLIENTE]"
+    echo "Uso: $0 [OPCIONES] [VERSION] [CLIENTE]"
     echo ""
     echo "Generar versiones de marca blanca del módulo Magento 2 PlacetoPay"
     echo ""
     echo "Opciones:"
     echo "  -h, --help    Mostrar este mensaje de ayuda"
     echo "  -l, --list    Listar configuraciones de clientes disponibles"
+    echo "  VERSION       Versión del plugin (ej: 3.1.0). Si no se especifica, usa 'untagged'"
     echo "  CLIENTE       Generar solo para un cliente específico (opcional)"
     echo ""
     echo "Clientes disponibles:"
@@ -976,24 +985,34 @@ case "${1:-}" in
         exit 0
         ;;
     "")
-        main
+        main "untagged"
         ;;
     *)
-        # Normalizar client_key: convertir guiones a guiones bajos (los templates ahora usan guiones bajos)
-        normalized_key=$(echo "$1" | tr '-' '_')
-        config=$(get_client_config "$normalized_key")
-        if [[ -n "$config" ]]; then
-            print_status "Generando versión de marca blanca para: $1"
-            rm -rf "$TEMP_DIR" "$OUTPUT_DIR"
-            mkdir -p "$TEMP_DIR" "$OUTPUT_DIR"
-            create_white_label_version "$normalized_key"
-            rm -rf "$TEMP_DIR"
-            print_success "¡Generación de marca blanca completada para $1!"
+        # Verificar si el primer argumento es una versión (formato X.Y.Z)
+        if [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            # Es una versión, generar para todos los clientes con esa versión
+            main "$1"
         else
-            print_error "Opción desconocida: $1"
-            echo ""
-            usage
-            exit 1
+            # Es un cliente, verificar si hay un segundo argumento que sea la versión
+            local client_key="$1"
+            local plugin_version="${2:-untagged}"
+            
+            # Normalizar client_key: convertir guiones a guiones bajos (los templates ahora usan guiones bajos)
+            normalized_key=$(echo "$client_key" | tr '-' '_')
+            config=$(get_client_config "$normalized_key")
+            if [[ -n "$config" ]]; then
+                print_status "Generando versión de marca blanca para: $client_key (versión: $plugin_version)"
+                rm -rf "$TEMP_DIR" "$OUTPUT_DIR"
+                mkdir -p "$TEMP_DIR" "$OUTPUT_DIR"
+                create_white_label_version "$normalized_key" "$plugin_version"
+                rm -rf "$TEMP_DIR"
+                print_success "¡Generación de marca blanca completada para $client_key!"
+            else
+                print_error "Opción desconocida: $1"
+                echo ""
+                usage
+                exit 1
+            fi
         fi
         ;;
 esac
