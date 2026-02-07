@@ -9,6 +9,7 @@ use Magento\Framework\Filesystem\DriverInterface;
 use Magento\Framework\Logger\Handler\Base;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Monolog\Logger;
+use PlacetoPay\Payments\CountryConfig;
 
 /**
  * Class Handler.
@@ -58,7 +59,7 @@ class Handler extends Base
     ) {
         $this->_localeDate = $localeDate;
 
-        $fileName = 'placetopay-' . $this->getTimeStamp() . '.log';
+        $fileName = CountryConfig::CLIENT_ID . '-' . $this->getTimeStamp() . '.log';
         $ds = DIRECTORY_SEPARATOR;
         $this->filePath = $dir->getPath('log') . $ds . $fileName;
 

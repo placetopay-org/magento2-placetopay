@@ -11,15 +11,17 @@ use Magento\Payment\Model\Config;
 use Magento\Payment\Model\Method\Factory;
 use Magento\Store\Model\App\Emulation;
 use Magento\Store\Model\ScopeInterface;
-use PlacetoPay\Payments\Constants\Country;
-use PlacetoPay\Payments\Countries\CountryConfigInterface;
+use PlacetoPay\Payments\CountryConfig;
 use PlacetoPay\Payments\Logger\Logger;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 use PlacetoPay\Payments\Model\Info as InfoFactory;
 
 class Data extends BaseData
 {
-    public const CODE = 'placetopay';
+    public static function getCode(): string
+    {
+        return CountryConfig::CLIENT_ID;
+    }
     public const EXPIRATION_TIME_MINUTES_DEFAULT = 120;
     public const EXPIRATION_TIME_MINUTES_MIN = 10;
 
@@ -302,7 +304,7 @@ class Data extends BaseData
     public function getUri($storeId = null): ?string
     {
         $uri = null;
-        $endpoints = $this->getEndpointsTo($this->getCountryCode());
+        $endpoints = $this->getEndpointsTo();
 
         if ($this->isCustomEnvironment($storeId)) {
             return $this->getCustomConnectionUrl($storeId);
@@ -414,21 +416,11 @@ class Data extends BaseData
     }
 
     /**
-     * @param $countryCode
      * @return string[]
      */
-    public function getEndpointsTo($countryCode): array
+    public function getEndpointsTo(): array
     {
-        /** @var CountryConfigInterface $config */
-        foreach (Country::COUNTRIES_CONFIG as $config) {
-            if (!$config::resolve($countryCode)) {
-                continue;
-            }
-
-            return $config::getEndpoints($this->getTitle());
-        }
-
-        return [];
+        return CountryConfig::getEndpoints();
     }
 
     public function cleanText($text)

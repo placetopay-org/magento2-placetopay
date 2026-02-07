@@ -129,7 +129,7 @@
 "Payment Button Image","Imagen Botón de Pago"
 "It can be a URL, an image name (provide the image to the placetopay team as svg format for this to work) or a local path (save the image to the pub/media folder).","Puede ser una URL, un nombre de imagen (proporcione la imagen al equipo de Placetopay en formato svg para que esto funcione) o una ruta local (guarde la imagen en la carpeta pub/media)."
 "heading","heading"
-"Pay by Card (Placetopay)","Tarjeta de crédito, débito o prepago"
+"Placetopay","Placetopay"
 "Something went wrong with your request. Please try again later.","Algo salió mal durante la petición. Por favor reintenta más tarde."
 "You will be redirected to the","Usted será redireccionado al sitio seguro de"
 "secure payment page when you place an order.","cuando confirme la orden."
