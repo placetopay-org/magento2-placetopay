@@ -314,6 +314,9 @@ replace_payment_codes() {
     # Reemplazar paths de componente JS en layouts
     find "$work_dir/view" -type f -name "*.xml" -exec sed -i.bak "s|PlacetoPay_Payments/js/view/payment/placetopay|${namespace_name}_Payments/js/view/payment/${payment_method_name}|g" {} \;
 
+    # Reemplazar paths de componente URL de notificación
+    find "$work_dir/Block/Adminhtml/System/Config/Form/Field" -type f -name "NotifyUrl.php" -exec sed -i.bak "s|V1/placetopay/payment|V1/${payment_method_name}/payment|g" {} \;
+
     # Reemplazar url.build y window.checkoutConfig en archivos JS ANTES de renombrar (importante hacerlo aquí)
     find "$work_dir/view" -type f -name "*.js" -exec sed -i.bak \
         -e "s|url\.build('placetopay/payment/data')|url.build('${xml_safe_id}/payment/data')|g" \
