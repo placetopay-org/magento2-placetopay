@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Generar versiones de marca blanca del módulo Magento 2 PlacetoPay
 # Este script crea versiones personalizadas para diferentes clientes
@@ -38,7 +38,7 @@ print_error() {
 # Función para obtener el nombre de la clase de configuración desde la clave del cliente
 get_config_class_name() {
     local client_key="$1"
-    
+
     case "$client_key" in
         "placetopay_colombia") echo "PlacetopayColombiaConfig" ;;
         "placetopay_ecuador") echo "PlacetopayEcuadorConfig" ;;
@@ -68,43 +68,43 @@ get_config_class_name() {
 # Función para obtener configuración de cliente desde el template
 get_client_config() {
     local client_key="$1"
-    
+
     local config_class_name
     config_class_name=$(get_config_class_name "$client_key")
-    
+
     local template_file=""
-    
+
     if [[ -n "$config_class_name" ]]; then
         template_file="${BASE_DIR}/config/templates/${config_class_name}.php"
     fi
-    
+
     if [[ -z "$template_file" || ! -f "$template_file" ]]; then
         return 1
     fi
-    
+
     php -r "
         \$content = file_get_contents('$template_file');
-        
+
         if (preg_match(\"/public const CLIENT_ID = ['\\\"]([^'\\\"]+)['\\\"]/\", \$content, \$matches)) {
             echo 'CLIENT_ID=' . \$matches[1] . '|';
         }
-        
+
         if (preg_match(\"/public const CLIENT = ['\\\"]([^'\\\"]+)['\\\"]/\", \$content, \$matches)) {
             echo 'CLIENT=' . \$matches[1] . '|';
         }
-        
+
         if (preg_match(\"/public const COUNTRY_CODE = ['\\\"]([^'\\\"]+)['\\\"]/\", \$content, \$matches)) {
             echo 'COUNTRY_CODE=' . \$matches[1] . '|';
         }
-        
+
         if (preg_match(\"/public const COUNTRY_NAME = ['\\\"]([^'\\\"]+)['\\\"]/\", \$content, \$matches)) {
             echo 'COUNTRY_NAME=' . \$matches[1] . '|';
         }
-        
+
         if (preg_match(\"/public const IMAGE = ['\\\"]([^'\\\"]+)['\\\"]/\", \$content, \$matches)) {
             echo 'IMAGE=' . \$matches[1] . '|';
         }
-        
+
         if ('$config_class_name' !== '') {
             echo 'TEMPLATE_FILE=' . '$config_class_name' . '|';
         }
@@ -123,7 +123,7 @@ get_all_clients() {
             }
         " 2>/dev/null && return
     fi
-    
+
     local templates_dir="${BASE_DIR}/config/templates"
     if [[ -d "$templates_dir" ]]; then
         for file in "$templates_dir"/*Config.php; do
@@ -179,7 +179,7 @@ parse_config() {
 # CLIENT_ID ahora viene con guiones bajos (ej: banchile_chile)
 get_namespace_name() {
     local client_id="$1"
-    
+
     echo "$client_id" | awk -F'_' '{
         result = ""
         for (i=1; i<=NF; i++) {
@@ -204,16 +204,13 @@ get_module_name() {
 replace_namespaces() {
     local work_dir="$1"
     local new_namespace="$2"
-    
+
     print_status "Reemplazando namespaces: PlacetoPay\\Payments -> ${new_namespace}\\Payments"
-    
-    local old_ns="PlacetoPay\\\\Payments"
-    local new_ns="${new_namespace}\\\\Payments"
-    
+
     find "$work_dir" -type f -name "*.php" -exec sed -i.bak "s|namespace PlacetoPay\\\\Payments|namespace ${new_namespace}\\\\Payments|g" {} \;
     find "$work_dir" -type f -name "*.php" -exec sed -i.bak "s|use PlacetoPay\\\\Payments|use ${new_namespace}\\\\Payments|g" {} \;
     find "$work_dir" -type f -name "*.php" -exec sed -i.bak "s|\\\\PlacetoPay\\\\Payments|\\\\${new_namespace}\\\\Payments|g" {} \;
-    
+
     find "$work_dir" -type f -name "*.bak" -delete
 }
 
@@ -222,9 +219,9 @@ replace_module_names() {
     local work_dir="$1"
     local old_module="PlacetoPay_Payments"
     local new_module="$2"
-    
+
     print_status "Reemplazando nombre del módulo: $old_module -> $new_module"
-    
+
     # Reemplazar en registration.php
     if [[ -f "$work_dir/registration.php" ]]; then
         if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -233,20 +230,20 @@ replace_module_names() {
             sed -i "s|'${old_module}'|'${new_module}'|g" "$work_dir/registration.php"
         fi
     fi
-    
+
     # Reemplazar en module.xml
     find "$work_dir/etc" -type f -name "module.xml" -exec sed -i.bak "s|<module name=\"${old_module}\"|<module name=\"${new_module}\"|g" {} \;
-    
+
     # Reemplazar en todos los XML (etc y view)
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|${old_module}|${new_module}|g" {} \;
     find "$work_dir/view" -type f -name "*.xml" -exec sed -i.bak "s|${old_module}|${new_module}|g" {} \;
-    
+
     # Reemplazar en archivos JS
     find "$work_dir/view" -type f -name "*.js" -exec sed -i.bak "s|${old_module}|${new_module}|g" {} \;
-    
+
     # Reemplazar en archivos PHTML
     find "$work_dir/view" -type f -name "*.phtml" -exec sed -i.bak "s|${old_module}|${new_module}|g" {} \;
-    
+
     find "$work_dir" -type f -name "*.bak" -delete
 }
 
@@ -264,22 +261,18 @@ replace_payment_codes() {
     local namespace_name="$3"
     local client_name="$4"  # nombre del cliente para reemplazos en textos
     local client_key="$5"   # client_key para obtener la configuración (IMAGE, etc.)
-    
+
     # Obtener versión snake_case para IDs de XML
     local xml_safe_id
     xml_safe_id=$(get_xml_safe_id "$client_id")
-    
+
     print_status "Reemplazando payment method code: placetopay -> ${client_id} (XML safe: ${xml_safe_id})"
-    
+
     # Obtener payment_method_name usando xml_safe_id (client_id con guiones convertidos a guiones bajos)
     # Ejemplo: banchile-chile -> banchile_chile
     local payment_method_name
     payment_method_name="$xml_safe_id"
-    
-    # Reemplazar CODE en PaymentMethod.php con payment_method_name (CLIENT_ID con guiones bajos)
-    # Esto es necesario porque PHP no permite inicializar constantes con otras constantes de otras clases
-    find "$work_dir" -type f -name "PaymentMethod.php" -exec sed -i.bak "s|public const CODE = 'placetopay';|public const CODE = '${payment_method_name}';|g" {} \;
-    
+
     # Reemplazar variable $placetopay en Data.php con el nombre del método
     # Convertir payment_method_name a formato camelCase para la variable (banchile_chile -> BanchileChile)
     local var_name
@@ -289,88 +282,89 @@ replace_payment_codes() {
         -e "s|\$placetopay->|\$${var_name}->|g" \
         -e "s|@var PaymentMethod.*\$placetopay|@var PaymentMethod \$${var_name}|g" \
         {} \;
-    
+
     # Reemplazar referencias a payment/placetopay/ en Helper/Data.php y otros archivos PHP
     # Usar xml_safe_id para las rutas de configuración
     find "$work_dir" -type f -name "*.php" -exec sed -i.bak "s|'payment/placetopay/|'payment/${xml_safe_id}/|g" {} \;
     find "$work_dir" -type f -name "*.php" -exec sed -i.bak "s|\"payment/placetopay/|\"payment/${xml_safe_id}/|g" {} \;
-    
+
     # Reemplazar nombres de campos que tienen placetopay_ como prefijo
     # Ej: payment/placetopay/placetopay_mode -> payment/{xml_safe_id}/{xml_safe_id}_mode
     find "$work_dir" -type f -name "*.php" -exec sed -i.bak "s|/${xml_safe_id}/placetopay_|/${xml_safe_id}/${xml_safe_id}_|g" {} \;
-    
+
     # Usar xml_safe_id (client_id con guiones convertidos a guiones bajos) para payment method code
     # Ejemplo: banchile-chile -> banchile_chile
     local payment_method_name
     payment_method_name="$xml_safe_id"
-    
+
     # Reemplazar en XML - usar payment_method_name (xml_safe_id) para el tag de payment
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|<placetopay>|<${payment_method_name}>|g" {} \;
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|</placetopay>|</${payment_method_name}>|g" {} \;
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|payment/placetopay|payment/${xml_safe_id}|g" {} \;
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|placetopay_|${xml_safe_id}_|g" {} \;
-    
+
     # Reemplazar nombre del método en payment.xml (usar xml_safe_id)
     find "$work_dir/etc" -type f -name "payment.xml" -exec sed -i.bak "s|<method name=\"placetopay\">|<method name=\"${payment_method_name}\">|g" {} \;
-    
+
     # Reemplazar en archivos de layout (checkout_index_index.xml, etc.)
     # Reemplazar el nombre del método de pago en los layouts
     find "$work_dir/view" -type f -name "*.xml" -exec sed -i.bak "s|<item name=\"placetopay\"|<item name=\"${payment_method_name}\"|g" {} \;
     find "$work_dir/view" -type f -name "*.xml" -exec sed -i.bak "s|name=\"placetopay\"|name=\"${payment_method_name}\"|g" {} \;
-    
+
     # Reemplazar paths de componente JS en layouts
     find "$work_dir/view" -type f -name "*.xml" -exec sed -i.bak "s|PlacetoPay_Payments/js/view/payment/placetopay|${namespace_name}_Payments/js/view/payment/${payment_method_name}|g" {} \;
-    
+
     # Reemplazar url.build y window.checkoutConfig en archivos JS ANTES de renombrar (importante hacerlo aquí)
     find "$work_dir/view" -type f -name "*.js" -exec sed -i.bak \
         -e "s|url\.build('placetopay/payment/data')|url.build('${xml_safe_id}/payment/data')|g" \
         -e "s|url\.build(\"placetopay/payment/data\")|url.build(\"${xml_safe_id}/payment/data\")|g" \
         -e "s|window\.checkoutConfig\.payment\.placetopay|window.checkoutConfig.payment.${payment_method_name}|g" \
         {} \;
-    
+
     # Reemplazar rutas (frontName, route id, URLs) - usar xml_safe_id (client_id con guiones bajos)
     # Magento requiere que las rutas no tengan guiones, solo guiones bajos
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|frontName=\"placetopay\"|frontName=\"${xml_safe_id}\"|g" {} \;
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|route id=\"placetopay\"|route id=\"${xml_safe_id}\"|g" {} \;
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|url=\"/V1/placetopay/|url=\"/V1/${xml_safe_id}/|g" {} \;
-    
+
     # Reemplazar URL de retorno en PlacetoPayPayment.php (o el servicio renombrado)
     find "$work_dir" -type f -name "*Payment.php" -path "*/Service/*" -exec sed -i.bak \
         -e "s|getUrl('placetopay/payment/response|getUrl(str_replace('-', '_', CountryConfig::CLIENT_ID) . '/payment/response|g" \
         -e "s|getUrl(\"placetopay/payment/response|getUrl(str_replace('-', '_', CountryConfig::CLIENT_ID) . '/payment/response|g" \
         {} \;
-    
+
     # Reemplazar nombres de eventos - usar xml_safe_id
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|name=\"placetopay_|name=\"${xml_safe_id}_|g" {} \;
-    
+
     # Reemplazar nombres de grupos de cron - usar xml_safe_id
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|group id=\"placetopay\"|group id=\"${xml_safe_id}\"|g" {} \;
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|name=\"placetopay_payments_cron\"|name=\"${xml_safe_id}_payments_cron\"|g" {} \;
-    
+
     # Reemplazar en di.xml (logger name) - usar xml_safe_id
     # Reemplazar tanto en atributos como en valores de argumentos
     find "$work_dir/etc" -type f -name "di.xml" -exec sed -i.bak \
         -e "s|name=\"placetopay\"|name=\"${xml_safe_id}\"|g" \
         -e "s|<argument name=\"name\" xsi:type=\"string\">placetopay</argument>|<argument name=\"name\" xsi:type=\"string\">${xml_safe_id}</argument>|g" \
         {} \;
-    
+
     # Reemplazar en di.xml (custom provider) - usar xml_safe_id
     find "$work_dir/etc" -type f -name "di.xml" -exec sed -i.bak "s|placetopay_custom_provider|${xml_safe_id}_custom_provider|g" {} \;
-    
+
     # Reemplazar referencias a clases Block en XML (frontend_model, etc.)
     local namespace_name
     namespace_name=$(get_namespace_name "$client_id")
+
     # Reemplazar en etc/*.xml
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|PlacetoPay\\\\Payments\\\\Block|${namespace_name}\\\\Payments\\\\Block|g" {} \;
     # Reemplazar en view/*/layout/*.xml (layouts frontend y adminhtml)
     find "$work_dir/view" -type f -name "*.xml" -path "*/layout/*" -exec sed -i.bak "s|PlacetoPay\\\\Payments\\\\Block|${namespace_name}\\\\Payments\\\\Block|g" {} \;
-    
+
     # Reemplazar referencias a source_model que usan PlacetoPay namespace
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|PlacetoPay\\\\Payments\\\\Model\\\\Adminhtml\\\\Source|${namespace_name}\\\\Payments\\\\Model\\\\Adminhtml\\\\Source|g" {} \;
-    
+
     # Reemplazar referencias a Logger en di.xml
     find "$work_dir/etc" -type f -name "di.xml" -exec sed -i.bak "s|PlacetoPay\\\\Payments\\\\Logger|${namespace_name}\\\\Payments\\\\Logger|g" {} \;
-    
+
     # Reemplazar referencias a Api, Plugin, Model, Observer, etc. en di.xml y otros XML
     # IMPORTANTE: También reemplazar en config.xml el modelo de pago
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak \
@@ -382,14 +376,14 @@ replace_payment_codes() {
         -e "s|\\\\PlacetoPay\\\\Payments\\\\|\\\\${namespace_name}\\\\Payments\\\\|g" \
         -e "s|PlacetoPay\\Payments\\Model|${namespace_name}\\Payments\\Model|g" \
         {} \;
-    
+
     # Reemplazar textos de "Placetopay" en comentarios, labels, CDATA, etc. en XML
     # El nombre del cliente ya viene como parámetro
     if [[ -z "$client_name" ]]; then
         print_error "El nombre del cliente no puede estar vacío"
         return 1
     fi
-    
+
     local client_name_url
     client_name_url=$(get_url_safe_name "$client_name")
     local client_name_lower
@@ -397,9 +391,10 @@ replace_payment_codes() {
     # Convertir nombre del cliente a formato válido para CSS (sin espacios, solo guiones)
     local client_name_css
     client_name_css=$(echo "$client_name" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
-    
+
     # Obtener la URL de la imagen del logo desde CountryConfig usando client_key
     local image_url=""
+
     if [[ -n "$client_key" ]]; then
         local client_config
         client_config=$(get_client_config "$client_key")
@@ -409,17 +404,18 @@ replace_payment_codes() {
             image_url="$IMAGE"
         fi
     fi
-    
+
     print_status "Reemplazando textos de Placetopay en archivos XML con: $client_name"
+
     if [[ -n "$image_url" ]]; then
         print_status "Logo del cliente: $image_url"
     else
         print_status "No se encontró URL del logo en la configuración"
     fi
-    
+
     # Reemplazar "Placetopay" en textos de XML (labels, comments, CDATA)
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|Placetopay|${client_name}|g" {} \;
-    
+
     # Reemplazar "placetopay" en minúsculas (fieldset_css, URLs, etc.)
     # Usar client_name_css para que coincida con el CSS
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|placetopay-admin-config|${client_name_css}-admin-config|g" {} \;
@@ -427,10 +423,10 @@ replace_payment_codes() {
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|panel.placetopay.com|panel.${client_name_url}.com|g" {} \;
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|www.placetopay.com|www.${client_name_url}.com|g" {} \;
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|placetopay team|${client_name_lower} team|g" {} \;
-    
+
     # Corregir URLs que quedaron con espacios
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|${client_name}\.com|${client_name_url}.com|g" {} \;
-    
+
     # Reemplazar en archivos CSS
     if [[ -n "$image_url" ]]; then
         print_status "Actualizando logo en CSS con: $image_url"
@@ -438,10 +434,10 @@ replace_payment_codes() {
         local client_id_css
         client_id_css=$(echo "$client_id" | tr '[:upper:]' '[:lower:]' | tr '-' '_' | tr ' ' '_')
         local heading_class="heading-${client_id_css}"
-        
+
         # Reemplazar nombre de clase CSS (client_name_css ya está definido arriba)
         find "$work_dir/view" -type f -name "*.css" -exec sed -i.bak "s|\.placetopay-admin-config|\.${client_name_css}-admin-config|g" {} \;
-        
+
         # Reemplazar todas las clases .heading y .heading-* con la clase única del cliente
         # Primero reemplazar .heading-cl y otras variantes específicas
         find "$work_dir/view" -type f -name "*.css" -exec sed -i.bak "s|\.heading-cl|\.${heading_class}|g" {} \;
@@ -449,19 +445,20 @@ replace_payment_codes() {
         find "$work_dir/view" -type f -name "*.css" -exec sed -i.bak "s|\.${client_name_css}-admin-config \.heading {|\.${client_name_css}-admin-config \.${heading_class} {|g" {} \;
         # También reemplazar cualquier otra referencia a .heading que quede
         find "$work_dir/view" -type f -name "*.css" -exec sed -i.bak "s| \.heading {| \.${heading_class} {|g" {} \;
-        
+
         # Reemplazar URL del logo en todas las clases heading
         find "$work_dir/view" -type f -name "*.css" -exec sed -i.bak "s|url(\"https://static.placetopay.com/placetopay-logo.svg\")|url(\"${image_url}\")|g" {} \;
         find "$work_dir/view" -type f -name "*.css" -exec sed -i.bak "s|url('https://static.placetopay.com/placetopay-logo.svg')|url('${image_url}')|g" {} \;
         find "$work_dir/view" -type f -name "*.css" -exec sed -i.bak "s|url(\"https://banco.santander.cl.*getnet_logo.svg\")|url(\"${image_url}\")|g" {} \;
-        
+
         # Asegurar que la clase única del cliente tenga la imagen correcta
         find "$work_dir/view" -type f -name "*.css" -exec sed -i.bak "/\.${client_name_css}-admin-config \.${heading_class} {/,/}/ s|url(\"[^\"]*\")|url(\"${image_url}\")|g" {} \;
     fi
-    
+
     # Convertir guiones a guiones bajos en todos los atributos XML (id, config_path, etc.)
     # Esto asegura que todos los IDs y rutas cumplan con el patrón [a-zA-Z0-9_]+
     print_status "Convirtiendo guiones a guiones bajos en atributos XML..."
+
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak \
         -e "s|id=\"${xml_safe_id}-|id=\"${xml_safe_id}_|g" \
         -e "s|id=\"${client_id}\"|id=\"${xml_safe_id}\"|g" \
@@ -471,7 +468,7 @@ replace_payment_codes() {
         -e "s|<${client_id}>|<${xml_safe_id}>|g" \
         -e "s|</${client_id}>|</${xml_safe_id}>|g" \
         {} \;
-    
+
     find "$work_dir" -type f -name "*.bak" -delete
 }
 
@@ -481,9 +478,9 @@ rename_view_files() {
     local payment_method_name="$2"
     local namespace_name="$3"
     local client_id="$4"  # Agregar client_id como parámetro
-    
+
     print_status "Renombrando archivos JS/CSS y layouts con payment_method_name: ${payment_method_name}..."
-    
+
     # Renombrar archivos JS (puede que ya tengan nombre antiguo como banchile_chile.js)
     if [[ -f "$work_dir/view/frontend/web/js/view/payment/placetopay.js" ]]; then
         mv "$work_dir/view/frontend/web/js/view/payment/placetopay.js" "$work_dir/view/frontend/web/js/view/payment/${payment_method_name}.js"
@@ -491,20 +488,20 @@ rename_view_files() {
         # Si ya se renombró con el nombre antiguo, renombrarlo de nuevo
         mv "$work_dir/view/frontend/web/js/view/payment/banchile_chile.js" "$work_dir/view/frontend/web/js/view/payment/${payment_method_name}.js"
     fi
-    
+
     if [[ -f "$work_dir/view/frontend/web/js/view/payment/method-renderer/placetopay.js" ]]; then
         mv "$work_dir/view/frontend/web/js/view/payment/method-renderer/placetopay.js" "$work_dir/view/frontend/web/js/view/payment/method-renderer/${payment_method_name}.js"
     elif [[ -f "$work_dir/view/frontend/web/js/view/payment/method-renderer/banchile_chile.js" ]]; then
         # Si ya se renombró con el nombre antiguo, renombrarlo de nuevo
         mv "$work_dir/view/frontend/web/js/view/payment/method-renderer/banchile_chile.js" "$work_dir/view/frontend/web/js/view/payment/method-renderer/${payment_method_name}.js"
     fi
-    
+
     # Renombrar archivos CSS
     if [[ -f "$work_dir/view/frontend/web/css/placetopay.css" ]]; then
         mv "$work_dir/view/frontend/web/css/placetopay.css" "$work_dir/view/frontend/web/css/${payment_method_name}.css"
         # Actualizar referencia en default.xml
         find "$work_dir/view/frontend/layout" -type f -name "default.xml" -exec sed -i.bak "s|css/placetopay\.css|css/${payment_method_name}.css|g" {} \;
-        
+
         # Reemplazar clases CSS en el archivo renombrado
         if [[ "$OSTYPE" == "darwin"* ]]; then
             sed -i '' \
@@ -528,11 +525,11 @@ rename_view_files() {
                 "$work_dir/view/frontend/web/css/${payment_method_name}.css"
         fi
     fi
-    
+
     # Renombrar templates HTML
     if [[ -f "$work_dir/view/frontend/web/template/payment/placetopay.html" ]]; then
         mv "$work_dir/view/frontend/web/template/payment/placetopay.html" "$work_dir/view/frontend/web/template/payment/${payment_method_name}.html"
-        
+
         # Reemplazar clases CSS e IDs en el archivo HTML renombrado
         if [[ "$OSTYPE" == "darwin"* ]]; then
             sed -i '' \
@@ -560,7 +557,7 @@ rename_view_files() {
                 "$work_dir/view/frontend/web/template/payment/${payment_method_name}.html"
         fi
     fi
-    
+
     # Actualizar referencias en archivos JS después de renombrar
     if [[ -f "$work_dir/view/frontend/web/js/view/payment/${payment_method_name}.js" ]]; then
         # Reemplazar el type y el component path
@@ -571,7 +568,7 @@ rename_view_files() {
             -e "s|PlacetoPay_Payments/payment/placetopay|${namespace_name}_Payments/payment/${payment_method_name}|g" \
             "$work_dir/view/frontend/web/js/view/payment/${payment_method_name}.js"
     fi
-    
+
     if [[ -f "$work_dir/view/frontend/web/js/view/payment/method-renderer/${payment_method_name}.js" ]]; then
         # Reemplazar rutas de payment/data usando xml_safe_id (client_id con guiones bajos)
         # El patrón puede ser 'placetopay/payment/data' o '/payment/data' (si ya se reemplazó parcialmente)
@@ -596,10 +593,10 @@ rename_view_files() {
                 "$work_dir/view/frontend/web/js/view/payment/method-renderer/${payment_method_name}.js"
         fi
     fi
-    
+
     # Actualizar referencias en layouts después de renombrar
     find "$work_dir/view/frontend/layout" -type f -name "*.xml" -exec sed -i.bak "s|/payment/placetopay|/payment/${payment_method_name}|g" {} \;
-    
+
     # Reemplazar clases CSS en archivos PHTML de templates
     find "$work_dir/view/frontend/templates" -type f -name "*.phtml" -exec sed -i.bak \
         -e "s|placetopay-checkout-onepage|${payment_method_name}-checkout-onepage|g" \
@@ -607,24 +604,24 @@ rename_view_files() {
         -e "s|placetopay-onepage-pending|${payment_method_name}-onepage-pending|g" \
         -e "s|placetopay-onepage-failure|${payment_method_name}-onepage-failure|g" \
         {} \;
-    
+
     # Renombrar archivos de layout XML
     if [[ -f "$work_dir/view/frontend/layout/placetopay_onepage_success.xml" ]]; then
         mv "$work_dir/view/frontend/layout/placetopay_onepage_success.xml" "$work_dir/view/frontend/layout/${payment_method_name}_onepage_success.xml"
         # Actualizar referencias dentro del archivo
         sed -i.bak "s|placetopay\.checkout\.success|${payment_method_name}.checkout.success|g" "$work_dir/view/frontend/layout/${payment_method_name}_onepage_success.xml"
     fi
-    
+
     if [[ -f "$work_dir/view/frontend/layout/placetopay_onepage_pending.xml" ]]; then
         mv "$work_dir/view/frontend/layout/placetopay_onepage_pending.xml" "$work_dir/view/frontend/layout/${payment_method_name}_onepage_pending.xml"
         sed -i.bak "s|placetopay\.checkout\.pending|${payment_method_name}.checkout.pending|g" "$work_dir/view/frontend/layout/${payment_method_name}_onepage_pending.xml"
     fi
-    
+
     if [[ -f "$work_dir/view/frontend/layout/placetopay_onepage_failure.xml" ]]; then
         mv "$work_dir/view/frontend/layout/placetopay_onepage_failure.xml" "$work_dir/view/frontend/layout/${payment_method_name}_onepage_failure.xml"
         sed -i.bak "s|placetopay\.checkout\.failure|${payment_method_name}.checkout.failure|g" "$work_dir/view/frontend/layout/${payment_method_name}_onepage_failure.xml"
     fi
-    
+
     find "$work_dir" -type f -name "*.bak" -delete
 }
 
@@ -632,22 +629,22 @@ rename_view_files() {
 rename_service_classes() {
     local work_dir="$1"
     local namespace_name="$2"
-    
+
     print_status "Renombrando PlacetoPayService a ${namespace_name}Service..."
-    
+
     local service_dir="$work_dir/PlacetoPayService"
     local new_service_dir="$work_dir/${namespace_name}Service"
-    
+
     # Renombrar directorio
     if [[ -d "$service_dir" ]]; then
         mv "$service_dir" "$new_service_dir"
     fi
-    
+
     # Renombrar archivo PlacetoPayPayment.php
     if [[ -f "$new_service_dir/PlacetoPayPayment.php" ]]; then
         mv "$new_service_dir/PlacetoPayPayment.php" "$new_service_dir/${namespace_name}Payment.php"
     fi
-    
+
     # Reemplazar namespace y clase en el archivo renombrado
     if [[ -f "$new_service_dir/${namespace_name}Payment.php" ]]; then
         if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -662,14 +659,15 @@ rename_service_classes() {
             sed -i "s| class PlacetoPayPayment| class ${namespace_name}Payment|g" "$new_service_dir/${namespace_name}Payment.php"
         fi
     fi
-    
+
     # Reemplazar referencias en otros archivos
     find "$work_dir" -type f -name "*.php" -exec sed -i.bak "s|PlacetoPay\\\\Payments\\\\PlacetoPayService\\\\PlacetoPayPayment|${namespace_name}\\\\Payments\\\\${namespace_name}Service\\\\${namespace_name}Payment|g" {} \;
     find "$work_dir" -type f -name "*.php" -exec sed -i.bak "s|use PlacetoPay\\\\Payments\\\\PlacetoPayService\\\\PlacetoPayPayment|use ${namespace_name}\\\\Payments\\\\${namespace_name}Service\\\\${namespace_name}Payment|g" {} \;
     find "$work_dir" -type f -name "*.php" -exec sed -i.bak "s|new PlacetoPayPayment(|new ${namespace_name}Payment(|g" {} \;
     find "$work_dir" -type f -name "*.php" -exec sed -i.bak "s|PlacetoPayPayment |${namespace_name}Payment |g" {} \;
     find "$work_dir" -type f -name "*.php" -exec sed -i.bak "s|@var PlacetoPayPayment|@var ${namespace_name}Payment|g" {} \;
-    
+    find "$work_dir" -type f -name "*.phtml" -exec sed -i.bak "s| \\\\PlacetoPay\\\\Payments\\\\| \\\\${namespace_name}\\\\Payments\\\\|g" {} \;
+
     find "$work_dir" -type f -name "*.bak" -delete
 }
 
@@ -693,9 +691,9 @@ update_translations() {
     client_name_lower=$(to_lowercase "$client_name")
     local client_name_url
     client_name_url=$(get_url_safe_name "$client_name")
-    
+
     print_status "Actualizando traducciones con nombre del cliente: $client_name"
-    
+
     # Reemplazar "Pay by Card (Placetopay)" con solo el nombre del cliente (ej: "Banchile pagos")
     # Esto debe hacerse ANTES del reemplazo general de "Placetopay" para evitar conflictos
     if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -705,7 +703,7 @@ update_translations() {
         find "$work_dir/i18n" -type f -name "*.csv" -exec sed -i "s|Pay by Card (Placetopay)|${client_name}|g" {} \;
         find "$work_dir/i18n" -type f -name "*.csv" -exec sed -i "s|\"Pay by Card (Placetopay)\"|\"${client_name}\"|g" {} \;
     fi
-    
+
     # Reemplazar "Placetopay" con el nombre del cliente en archivos CSV de traducción
     # IMPORTANTE: Reemplazar TODAS las ocurrencias de "Placetopay" (tanto en inglés como en español)
     # También reemplazar nombres específicos de clientes que puedan estar en las traducciones (Getnet, etc.)
@@ -742,17 +740,17 @@ update_translations() {
 create_country_config() {
     local target_file="$1"
     local client_key="$2"
-    
+
     local config_class_name
     config_class_name=$(get_config_class_name "$client_key")
-    
+
     local template_file="${BASE_DIR}/config/templates/${config_class_name}.php"
-    
+
     if [[ ! -f "$template_file" ]]; then
         print_error "Template no encontrado: $template_file"
         return 1
     fi
-    
+
     print_status "Copiando template CountryConfig: $config_class_name"
     cp "$template_file" "$target_file"
 }
@@ -764,7 +762,8 @@ cleanup_build_files() {
     print_status "Limpiando archivos de desarrollo innecesarios..."
 
     find "$work_dir" -type d -name ".git*" -exec rm -rf {} + 2>/dev/null || true
-    rm -rf "$work_dir/.git"*
+
+    rm -rf "$work_dir/.git*"
     rm -rf "$work_dir/.idea"
     rm -rf "$work_dir/tmp"
     rm -rf "$work_dir/Dockerfile"
@@ -784,6 +783,11 @@ cleanup_build_files() {
     rm -rf "$work_dir/composer.json"
     rm -rf "$work_dir/composer.lock"
     rm -rf "$work_dir/vendor"
+    rm -Rf "$work_dir/.vimrc.setup"
+    rm -Rf "$work_dir/*.hasts"
+    rm -Rf "$work_dir/*.hasaia"
+    rm -Rf "$work_dir/*.sql"
+    rm -Rf "$work_dir/*.diff"
 }
 
 # Función para crear versión de marca blanca
@@ -792,7 +796,7 @@ create_white_label_version() {
     local plugin_version="${2:-untagged}"
     # Normalizar client_key: convertir guiones a guiones bajos (los templates ahora usan guiones bajos)
     client_key=$(echo "$client_key" | tr '-' '_')
-    
+
     local config
     config=$(get_client_config "$client_key")
 
@@ -813,10 +817,10 @@ create_white_label_version() {
 
     local namespace_name
     namespace_name=$(get_namespace_name "$CLIENT_ID")
-    
+
     local module_name
     module_name=$(get_module_name "$namespace_name")
-    
+
     # Usar namespace_name para el nombre de la carpeta (PascalCase sin guiones)
     # Incluir versión en el nombre del ZIP si no es "untagged"
     # Agregar prefijo "magento-" al nombre del ZIP
@@ -843,13 +847,12 @@ create_white_label_version() {
         --exclude='vendor/' \
         --exclude='composer.json' \
         --exclude='composer.lock' \
-        --exclude='example woocommerce/' \
         "$BASE_DIR/" "$work_dir/" 2>/dev/null || true
 
     # Crear CountryConfig desde template
     print_status "Creando CountryConfig desde template..."
     create_country_config "$work_dir/CountryConfig.php" "$client_key"
-    
+
     # Eliminar directorio Countries si existe (ya no se usa)
     rm -rf "$work_dir/Countries"
 
@@ -865,12 +868,12 @@ create_white_label_version() {
 
     # Reemplazar payment codes (pasar CLIENT para reemplazos en textos y client_key para obtener IMAGE)
     replace_payment_codes "$work_dir" "$CLIENT_ID" "$namespace_name" "$CLIENT" "$client_key"
-    
+
     # Obtener payment_method_name usando xml_safe_id (client_id con guiones convertidos a guiones bajos)
     # Ejemplo: banchile-chile -> banchile_chile
     local payment_method_name
     payment_method_name=$(echo "$CLIENT_ID" | tr '-' '_')
-    
+
     # Renombrar archivos JS/CSS y layouts después de reemplazar referencias
     rename_view_files "$work_dir" "$payment_method_name" "$namespace_name" "$CLIENT_ID"
 
@@ -886,11 +889,11 @@ create_white_label_version() {
     local module_name="Payments"
     local magento_structure_dir="$TEMP_DIR/${vendor_name}_${module_name}_structure"
     mkdir -p "$magento_structure_dir/$vendor_name/$module_name"
-    
+
     # Copiar todo el contenido del módulo a la estructura correcta
     print_status "Organizando estructura para Magento: $vendor_name/$module_name"
     cp -r "$work_dir"/* "$magento_structure_dir/$vendor_name/$module_name/" 2>/dev/null || true
-    
+
     # Crear archivo ZIP con la estructura correcta
     print_status "Creando archivo ZIP..."
     mkdir -p "$OUTPUT_DIR"
@@ -994,9 +997,9 @@ case "${1:-}" in
             main "$1"
         else
             # Es un cliente, verificar si hay un segundo argumento que sea la versión
-            local client_key="$1"
-            local plugin_version="${2:-untagged}"
-            
+            client_key="$1"
+            plugin_version="${2:-untagged}"
+
             # Normalizar client_key: convertir guiones a guiones bajos (los templates ahora usan guiones bajos)
             normalized_key=$(echo "$client_key" | tr '-' '_')
             config=$(get_client_config "$normalized_key")
@@ -1016,4 +1019,3 @@ case "${1:-}" in
         fi
         ;;
 esac
-

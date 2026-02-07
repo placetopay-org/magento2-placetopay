@@ -42,8 +42,6 @@ class PaymentMethod extends AbstractMethod
 {
     use IsSetStatusOrderTrait;
 
-    public const CODE = 'placetopay';
-
     protected $_code = CountryConfig::CLIENT_ID;
     protected $_isGateway = true;
     protected $_canOrder = true;
@@ -186,16 +184,6 @@ class PaymentMethod extends AbstractMethod
             $taxItem,
             $tax
         );
-    }
-
-    /**
-     * @param null $storeId
-     * @return bool
-     * @see vendor/magento/module-payment/Model/MethodInterface.php
-     */
-    public function isActive($storeId = null): bool
-    {
-        return $this->config->getActive();
     }
 
     /**

@@ -10,11 +10,8 @@ use Magento\Framework\View\Asset\Repository;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use PlacetoPay\Payments\Constants\Client;
-use PlacetoPay\Payments\Constants\Country;
 use PlacetoPay\Payments\CountryConfig;
 use PlacetoPay\Payments\Helper\Data;
-use PlacetoPay\Payments\Helper\ParseData;
 
 class CustomConfigProvider implements ConfigProviderInterface
 {
