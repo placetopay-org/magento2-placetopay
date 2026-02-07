@@ -18,10 +18,6 @@ use PlacetoPay\Payments\Model\Info as InfoFactory;
 
 class Data extends BaseData
 {
-    public static function getCode(): string
-    {
-        return CountryConfig::CLIENT_ID;
-    }
     public const EXPIRATION_TIME_MINUTES_DEFAULT = 120;
     public const EXPIRATION_TIME_MINUTES_MIN = 10;
 
