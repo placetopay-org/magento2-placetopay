@@ -4,7 +4,7 @@ namespace PlacetoPay\Payments;
 
 use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 
-abstract class CountryConfig 
+abstract class CountryConfig
 {
     public const CLIENT_ID = 'placetopay_ecuador';
     public const CLIENT = 'Placetopay';
@@ -16,7 +16,7 @@ abstract class CountryConfig
     public static function getEndpoints(): array
     {
         return [
-            Mode::DEVELOPMENT => 'https://dev.placetopay.ec/redirection',
+            Mode::DEVELOPMENT => 'https://checkout-ec.placetopay.dev',
             Mode::TEST => 'https://checkout-test.placetopay.ec',
             Mode::PRODUCTION => 'https://checkout.placetopay.ec',
         ];
@@ -32,4 +32,3 @@ abstract class CountryConfig
         ];
     }
 }
-

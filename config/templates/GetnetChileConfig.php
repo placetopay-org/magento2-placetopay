@@ -15,7 +15,6 @@ abstract class CountryConfig
     public static function getEndpoints(): array
     {
         return [
-            Mode::DEVELOPMENT => 'https://checkout-co.placetopay.dev',
             Mode::TEST => 'https://checkout.test.getnet.cl',
             Mode::PRODUCTION => 'https://checkout.getnet.cl',
         ];
@@ -31,4 +30,3 @@ abstract class CountryConfig
         ];
     }
 }
-
