@@ -104,41 +104,36 @@ class Service implements ServiceInterface
             /** @var PaymentMethod $placetopay */
             $placetopay = $payment->getMethodInstance();
 
-            if (!empty($data['signature']) && !empty($data['requestId']) && !empty($data['status']['status']) && !empty($data['status']['date'])) {
-                $tranKey = $this->configHelper->getTranKey($order->getStoreId());
-                
-                $expectedSignature = sprintf(
-                    '%s%s%s%s',
-                    $data['requestId'],
-                    $data['status']['status'],
-                    $data['status']['date'],
-                    $tranKey
-                );
+            $tranKey = $this->configHelper->getTranKey($order->getStoreId());
 
-                $signature = $data['signature'];
-                if (strpos($signature, ':') === false) {
-                    $signature = 'sha1:' . $signature;
-                }
+            $expectedSignature = sprintf(
+                '%s%s%s%s',
+                $data['requestId'],
+                $data['status']['status'],
+                $data['status']['date'],
+                $tranKey
+            );
 
-                [$algo, $receivedSignature] = explode(':', $signature, 2);
+            $signature = $data['signature'];
 
-                $this->logger->log($this, 'debug', 'signature algorithm: ' . $algo, []);
+            if (strpos($signature, ':') === false) {
+                $signature = 'sha1:' . $signature;
+            }
 
-                if (hash($algo, $expectedSignature) !== $receivedSignature) {
-                    if ($placetopay->inDebugMode()) {
-                        return [
-                            'signature' => hash($algo, $expectedSignature),
-                            'message' => 'Replace this signature with the one on the request body for testing.',
-                        ];
-                    }
+            [$algo, $receivedSignature] = explode(':', $signature, 2);
 
+            $this->logger->log($this, 'debug', 'signature algorithm: ' . $algo, []);
+
+            if (hash($algo, $expectedSignature) !== $receivedSignature) {
+                if ($placetopay->inDebugMode()) {
                     return [
-                        'message' => 'Invalid notification for order #' . $order->getId(),
+                        'message' => 'Replace this signature with the one on the request body for testing.',
+                        'signature' => hash($algo, $expectedSignature),
                     ];
                 }
-            } else {
+
                 return [
-                    'message' => 'Missing required fields for signature validation.',
+                    'message' => 'Invalid notification for order #' . $order->getId(),
                 ];
             }
 
