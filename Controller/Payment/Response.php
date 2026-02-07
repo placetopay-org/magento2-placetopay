@@ -27,6 +27,7 @@ use Magento\Sales\Model\OrderFactory;
 use Magento\Store\Model\ScopeInterface;
 use PlacetoPay\Payments\Actions\SetOrderInfoSession;
 use PlacetoPay\Payments\Constants\PathUrlRedirect;
+use PlacetoPay\Payments\CountryConfig;
 use PlacetoPay\Payments\Helper\OrderHelper;
 use PlacetoPay\Payments\Helper\PlacetoPayLogger;
 use PlacetoPay\Payments\Model\PaymentMethod;
@@ -137,7 +138,7 @@ class Response extends Action
         $reference = $this->request->getParam('reference');
         $order = $this->salesOrderFactory->create()->loadByIncrementId($reference);
         $session = $this->checkoutSession;
-        $pathRedirect = PathUrlRedirect::SUCCESSFUL;
+        $pathRedirect = PathUrlRedirect::getSuccessful();
 
         try {
             $payment = $order->getPayment();
@@ -193,7 +194,7 @@ class Response extends Action
 
                     $this->messageManager->addErrorMessage(__('The payment process has been declined.'));
 
-                    $pathRedirect = PathUrlRedirect::FAILURE;
+                    $pathRedirect = PathUrlRedirect::getFailure();
                 } elseif ($status->status() == Status::ST_REFUNDED) {
                     $this->setPaymentDenied($payment, $transaction);
 
@@ -205,7 +206,7 @@ class Response extends Action
                         SetOrderInfoSession::withQouteId($session, $order);
                     }
                     $this->messageManager->addErrorMessage(__('The payment has been refunded.'));
-                    $pathRedirect = PathUrlRedirect::FAILURE;
+                    $pathRedirect = PathUrlRedirect::getFailure();
                 } else {
                     SetOrderInfoSession::withQouteId($session, $order, false);
 
@@ -213,7 +214,7 @@ class Response extends Action
                         __('Transaction pending, please wait a moment while it automatically resolves.')
                     );
 
-                    $pathRedirect = PathUrlRedirect::PENDING;
+                    $pathRedirect = PathUrlRedirect::getPending();
                 }
             } else {
                 if ($status->isApproved()) {

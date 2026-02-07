@@ -10,15 +10,11 @@ use Magento\Framework\View\Asset\Repository;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use PlacetoPay\Payments\Constants\Client;
-use PlacetoPay\Payments\Constants\Country;
+use PlacetoPay\Payments\CountryConfig;
 use PlacetoPay\Payments\Helper\Data;
-use PlacetoPay\Payments\Helper\ParseData;
 
 class CustomConfigProvider implements ConfigProviderInterface
 {
-    public const CODE = PaymentMethod::CODE;
-
     /**
      * @var Data
      */
@@ -66,7 +62,7 @@ class CustomConfigProvider implements ConfigProviderInterface
     {
         return [
             'payment' => [
-                self::CODE => [
+                CountryConfig::CLIENT_ID => [
                     'media' => $this->_assetRepo->getUrl('PlacetoPay_Payments::images'),
                     'logoUrl' => $this->_assetRepo->getUrl('PlacetoPay_Payments::images/logo.png'),
                     'logo' => $this->getImage(),
@@ -91,28 +87,17 @@ class CustomConfigProvider implements ConfigProviderInterface
         $url = $this->_scopeConfig->getImageUrl();
 
         if (is_null($url)) {
-            $image = $this->getImageByClient($this->_scopeConfig->getTitle());
+            $image = CountryConfig::IMAGE;
         } elseif ($this->checkValidUrl($url)) {
             $image = $url;
         } elseif ($this->checkDirectory($url)) {
             $base = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
-            $image = "{$base}{$url}";
+            $image = $base . $url;
         } else {
             $image = 'https://static.placetopay.com/' . $url . '.svg';
         }
 
         return $image;
-    }
-
-    protected function getImageByClient(string $client): string
-    {
-        $clientImage = [
-            Client::GNT => 'uggcf://onapb.fnagnaqre.py/hcybnqf/000/029/870/0620s532-9sp9-4248-o99r-78onr9s13r1q/bevtvany/Ybtb_JroPurpxbhg_Trgarg.fit',
-            Client::GOU => 'uggcf://cynprgbcnl-fgngvp-hng-ohpxrg.f3.hf-rnfg-2.nznmbanjf.pbz/ninycnlpragre-pbz/ybtbf/Urnqre+Pbeerb+-+Ybtb+Ninycnl.fit',
-            Client::PTP => 'uggcf://fgngvp.cynprgbcnl.pbz/cynprgbcnl-ybtb.fit'
-        ];
-
-        return ParseData::unmaskString($clientImage[ParseData::unmaskString($client)] ?? 'uggcf://fgngvp.cynprgbcnl.pbz/cynprgbcnl-ybtb.fit') ;
     }
 
     protected function checkDirectory(string $path): bool

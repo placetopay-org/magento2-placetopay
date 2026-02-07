@@ -10,7 +10,7 @@ use PlacetoPay\Payments\Helper\OrderHelper;
 
 trait IsSetStatusOrderTrait
 {
-    public function setStatus(RedirectInformation $information, Order $order, Order\Payment $payment = null): void
+    public function setStatus(RedirectInformation $information, Order $order, ?Order\Payment $payment = null): void
     {
         $this->logger->info('The status of the payment with requestId ' . $information->requestId() .
             ' for the order ' . $order->getRealOrderId() . ' is ', [$information->status()->status()]);
@@ -58,7 +58,7 @@ trait IsSetStatusOrderTrait
         }
     }
 
-    public function changeStatusOrderFail(Order $order, Order\Payment $payment = null): void
+    public function changeStatusOrderFail(Order $order, ?Order\Payment $payment = null): void
     {
         if (!$payment) {
             $payment = $order->getPayment();

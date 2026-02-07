@@ -8,6 +8,7 @@ use Magento\Config\Block\System\Config\Form\Fieldset as BaseField;
 use Magento\Config\Model\Config;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 use Magento\Framework\View\Helper\Js;
+use PlacetoPay\Payments\CountryConfig;
 
 /**
  * Class Fieldset.
@@ -93,7 +94,11 @@ class Fieldset extends BaseField
         }
 
         $html .= '</div>';
-        $html .= '<div class="' . __('heading') . '"><strong>' . $element->getLegend() . '</strong>';
+        
+        $clientId = strtolower(str_replace([' ', '-'], ['', '_'], CountryConfig::CLIENT_ID));
+        $headingClass = 'heading-' . $clientId;
+        
+        $html .= '<div class="' . $headingClass . '"><strong>' . $element->getLegend() . '</strong>';
 
         if ($element->getComment()) {
             $html .= '<span class="heading-intro">' . $element->getComment() . '</span>';

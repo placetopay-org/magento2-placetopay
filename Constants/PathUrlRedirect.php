@@ -2,9 +2,22 @@
 
 namespace PlacetoPay\Payments\Constants;
 
+use PlacetoPay\Payments\CountryConfig;
+
 abstract class PathUrlRedirect
 {
-    public const FAILURE = 'placetopay/onepage/failure';
-    public const SUCCESSFUL = 'placetopay/onepage/success';
-    public const PENDING = 'placetopay/onepage/pending';
+    public static function getFailure(): string
+    {
+        return CountryConfig::CLIENT_ID . '/onepage/failure';
+    }
+
+    public static function getSuccessful(): string
+    {
+        return CountryConfig::CLIENT_ID . '/onepage/success';
+    }
+
+    public static function getPending(): string
+    {
+        return CountryConfig::CLIENT_ID . '/onepage/pending';
+    }
 }

@@ -5,6 +5,7 @@ namespace PlacetoPay\Payments\Cron;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use PlacetoPay\Payments\Constants\PaymentStatus;
+use PlacetoPay\Payments\CountryConfig;
 use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
 use PlacetoPay\Payments\Model\PaymentMethod;
 use Magento\Store\Model\StoreManagerInterface;

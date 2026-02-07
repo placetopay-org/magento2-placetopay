@@ -27,6 +27,7 @@ use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Tax\Item;
 use PlacetoPay\Payments\Concerns\IsSetStatusOrderTrait;
 use PlacetoPay\Payments\Constants\PaymentStatus;
+use PlacetoPay\Payments\CountryConfig;
 use PlacetoPay\Payments\Helper\Data as Config;
 use PlacetoPay\Payments\Logger\Logger as LoggerInterface;
 use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
@@ -40,9 +41,10 @@ use Magento\Tax\Model\Config as TaxConfig;
 class PaymentMethod extends AbstractMethod
 {
     use IsSetStatusOrderTrait;
-    public const CODE = 'placetopay';
 
-    protected $_code = self::CODE;
+    public const CODE = CountryConfig::CLIENT_ID;
+
+    protected $_code = CountryConfig::CLIENT_ID;
     protected $_isGateway = true;
     protected $_canOrder = true;
     protected $_canAuthorize = true;
@@ -145,8 +147,8 @@ class PaymentMethod extends AbstractMethod
         RemoteAddress $remoteAddress,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         TaxConfig $tax,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         parent::__construct(
@@ -172,7 +174,7 @@ class PaymentMethod extends AbstractMethod
         $this->orderRepository = $orderRepository;
         $this->infoFactory = $infoFactory;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->version = '1.12.2';
+        $this->version = '2.0.0';
 
         $this->placetoPayPayment = new PlacetoPayPayment(
             $config,
@@ -187,25 +189,19 @@ class PaymentMethod extends AbstractMethod
     }
 
     /**
-     * @param null $storeId
-     * @return bool
-     * @see vendor/magento/module-payment/Model/MethodInterface.php
-     */
-    public function isActive($storeId = null): bool
-    {
-        return $this->config->getActive();
-    }
-
-    /**
      * @param CartInterface|null $quote
      * @return bool
      * @see vendor/magento/module-payment/Model/MethodInterface.php
      */
-    public function isAvailable(CartInterface $quote = null): bool
+    public function isAvailable(?CartInterface $quote = null): bool
     {
+        if (!$this->isActive()) {
+            return false;
+        }
+
         return !(!$this->config->getTranKey()
             || !$this->config->getLogin()
-            || !$this->config->getEndpointsTo($this->config->getCountryCode()));
+            || !$this->config->getEndpointsTo());
     }
 
     /**
@@ -263,7 +259,7 @@ class PaymentMethod extends AbstractMethod
         return $this->placetoPayPayment->getCheckoutRedirect($order);
     }
 
-    public function resolve(Order $order, Order\Payment $payment = null): RedirectInformation
+    public function resolve(Order $order, ?Order\Payment $payment = null): RedirectInformation
     {
         return $this->placetoPayPayment->resolve($order, $payment);
     }

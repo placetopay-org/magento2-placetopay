@@ -13,6 +13,8 @@ use Magento\Framework\Webapi\Rest\Request;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\OrderRepository;
+use PlacetoPay\Payments\CountryConfig;
+use PlacetoPay\Payments\Helper\Data as ConfigHelper;
 use PlacetoPay\Payments\Helper\PlacetoPayLogger;
 use PlacetoPay\Payments\Model\PaymentMethod;
 
@@ -48,13 +50,19 @@ class Service implements ServiceInterface
      */
     protected $orderRepository;
 
+    /**
+     * @var ConfigHelper
+     */
+    protected $configHelper;
+
     public function __construct(
         Request $request,
         PlacetoPayLogger $logger,
         EventManager $manager,
         Json $json,
         OrderRepository $orderRepository,
-        ResourceConnection $resource
+        ResourceConnection $resource,
+        ConfigHelper $configHelper
     ) {
         $this->logger = $logger;
         $this->manager = $manager;
@@ -62,6 +70,7 @@ class Service implements ServiceInterface
         $this->orderRepository = $orderRepository;
         $this->request = $request;
         $this->resource = $resource;
+        $this->configHelper = $configHelper;
     }
 
     public function notify(): array
@@ -77,7 +86,7 @@ class Service implements ServiceInterface
 
             $orderId = $this->resource->getConnection()->query(
                 "SELECT parent_id FROM $tableName WHERE method = ? AND last_trans_id = ?",
-                [PaymentMethod::CODE, (string)$data['requestId']]
+                [CountryConfig::CLIENT_ID, (string)$data['requestId']]
             )->fetchColumn();
 
             if (!$orderId) {
@@ -95,20 +104,40 @@ class Service implements ServiceInterface
             /** @var PaymentMethod $placetopay */
             $placetopay = $payment->getMethodInstance();
 
-            $notification = $placetopay->gateway()->readNotification($data);
+            $tranKey = $this->configHelper->getTranKey($order->getStoreId());
 
-            if (!$notification->isValidNotification()) {
-                return $placetopay->inDebugMode()
-                    ? [
-                        'signature' => $notification->makeSignature(),
-                        'message' => 'Replace this signature with the one on the request body for testing.',
-                    ]
-                    : [
-                        'message' => 'Invalid notification for order #' . $order->getId(),
-                    ];
+            $expectedSignature = sprintf(
+                '%s%s%s%s',
+                $data['requestId'],
+                $data['status']['status'],
+                $data['status']['date'],
+                $tranKey
+            );
+
+            $signature = $data['signature'];
+
+            if (strpos($signature, ':') === false) {
+                $signature = 'sha1:' . $signature;
             }
 
-            $information = $placetopay->gateway()->query($notification->requestId());
+            [$algo, $receivedSignature] = explode(':', $signature, 2);
+
+            $this->logger->log($this, 'debug', 'signature algorithm: ' . $algo, []);
+
+            if (hash($algo, $expectedSignature) !== $receivedSignature) {
+                if ($placetopay->inDebugMode()) {
+                    return [
+                        'message' => 'Replace this signature with the one on the request body for testing.',
+                        'signature' => hash($algo, $expectedSignature),
+                    ];
+                }
+
+                return [
+                    'message' => 'Invalid notification for order #' . $order->getId(),
+                ];
+            }
+
+            $information = $placetopay->gateway()->query($data['requestId']);
 
             $placetopay->setStatus($information, $order);
 
@@ -154,9 +183,10 @@ class Service implements ServiceInterface
     private function isValidRequest(array $data): bool
     {
         return $data
-            && !empty($data['reference'])
             && !empty($data['signature'])
-            && !empty($data['requestId']);
+            && !empty($data['requestId'])
+            && !empty($data['status']['status'])
+            && !empty($data['status']['date']);
     }
 
     private function getRequestData(string $data): array

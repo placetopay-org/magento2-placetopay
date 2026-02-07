@@ -3,10 +3,10 @@
 /**
  * Evertec PlacetoPay Payments Module (https://www.placetopay.com/)
  *
- * Copyright (c) 2019 Evertec PlacetoPay S.A.S. (https://www.placetopay.com/)
+ * Copyright (c) 2026 Evertec PlacetoPay S.A.S. (https://www.placetopay.com/)
  * See LICENSE.txt for license details.
  *
- * Author: Simon Godoy <simon.godoy@evertecinc.com>
+ * Author: PlacetoPay Developers <soporte@placetopay.com>
  */
 
 use Magento\Framework\Component\ComponentRegistrar;

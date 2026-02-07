@@ -6,3 +6,4 @@
 composer.lock
 */*/auth.json
 .php-cs-fixer.cache
+builds/*
