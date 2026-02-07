@@ -44,7 +44,7 @@ class PaymentMethod extends AbstractMethod
 
     public const CODE = 'placetopay';
 
-    protected $_code;
+    protected $_code = CountryConfig::CLIENT_ID;
     protected $_isGateway = true;
     protected $_canOrder = true;
     protected $_canAuthorize = true;
@@ -151,7 +151,6 @@ class PaymentMethod extends AbstractMethod
         ?AbstractDb $resourceCollection = null,
         array $data = []
     ) {
-        $this->_code = CountryConfig::CLIENT_ID;
         parent::__construct(
             $context,
             $registry,
@@ -209,7 +208,7 @@ class PaymentMethod extends AbstractMethod
         if (!$this->isActive()) {
             return false;
         }
-        
+
         return !(!$this->config->getTranKey()
             || !$this->config->getLogin()
             || !$this->config->getEndpointsTo());

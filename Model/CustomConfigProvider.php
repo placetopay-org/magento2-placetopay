@@ -18,11 +18,6 @@ use PlacetoPay\Payments\Helper\ParseData;
 
 class CustomConfigProvider implements ConfigProviderInterface
 {
-    public static function getCode(): string
-    {
-        return CountryConfig::CLIENT_ID;
-    }
-
     /**
      * @var Data
      */
@@ -70,7 +65,7 @@ class CustomConfigProvider implements ConfigProviderInterface
     {
         return [
             'payment' => [
-                self::getCode() => [
+                CountryConfig::CLIENT_ID => [
                     'media' => $this->_assetRepo->getUrl('PlacetoPay_Payments::images'),
                     'logoUrl' => $this->_assetRepo->getUrl('PlacetoPay_Payments::images/logo.png'),
                     'logo' => $this->getImage(),

@@ -4,14 +4,13 @@ namespace PlacetoPay\Payments;
 
 use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 
-abstract class CountryConfig 
+abstract class CountryConfig
 {
     public const CLIENT_ID = 'placetopay_colombia';
     public const CLIENT = 'Placetopay';
     public const IMAGE = 'https://static.placetopay.com/placetopay-logo.svg';
     public const COUNTRY_CODE = 'CO';
     public const COUNTRY_NAME = 'Colombia';
-
 
     public static function getEndpoints(): array
     {
@@ -32,4 +31,3 @@ abstract class CountryConfig
         ];
     }
 }
-
