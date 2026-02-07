@@ -3,6 +3,7 @@
 namespace PlacetoPay\Payments\Model\Adminhtml\Source;
 
 use PlacetoPay\Payments\CountryConfig;
+use PlacetoPay\Payments\Helper\Data;
 
 class Mode
 {
@@ -10,6 +11,11 @@ class Mode
     public const TEST = 'test';
     public const PRODUCTION = 'production';
     public const CUSTOM = 'custom';
+
+    public function __construct(Data $dataHelper)
+    {
+        $this->dataHelper = $dataHelper;
+    }
 
     /**
      * @return array
@@ -31,12 +37,19 @@ class Mode
             ],
         ];
 
+        $endpoints = $this->dataHelper->getEndpointsTo();
+
+        foreach ($environments as $key => $environment) {
+            if (!array_key_exists($environment['value'], $endpoints)) {
+                unset($environments[$key]);
+            }
+        }
+
         if (CountryConfig::COUNTRY_CODE != 'CL' ) {
-            $environments[] =
-                [
-                    'value' => self::CUSTOM,
-                    'label' => __('Custom'),
-                ];
+            $environments[] = [
+                'value' => self::CUSTOM,
+                'label' => __('Custom'),
+            ];
         }
 
         return $environments;
