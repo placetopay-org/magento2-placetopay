@@ -174,7 +174,7 @@ class PaymentMethod extends AbstractMethod
         $this->orderRepository = $orderRepository;
         $this->infoFactory = $infoFactory;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->version = '1.12.2';
+        $this->version = '2.0.0';
 
         $this->placetoPayPayment = new PlacetoPayPayment(
             $config,
