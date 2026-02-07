@@ -42,6 +42,8 @@ class PaymentMethod extends AbstractMethod
 {
     use IsSetStatusOrderTrait;
 
+    public const CODE = CountryConfig::CLIENT_ID;
+
     protected $_code = CountryConfig::CLIENT_ID;
     protected $_isGateway = true;
     protected $_canOrder = true;
