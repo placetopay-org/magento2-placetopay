@@ -11,7 +11,7 @@ class Mode
     public const TEST = 'test';
     public const PRODUCTION = 'production';
     public const CUSTOM = 'custom';
-    protected Data $dataHelper;
+    protected $dataHelper;
 
     public function __construct(Data $dataHelper)
     {
