@@ -9,25 +9,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [2.0.1] - 2026-02-17
 
 ### Updated
-
 -Refactor for backward compatibility
 
 ## [2.0.0] - 2026-02-10
 
 ### Added
-
 - Generate zips by tenant config
 
 ## [1.12.2] - 2025-03-28
 
 ### Updated
-
 - Update branding for clients
 
 ## [1.12.1] - 2024-10-29
 
 ### Added
-
 - Add options expiration by client
 - Add styles to logo
 - Update translations by Provider
@@ -35,73 +31,61 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.12.0] - 2024-08-05
 
 ### Added
-
 - Add support multistore
 
 ## [1.11.3] - 2024-06-20
 
 ### Added
-
 - Add information in the readme
 
 ## [1.11.2] - 2024-06-13
 
 ### Fixed
-
 - Can load payment method image by client and personalized image (CSP).
 
 ## [1.11.1] - 2024-04-26
 
 ### Fixed
-
 - Calculate base price of shipping taxes.
 
 ## [1.11.0] - 2023-07-25
 
 ### Added
-
 - Add branding by client country (it's defined in MG).
 - Add modifiers support: UY.
 
 ## [1.10.1] - 2023-06-16
 
 ### Added
-
 - Add additional information to payment information: Processor Fields
 
 ### Fixed
-
 - Calculate base price of taxes (support applyTaxAfterDiscount option)
 
 ## [1.10.0] - 2023-06-02
 
 ### Removed
-
 - Remove setup for payment methods (set in WC please)
 
 ## [1.9.5] - 2023-05-23
 
 ### Updated
-
 - Update syntax to support PHP 8.2 (from PHP 7.2+ for now)
     * It requires enable in Magento: composer require alejociro/redirection
 
 ## [1.9.4] - 2023-05-08
 
 ### Updated
-
 - Notification resolve payments with plugin information
 
 ## [1.9.3] - 2023-04-12
 
 ### Fixed
-
 - Cron job resolve only payments payed using this plugin
 
 ## [1.9.2] - 2023-03-28
 
 ### Fixed
-
 - Resolve base price of shipping taxes
 
 ## [1.9.1] - 2023-03-17
@@ -160,48 +144,40 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.8.6] - 2021-07-31
 
 ### Updated
-
 - Changed chile endpoints
 - dnetix/redirection package
 
 ### Fixed
-
 - Static url was adding a slash (/) when searching for the image
 
 ## [1.8.5] - 2021-07-23
 
 ### Fixed
-
 - Override discount to string
 
 ## [1.8.4] - 2021-07-22
 
 ### Fixed
-
 - Set discount value to string
 
 ## [1.8.3] - 2021-07-01
 
 ### Fixed
-
 - Remove get order repository from payment method and replace with search criteria
 
 ## [1.8.2] - 2021-06-30
 
 ### Updated
-
 - Remove paypal dependency on Fieldset
 
 ## [1.8.1] - 2021-06-17
 
 ### Added
-
 - Chile language pack
 
 ## [1.8.0] - 2021-05-05
 
 ### Added
-
 - Support to Chile country
 - Custom payment url
 - Custom image
