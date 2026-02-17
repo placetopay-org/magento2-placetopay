@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [2.0.1] - 2026-02-17
 
 ### Updated
--Refactor for backward compatibility
+- Refactor for backward compatibility
 
 ## [2.0.0] - 2026-02-10
 
