@@ -17,6 +17,7 @@ abstract class CountryConfig
     {
         return [
             Mode::TEST => 'https://checkout.test.avalpaycenter.com',
+            Mode::UAT => 'https://checkout.uat.avalpaycenter.com',
             Mode::PRODUCTION => 'https://checkout.avalpaycenter.com',
         ];
     }
