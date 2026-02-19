@@ -11,6 +11,7 @@
                 <!--<model>PlacetoPayPaymentsFacade</model>-->
                 <placetopay_development_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
                 <placetopay_test_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <placetopay_uat_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
                 <placetopay_production_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
                 <placetopay_custom_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
                 <title><![CDATA[Placetopay]]></title>
