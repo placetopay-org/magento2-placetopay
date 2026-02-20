@@ -7,7 +7,7 @@ use Magento\Store\Model\ScopeInterface;
 
 class Expiration
 {
-    private const EXPIRATION_TIME_MINUTES_DEFAULT = 8640;
+    private const EXPIRATION_TIME_MINUTES_DEFAULT = 2880;
     private const EXPIRATION_TIME_MINUTES_CL = 30;
 
     /**

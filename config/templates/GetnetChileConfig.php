@@ -16,6 +16,7 @@ abstract class CountryConfig
     {
         return [
             Mode::TEST => 'https://checkout.test.getnet.cl',
+            Mode::UAT => 'https://checkout.uat.getnet.cl',
             Mode::PRODUCTION => 'https://checkout.getnet.cl',
         ];
     }

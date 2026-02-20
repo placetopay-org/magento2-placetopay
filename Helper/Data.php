@@ -335,6 +335,13 @@ class Data extends BaseData
                     $storeId
                 );
                 break;
+            case Mode::UAT:
+                $tranKey = $this->scopeConfig->getValue(
+                    'payment/placetopay/placetopay_uat_tk',
+                    ScopeInterface::SCOPE_STORE,
+                    $storeId
+                );
+                break;
             case Mode::CUSTOM:
                 $tranKey = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_custom_tk',
@@ -369,6 +376,13 @@ class Data extends BaseData
             case Mode::TEST:
                 $login = $this->scopeConfig->getValue(
                     'payment/placetopay/placetopay_test_lg',
+                    ScopeInterface::SCOPE_STORE,
+                    $storeId
+                );
+                break;
+            case Mode::UAT:
+                $login = $this->scopeConfig->getValue(
+                    'payment/placetopay/placetopay_uat_lg',
                     ScopeInterface::SCOPE_STORE,
                     $storeId
                 );
