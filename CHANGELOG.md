@@ -8,10 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [2.0.2 (2026-02-20)]
 
-### Fixed
+### Added
 - Add uat environments.
 - Set expiration minutes in 30 minutes by default.
-
 
 ## [2.0.1] - 2026-02-17
 
