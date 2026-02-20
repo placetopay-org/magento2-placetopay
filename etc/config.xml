@@ -18,7 +18,7 @@
                 <description><![CDATA[Pay securely through Placetopay.]]></description>
                 <allowspecific>0</allowspecific>
                 <sort_order>1</sort_order>
-                <expiration>2880</expiration>
+                <expiration>30</expiration>
                 <final_page>magento_default</final_page>
                 <allow_pending_payment>0</allow_pending_payment>
                 <allow_partial_payment>0</allow_partial_payment>
