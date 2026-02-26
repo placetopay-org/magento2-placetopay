@@ -16,6 +16,7 @@ abstract class CountryConfig
     {
         return [
             Mode::TEST => 'https://checkout.test.banchilepagos.cl',
+            Mode::UAT => 'https://checkout.uat.banchilepagos.cl',
             Mode::PRODUCTION => 'https://checkout.banchilepagos.cl',
         ];
     }

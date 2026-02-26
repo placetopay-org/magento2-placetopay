@@ -11,13 +11,14 @@
                 <!--<model>PlacetoPayPaymentsFacade</model>-->
                 <placetopay_development_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
                 <placetopay_test_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <placetopay_uat_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
                 <placetopay_production_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
                 <placetopay_custom_tk backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
                 <title><![CDATA[Placetopay]]></title>
                 <description><![CDATA[Pay securely through Placetopay.]]></description>
                 <allowspecific>0</allowspecific>
                 <sort_order>1</sort_order>
-                <expiration>2880</expiration>
+                <expiration>30</expiration>
                 <final_page>magento_default</final_page>
                 <allow_pending_payment>0</allow_pending_payment>
                 <allow_partial_payment>0</allow_partial_payment>
