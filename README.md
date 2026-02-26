@@ -5,7 +5,7 @@
 For more information about the component and the functionalities it offers, visit the following link **[Magento-Placetopay](https://placetopay.dev/plugins/magento)**.
 
 ## Prerequisites
-- `php` ^7.1
+- `php` ^7.4
 - `ext-bcmath`
 - `ext-ctype`
 - `ext-curl`
@@ -32,9 +32,11 @@ For more information about the component and the functionalities it offers, visi
     
 ## Compatibility Version
 
-| Magento | Plugin   | Comments       |
-|------------|----------|----------------|
-| 2.x.x      | ~1.8.0   | From 2.0.x  |
+| Magento | Plugin   | Comments        |
+|---------|----------|-----------------|
+| 2.4.4+  | ~2.1.0   | From 2.1.x      |
+
+> Note: Plugin 2.1.x requires Magento 2.4.4+ and PHP 7.4+. Earlier versions are not supported.
 
 View releases [here][link-releases]
 
@@ -173,8 +175,8 @@ if you wat to change the users and passwords, edit the env file.
 
 Default versions
 
-- Magento: 2.3.3
-- PHP: 7.2
+- Magento: 2.4.4 (minimum supported)
+- PHP: 7.4 (minimum supported)
 - MySQL: 5.6.23
 
 You can change versions in `.docker/Dockerfile`
