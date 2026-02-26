@@ -268,7 +268,7 @@ class Data extends BaseData
     /**
      * @return string|null
      */
-    public function getMode($storeId = null)
+    public function getMode(?string $storeId = null)
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/placetopay_mode',
@@ -280,7 +280,7 @@ class Data extends BaseData
     /**
      * @return string|null
      */
-    public function getCustomConnectionUrl($storeId = null): ?string
+    public function getCustomConnectionUrl(?string $storeId = null): ?string
     {
         return $this->scopeConfig->getValue(
             'payment/placetopay/placetopay_custom_url',
@@ -289,7 +289,7 @@ class Data extends BaseData
         );
     }
 
-    public function isCustomEnvironment($storeId = null): bool
+    public function isCustomEnvironment(?string $storeId = null): bool
     {
         return $this->getMode($storeId) === Mode::CUSTOM;
     }
@@ -297,7 +297,7 @@ class Data extends BaseData
     /**
      * @return string|null
      */
-    public function getUri($storeId = null): ?string
+    public function getUri(?string $storeId = null): ?string
     {
         $uri = null;
         $endpoints = $this->getEndpointsTo();
@@ -316,7 +316,7 @@ class Data extends BaseData
     /**
      * @return string|null
      */
-    public function getTranKey($storeId = null): ?string
+    public function getTranKey(?string $storeId = null): ?string
     {
         $mode = $this->getMode($storeId);
 
@@ -361,7 +361,7 @@ class Data extends BaseData
         return $tranKey;
     }
 
-    public function getLogin($storeId = null): ?string
+    public function getLogin(?string $storeId = null): ?string
     {
         $mode = $this->getMode($storeId);
 

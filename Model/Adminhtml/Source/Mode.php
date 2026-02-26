@@ -12,6 +12,7 @@ class Mode
     public const PRODUCTION = 'production';
     public const CUSTOM = 'custom';
     public const UAT = 'uat';
+
     protected $dataHelper;
 
     public function __construct(Data $dataHelper)
