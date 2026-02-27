@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-02-26
+
+### Added
+- Add uat environments.
+- Set expiration minutes in 30 minutes by default.
+
+### Removed
+- Remove support for Magento < 2.4.4.
+- Remove support for PHP < 7.4.
+
 ## [2.0.1] - 2026-02-17
 
 ### Updated

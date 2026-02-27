@@ -183,6 +183,52 @@
         </field>
 
         <field
+            id="placetopay_uat_lg"
+            translate="label comment"
+            type="text"
+            sortOrder="102"
+            showInDefault="1"
+            showInWebsite="1"
+            showInStore="1"
+        >
+            <label>UAT Login</label>
+
+            <comment>
+                <![CDATA[Your Placetopay Account > Sites > UAT Login]]>
+            </comment>
+
+            <depends>
+                <field id="placetopay_mode">uat</field>
+            </depends>
+
+            <config_path>payment/placetopay/placetopay_uat_lg</config_path>
+        </field>
+
+        <field
+            id="placetopay_uat_tk"
+            translate="label comment"
+            type="obscure"
+            sortOrder="104"
+            showInDefault="1"
+            showInWebsite="1"
+            showInStore="1"
+        >
+            <label>UAT TranKey</label>
+
+            <comment>
+                <![CDATA[Your Placetopay Account > Sites > UAT TranKey]]>
+            </comment>
+
+            <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+
+            <depends>
+                <field id="placetopay_mode">uat</field>
+            </depends>
+
+            <config_path>payment/placetopay/placetopay_uat_tk</config_path>
+        </field>
+
+        <field
             id="placetopay_production_lg"
             translate="label comment"
             type="text"

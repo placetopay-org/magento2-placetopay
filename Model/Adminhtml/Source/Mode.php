@@ -11,6 +11,8 @@ class Mode
     public const TEST = 'test';
     public const PRODUCTION = 'production';
     public const CUSTOM = 'custom';
+    public const UAT = 'uat';
+
     protected $dataHelper;
 
     public function __construct(Data $dataHelper)
@@ -35,6 +37,10 @@ class Mode
             [
                 'value' => self::PRODUCTION,
                 'label' => __('Production'),
+            ],
+            [
+                'value' => self::UAT,
+                'label' => __('UAT'),
             ],
         ];
 
