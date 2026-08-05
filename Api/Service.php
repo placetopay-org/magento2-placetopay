@@ -16,10 +16,13 @@ use Magento\Sales\Model\OrderRepository;
 use PlacetoPay\Payments\CountryConfig;
 use PlacetoPay\Payments\Helper\Data as ConfigHelper;
 use PlacetoPay\Payments\Helper\PlacetoPayLogger;
+use PlacetoPay\Payments\Model\Adminhtml\Source\Mode;
 use PlacetoPay\Payments\Model\PaymentMethod;
 
 class Service implements ServiceInterface
 {
+    private const ALLOWED_SIGNATURE_ALGORITHMS = ['sha1', 'sha256'];
+
     /**
      * @var Request
      */
@@ -124,11 +127,19 @@ class Service implements ServiceInterface
 
             $this->logger->log($this, 'debug', 'signature algorithm: ' . $algo, []);
 
-            if (hash($algo, $expectedSignature) !== $receivedSignature) {
-                if ($placetopay->inDebugMode()) {
+            if (!in_array($algo, self::ALLOWED_SIGNATURE_ALGORITHMS, true)) {
+                return [
+                    'message' => 'Invalid notification for order #' . $order->getId(),
+                ];
+            }
+
+            $hash = hash($algo, $expectedSignature);
+
+            if (!hash_equals($hash, $receivedSignature)) {
+                if ($this->inDevelopmentMode($order)) {
                     return [
                         'message' => 'Replace this signature with the one on the request body for testing.',
-                        'signature' => hash($algo, $expectedSignature),
+                        'signature' => $hash,
                     ];
                 }
 
@@ -164,11 +175,16 @@ class Service implements ServiceInterface
             $this->logger->log($this, 'error', __FUNCTION__ . ' message', [$ex->getMessage()]);
 
             $response = [
-                'message' => $ex->getMessage(),
+                'message' => 'The notification could not be processed.',
             ];
         }
 
         return $response;
+    }
+
+    private function inDevelopmentMode(OrderInterface $order): bool
+    {
+        return $this->configHelper->getMode($order->getStoreId()) === Mode::DEVELOPMENT;
     }
 
     /**

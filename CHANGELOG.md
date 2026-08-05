@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+
+## [2.1.1] - 2026-08-04
+
+### Updated
+- Update the resolution notification process using only available hashes and without sending data.
+
 ## [2.1.0] - 2026-02-26
 
 ### Added

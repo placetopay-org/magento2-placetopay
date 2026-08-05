@@ -292,16 +292,29 @@ replace_payment_codes() {
     # Ej: payment/placetopay/placetopay_mode -> payment/{xml_safe_id}/{xml_safe_id}_mode
     find "$work_dir" -type f -name "*.php" -exec sed -i.bak "s|/${xml_safe_id}/placetopay_|/${xml_safe_id}/${xml_safe_id}_|g" {} \;
 
+    # Reemplazar nombres de eventos despachados desde PHP, para que coincidan con los
+    # renombrados en etc/webapi_rest/events.xml (si no, el observer nunca se dispara)
+    find "$work_dir" -type f -name "*.php" -exec sed -i.bak \
+        -e "s|dispatch('placetopay_|dispatch('${xml_safe_id}_|g" \
+        -e "s|dispatch(\"placetopay_|dispatch(\"${xml_safe_id}_|g" \
+        {} \;
+
     # Usar xml_safe_id (client_id con guiones convertidos a guiones bajos) para payment method code
     # Ejemplo: banchile-chile -> banchile_chile
     local payment_method_name
     payment_method_name="$xml_safe_id"
 
     # Reemplazar en XML - usar payment_method_name (xml_safe_id) para el tag de payment
+    #
+    # IMPORTANTE: el orden de estos sed no es arbitrario. Cuando xml_safe_id contiene
+    # la cadena "placetopay" (ej: placetopay_colombia), un sed posterior puede volver a
+    # sustituir el texto que acaba de generar el anterior y duplicar el sufijo
+    # (payment/placetopay_colombia_colombia/...). Por eso el sed genérico de "placetopay_"
+    # va PRIMERO, y el de la ruta va anclado con la barra de cierre.
+    find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|placetopay_|${xml_safe_id}_|g" {} \;
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|<placetopay>|<${payment_method_name}>|g" {} \;
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|</placetopay>|</${payment_method_name}>|g" {} \;
-    find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|payment/placetopay|payment/${xml_safe_id}|g" {} \;
-    find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|placetopay_|${xml_safe_id}_|g" {} \;
+    find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|payment/placetopay/|payment/${xml_safe_id}/|g" {} \;
 
     # Reemplazar nombre del método en payment.xml (usar xml_safe_id)
     find "$work_dir/etc" -type f -name "payment.xml" -exec sed -i.bak "s|<method name=\"placetopay\">|<method name=\"${payment_method_name}\">|g" {} \;
@@ -336,12 +349,12 @@ replace_payment_codes() {
         -e "s|getUrl(\"placetopay/payment/response|getUrl(str_replace('-', '_', CountryConfig::CLIENT_ID) . '/payment/response|g" \
         {} \;
 
-    # Reemplazar nombres de eventos - usar xml_safe_id
-    find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|name=\"placetopay_|name=\"${xml_safe_id}_|g" {} \;
+    # Los nombres de eventos (name="placetopay_...") y del job de cron
+    # (name="placetopay_payments_cron") ya quedaron sustituidos por el sed genérico de
+    # "placetopay_" al inicio del bloque XML. Repetirlos aquí duplicaba el sufijo.
 
     # Reemplazar nombres de grupos de cron - usar xml_safe_id
     find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|group id=\"placetopay\"|group id=\"${xml_safe_id}\"|g" {} \;
-    find "$work_dir/etc" -type f -name "*.xml" -exec sed -i.bak "s|name=\"placetopay_payments_cron\"|name=\"${xml_safe_id}_payments_cron\"|g" {} \;
 
     # Reemplazar en di.xml (logger name) - usar xml_safe_id
     # Reemplazar tanto en atributos como en valores de argumentos
