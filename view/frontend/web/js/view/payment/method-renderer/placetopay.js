@@ -207,7 +207,12 @@ define(
             },
 
             showErrorMessage: function (message) {
-                document.getElementById('payment-method-placetopay').scrollIntoView(true);
+                const methodElement = document.getElementById('payment-method-' + this.getCode());
+
+                if (methodElement) {
+                    methodElement.scrollIntoView(true);
+                }
+
                 this.messageContainer.addErrorMessage({message: message});
             },
 

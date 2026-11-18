@@ -23,8 +23,6 @@ class Failure extends Onepage
             return $this->resultRedirectFactory->create()->setPath('checkout/cart');
         }
 
-        $session->clearQuote();
-
         return $this->resultPageFactory->create();
     }
 }

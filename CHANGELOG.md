@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 
+## [2.1.2] - 2026-11-18
+
+### Added
+- Restore the shopping cart when the result is a session canceled or rejected.
+
 ## [2.1.1] - 2026-08-04
 
 ### Updated

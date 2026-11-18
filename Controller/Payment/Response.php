@@ -16,15 +16,17 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
+use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Payment\Helper\Data as PaymentHelper;
-use Magento\Quote\Model\QuoteFactory;
 use Magento\Sales\Api\TransactionRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Sales\Model\OrderFactory;
 use Magento\Store\Model\ScopeInterface;
+use PlacetoPay\Payments\Actions\RestoreQuoteAction;
 use PlacetoPay\Payments\Actions\SetOrderInfoSession;
 use PlacetoPay\Payments\Constants\PathUrlRedirect;
 use PlacetoPay\Payments\CountryConfig;
@@ -68,9 +70,14 @@ class Response extends Action
     protected $scopeConfig;
 
     /**
-     * @var QuoteFactory
+     * @var CookieManagerInterface
      */
-    protected $quoteQuoteFactory;
+    protected $cookieManager;
+
+    /**
+     * @var CookieMetadataFactory
+     */
+    protected $cookieMetadataFactory;
 
     /**
      * @var CustomerSession
@@ -110,11 +117,12 @@ class Response extends Action
         PlacetoPayLogger $logger,
         Http $request,
         ScopeConfigInterface $scopeConfig,
-        QuoteFactory $quoteQuoteFactory,
         CustomerSession $customerSession,
         EventManager $eventManager,
         TransactionRepositoryInterface $transactionRepository,
-        PageFactory $pageFactory
+        PageFactory $pageFactory,
+        CookieManagerInterface $cookieManager,
+        CookieMetadataFactory $cookieMetadataFactory
     ) {
         $this->_logger = $logger;
         $this->checkoutSession = $checkoutSession;
@@ -122,11 +130,12 @@ class Response extends Action
         $this->messageManager = $messageManager;
         $this->request = $request;
         $this->scopeConfig = $scopeConfig;
-        $this->quoteQuoteFactory = $quoteQuoteFactory;
         $this->customerSession = $customerSession;
         $this->eventManager = $eventManager;
         $this->_transactionRepository = $transactionRepository;
         $this->_pageFactory = $pageFactory;
+        $this->cookieManager = $cookieManager;
+        $this->cookieMetadataFactory = $cookieMetadataFactory;
         parent::__construct($context);
     }
 
@@ -184,13 +193,7 @@ class Response extends Action
                 } elseif ($status->isRejected()) {
                     $this->setPaymentDenied($payment, $transaction);
 
-                    $quote = $this->quoteQuoteFactory->create()->load($order->getQuoteId());
-
-                    if ($quote->getId()) {
-                        $quote->setIsActive(true)->save();
-
-                        SetOrderInfoSession::withQouteId($session, $order);
-                    }
+                    $this->restoreQuote($session, $order);
 
                     $this->messageManager->addErrorMessage(__('The payment process has been declined.'));
 
@@ -198,13 +201,8 @@ class Response extends Action
                 } elseif ($status->status() == Status::ST_REFUNDED) {
                     $this->setPaymentDenied($payment, $transaction);
 
-                    $quote = $this->quoteQuoteFactory->create()->load($order->getQuoteId());
+                    $this->restoreQuote($session, $order);
 
-                    if ($quote->getId()) {
-                        $quote->setIsActive(true)->save();
-
-                        SetOrderInfoSession::withQouteId($session, $order);
-                    }
                     $this->messageManager->addErrorMessage(__('The payment has been refunded.'));
                     $pathRedirect = PathUrlRedirect::getFailure();
                 } else {
@@ -225,9 +223,11 @@ class Response extends Action
                 } elseif ($status->isRejected()) {
                     $this->messageManager->addErrorMessage(__('The payment process has been declined.'));
                     $this->setPaymentDenied($payment, $transaction);
+                    $this->restoreQuote($session, $order);
                 } elseif ($status->status() == Status::ST_REFUNDED) {
                     $this->messageManager->addErrorMessage(__('The payment process has been refunded.'));
                     $this->setPaymentDenied($payment, $transaction);
+                    $this->restoreQuote($session, $order);
                 } else {
                     $this->messageManager->addWarningMessage(
                         __('Transaction pending, please wait a moment while it automatically resolves.')
@@ -282,5 +282,25 @@ class Response extends Action
     public function setPaymentDenied($payment, Transaction $transaction)
     {
         $payment->addTransactionCommentsToOrder($transaction, __('Payment declined'));
+    }
+
+    private function restoreQuote(Session $session, Order $order): void
+    {
+        if (!RestoreQuoteAction::execute($session, $this->customerSession, $order)) {
+            return;
+        }
+
+        try {
+            $cookieMetadata = $this->cookieMetadataFactory->createPublicCookieMetadata()
+                ->setHttpOnly(false)
+                ->setDuration(60)
+                ->setPath($order->getStore()->getStorePath());
+
+            $this->cookieManager->setPublicCookie('section_data_clean', $order->getStore()->getCode(), $cookieMetadata);
+        } catch (Exception $exception) {
+            $this->_logger->log($this, 'error', __FUNCTION__ . ' error', [
+                'response' => $exception->getMessage(),
+            ]);
+        }
     }
 }
